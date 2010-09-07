@@ -464,16 +464,17 @@ function sanitiseDate(_dateString){
 }
 
 
-function toBool(str)
-{
-  if ("false" === str)
-  { return false; }
-  else
-  {
-    if ("true" === str)
-    { return true; }
-    else
-    { return str; }
+function toBool(str){
+  switch(str){
+    case "false":
+      return false;
+      break;
+    case "true":
+      return true;
+      break;
+    default:
+      return str;
+      break;
   }
 }
 
