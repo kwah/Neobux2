@@ -406,6 +406,45 @@ function utils()
 }
 
 
+
+Object.prototype.append = function(_newObj)
+{
+  if('object' !== typeof _newObj) {
+    console.info("ERROR!\nObject.prototype.append = function(_newObj)\n\n_newObj is not an Object!");
+  }
+
+  for (newVar in _newObj)
+  {
+    switch(typeof _newObj[newVar]){
+      case "string":
+        //Fall-through
+      case "number":
+        this[newVar] = _newObj[newVar];
+      break;
+
+      case "object":
+        this[newVar] = this[newVar] || {};
+        this[newVar].append(_newObj[newVar]);
+      break;
+
+      case "function":
+        if(newVar !== 'append'){
+          this[newVar] = _newObj[newVar];
+        }
+      break;
+
+      default:
+        console.info('Error!\nObject.prototype.append(_newObj)');
+    }
+  }
+
+  return this;
+
+}
+
+
+
+
 function padZeros(_input,_desiredStringLength)
 {
   var currentLength = _input.toString().length;
@@ -906,7 +945,7 @@ var defaultSettings = {
     profit: true
   },
 
-  numberOfRefs: '{"Rented":-1,"Direct":-1}',
+  numberOfRefs: {"Rented":-1,"Direct":-1},
   
   timePeriods: {
     smallGraph: [5,7,10],// Time Periods for 'smaller' 10day graphs
@@ -1187,31 +1226,8 @@ var myAccountDetails = new setterGetter_GM_Storage(
 
 
 myAccountDetails.numberOfRefs = {};
-addSettersGetters(myAccountDetails.numberOfRefs,'numberOfRefs',JSON.parse(defaultSettings.numberOfRefs));
+addSettersGetters(myAccountDetails.numberOfRefs,'numberOfRefs',defaultSettings.numberOfRefs);
 
-console.info(myAccountDetails.numberOfRefs);
-
-/*{
-  get Rented() {
-    var currentStoredValues = JSON.parse(manipulatePrefs.getPref('numberOfRefs', defaultSettings.numberOfRefs));
-    return currentStoredValues['Rented'];
-  },
-  set Rented(_numberOfRefs) {
-    var currentStoredValues = JSON.parse(manipulatePrefs.getPref('numberOfRefs', defaultSettings.numberOfRefs));
-    currentStoredValues['Rented'] = _numberOfRefs;
-    manipulatePrefs.setPref('numberOfRefs', JSON.stringify(currentStoredValues));
-  },
-
-  get Direct() {
-    var currentStoredValues = JSON.parse(manipulatePrefs.getPref('numberOfRefs', defaultSettings.numberOfRefs));
-    return currentStoredValues['Direct'];
-  },
-  set Direct(_numberOfRefs) {
-    var currentStoredValues = JSON.parse(manipulatePrefs.getPref('numberOfRefs', defaultSettings.numberOfRefs));
-    currentStoredValues['Direct'] = _numberOfRefs;
-    manipulatePrefs.setPref('numberOfRefs', JSON.stringify(currentStoredValues));
-  }
-};*/
 
 myAccountDetails.__defineGetter__('autopayCost', function() {
     var currentStoredValues = manipulatePrefs.getPref('numberOfRefs', ACCOUNT_FUNCTIONS.getAutopayCost(getAccountType));
@@ -1236,8 +1252,6 @@ console.info(myAccountDetails.numberOfRefs.Rented);*/
 /* END myAccountDetails */
 
 //var myAccountDetails = new ACCOUNT();
-
-
 
 
 
@@ -2882,7 +2896,7 @@ function extractRefData()
         nextPayment: currentReferral[3],
         lastClick: (currentReferral[4] == '9') ? referrals[z - 1].lastClick : (currentReferral[4] == 'N') ? 'No clicks yet' : (currentReferral[4] == 'O') ? 'Yesterday' : (currentReferral[4] == 'H') ? 'Today' : currentReferral[4],
         totalClicks: currentReferral[5],
-        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6],
+        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6]
       };
     } 
     else if (currentPage.pageName() == 'directRefListing') 
@@ -2893,7 +2907,7 @@ function extractRefData()
         referralSince: (currentReferral[3] == '9') ? referrals[z - 1].referralSince : currentReferral[3],
         lastClick: (currentReferral[4] == '9') ? referrals[z - 1].lastClick : (currentReferral[4] == 'N') ? 'No clicks yet' : (currentReferral[4] == 'O') ? 'Yesterday' : (currentReferral[4] == 'H') ? 'Today' : currentReferral[4],
         totalClicks: currentReferral[5],
-        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6],
+        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6]
       };
     }
     
