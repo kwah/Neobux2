@@ -407,15 +407,17 @@ function utils()
 
 
 
-Object.prototype.append = function(_newObj)
+Object.merge = function Object_merge(_newObj)
 {
   if('object' !== typeof _newObj) {
-    console.info("ERROR!\nObject.prototype.append = function(_newObj)\n\n_newObj is not an Object!");
+    console.info("ERROR!\nObject.merge = function Object_merge(_newObj)\n\n_newObj is not an Object!");
   }
 
   for (newVar in _newObj)
   {
     switch(typeof _newObj[newVar]){
+      case "boolean":
+        //Fall-through
       case "string":
         //Fall-through
       case "number":
@@ -434,7 +436,7 @@ Object.prototype.append = function(_newObj)
       break;
 
       default:
-        console.info('Error!\nObject.prototype.append(_newObj)');
+        console.info('Error!\nObject.merge = function Object_merge(_newObj)');
     }
   }
 
@@ -494,7 +496,7 @@ function manipulatePrefs() {}
    * @return
    *
    */
-  manipulatePrefs.setPref = function(_pref, _value) {
+  manipulatePrefs.setPref = function manipulatePrefs_setPref(_pref, _value) {
     //    _pref = _pref || 'replacement_pref';
     //    _value = _value || 'replacement_value';
 //    console.info('manipulatePrefs.setPref:::\n');
@@ -540,7 +542,7 @@ function manipulatePrefs() {}
    * @return  Returns either the preset value, or the default value if the stored variable did not previously exist
    *
    */
-  manipulatePrefs.getPref = function(_pref, _defaultValue)
+  manipulatePrefs.getPref = function manipulatePrefs_setPref(_pref, _defaultValue)
   {
 //    console.info('manipulatePrefs.getPref:::\n');
 //    console.info(_pref,_defaultValue);
@@ -966,7 +968,7 @@ var testing = false;
  * Extra functions needed to deal with closures
  */
 
-var setValue_InStoredObject = function(_prefName, _varName, _newValue)
+var setValue_InStoredObject = function setValue_InStoredObject(_prefName, _varName, _newValue)
 {
   var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(defaultSettings.columnPrefixes)));
   tmp_original[_varName] = _newValue;
@@ -974,13 +976,13 @@ var setValue_InStoredObject = function(_prefName, _varName, _newValue)
   manipulatePrefs.setPref(_prefName,JSON.stringify(tmp_original));
 };
 
-var getValue_FromStoredObject = function(_prefName, _varName, _defaultValue) {
+var getValue_FromStoredObject = function getValue_FromStoredObject(_prefName, _varName, _defaultValue) {
   return function() {
     return JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(_defaultValue)))[_varName];
   };
 };
 
-var setFunction = function(_prefName,loop_columnName){
+var setFunction = function setFunction(_prefName,loop_columnName){
   return function(_newValue) {
     setValue_InStoredObject(_prefName,loop_columnName, _newValue)
   }
@@ -1211,7 +1213,7 @@ function extractNumberOfRefs()
 
 console.info(ACCOUNT_FUNCTIONS.getAutopayLimit(getAccountType));
 
-var myAccountDetails = new setterGetter_GM_Storage(
+var myAccountDetails = new setterGetter_GM_Storage('myAccountDetails',
 {
   username: document.getElementById('t_conta').textContent,
   accountType: getAccountType,
@@ -1258,63 +1260,65 @@ console.info(myAccountDetails.numberOfRefs.Rented);*/
 
 
 
-function setterGetter_GM_Storage( _preferences )
+
+function setterGetter_GM_Storage(storageVar, defaultPreferences)
 {
-  // helper function to create closures based on passed-in arguments:
-  var bindGetterSetter = function(obj,property,_preferences)
+
+  function bindGettersSetters(_objToAddPrefsTo, _defaultPrefs, _property)
   {
-    obj[property] = _preferences[property];
-
-//    console.info(obj,property,_preferences);
-
-
-    obj.__defineGetter__(property, function() {
-      // Try retrieving the stored setting using JSON
-      // This will fail if the value is not valied JSON - in which case assume that the pref is not a stored object
-      // '_preferences[property]' is the default setting as defined within new setterGetter_GM_Storage({p:_preferences[property]})
-
-      if(typeof _preferences[property] == 'object')
+    if('object' !== typeof _objToAddPrefsTo)
+    {
+      _objToAddPrefsTo.__defineGetter__(_property, function()
       {
-        return JSON.parse(manipulatePrefs.getPref(property,JSON.stringify(_preferences[property])));
-      }
-      else
+        var valueToReturn = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(_defaultPrefs)))[_property];
+        return valueToReturn;
+      });
+
+      _objToAddPrefsTo.__defineSetter__(_property, function(val)
       {
-        return manipulatePrefs.getPref(property,_preferences[property]);
+        var originalValues = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(_defaultPrefs)));
+        originalValues[_property] = val;
+
+        manipulatePrefs.setPref(storageVar, JSON.stringify(originalValues));
+
+        // Return this so that methods can be strung foo.setA(10).setB(20).setC(30);
+        return this;
+      });
+    }
+    else
+    {
+      for(_property in _objToAddPrefsTo) {
+        //bindGettersSetters(_objToAddPrefsTo, _defaultPrefs, _property);
       }
-    });
-
-    obj.__defineSetter__(property, function(val) {
-      console.info(property,_preferences,val);
-
-      _preferences[property] = val;
-
-/*
-      // If the value to be stored is an object, stringify it before setting
-      var valueToStore = (typeof val == "object") ? JSON.stringify(val) : val;
-*/
-
-      manipulatePrefs.setPref(property, val);
-
-      // Return this so that methods can be strung foo.setA(10).setB(20).setC(30);
-      return this;
-    });
-  };
-
-  
-
-  for (var property in _preferences) {
-    bindGetterSetter(this, property, _preferences);
+    }
   }
+
+  /* setterGetter_GM_Storage(storageVar, defaultPreferences) */
+  for (var property in defaultPreferences)
+  {
+//    console.group();
+//    console.info(JSON.stringify(this));
+
+
+    this[property] = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(defaultPreferences)))[property] || {};
+//    console.info(JSON.stringify(this));
+
+    bindGettersSetters(this, defaultPreferences, property);
+
+//    console.groupEnd();
+
+  }
+
   return this;
 }
+
 
 
 
 // Information about the users account
 // Get user preferences
 function script() { }
-
-script.preferences = new setterGetter_GM_Storage(
+script.preferences = new setterGetter_GM_Storage('scriptPrefs',
 {
   // Script Settings
   scriptLanguage: 'EN',
@@ -1355,40 +1359,60 @@ script.preferences = new setterGetter_GM_Storage(
   profit_includeRecycleCost: false,
 
   // Standard Deviation (SDEV / SD) Column
-  showSDEVColumn: true
-
-});
-
-
-// Referral listings. Column preferences
-  script.preferences.columnPrefix = new setterGetter_GM_Storage(defaultSettings.columnPrefixes);
-  script.preferences.shrinkContents = new setterGetter_GM_Storage(defaultSettings.shrinkColumnContents);
-  script.preferences.showColumn = new setterGetter_GM_Storage(defaultSettings.showColumn);
+  showSDEVColumn: true,
+  
+  
+  // Referral listings. Column preferences
+  columnPrefix: defaultSettings.columnPrefixes,
+  shrinkContents: defaultSettings.shrinkColumnContents,
+  showColumn: defaultSettings.showColumn,
 
 
   /** Time Periods **/
-  script.preferences.timePeriods = new setterGetter_GM_Storage(defaultSettings.timePeriods);
+  timePeriods: defaultSettings.timePeriods
+  
+}),
+
+  /*
+  // Referral listings. Column preferences
+  script.preferences.columnPrefix = defaultSettings.columnPrefixes;
+  script.preferences.shrinkContents = defaultSettings.shrinkColumnContents;
+  script.preferences.showColumn = defaultSettings.showColumn;
 
 
+  *//** Time Periods **//*
+  script.preferences.timePeriods = defaultSettings.timePeriods;
+*/
+
+
+console.info('script.preferences');
+console.info(script.preferences);
 
 /*
+setterGetter_GM_Storage( storageVar,
+                         objToAddPrefsTo,
+                         defaultPreferences )
+                        */
+
+
+
+
 
    // Some logging to test whether the getters/setters work
    // note: getters appear to work, though setters appear to have the same problem
    // as those encountered when attempting to define the getters
-   console.info('this.columnPrefix.flag = '+ this.columnPrefix.flag);
-   console.info('this.columnPrefix.profit = '+ this.columnPrefix.profit);
+   console.info('script.preferences.columnPrefix.flag = '+ script.preferences.columnPrefix.flag);
+   console.info('script.preferences.columnPrefix.profit = '+ script.preferences.columnPrefix.profit);
 
    console.group();
    console.info('---');
    // set the flag prefix to something (usually) different each time
-   this.columnPrefix.flag = new Date().getMilliseconds();
+   script.preferences.columnPrefix.flag = new Date().getMilliseconds();
    console.info('---');
    console.groupEnd();
 
-   console.info('this.columnPrefix.flag = '+ this.columnPrefix.flag);
-   console.info('this.columnPrefix.profit = '+ this.columnPrefix.profit);
-   */
+   console.info('script.preferences.columnPrefix.flag = '+ script.preferences.columnPrefix.flag);
+   console.info('script.preferences.columnPrefix.profit = '+ script.preferences.columnPrefix.profit);
 
 
 
@@ -4426,12 +4450,28 @@ function insertLogoActions()
       console.info(GM_getValue(_prefName));
       console.info(script.preferences[_prefName][_varName]);
       
-//      script.preferences[_prefName][_varName] = value;
+      script.preferences[_prefName][_varName] = value;
+
+      manipulatePrefs.setPref('scriptPrefs',JSON.stringify(script.preferences));
+
+       /*
+        var setValue_InStoredObject = function setValue_InStoredObject(_prefName, _varName, _newValue)
+        {
+          var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(defaultSettings.columnPrefixes)));
+          tmp_original[_varName] = _newValue;
+
+          manipulatePrefs.setPref(_prefName,JSON.stringify(tmp_original));
+        };
+        */
+
+
+        /*
         if('object' == typeof GM_getValue(_prefName)) {
           setValue_InStoredObject(_prefName,_varName, value);
         } else {
           manipulatePrefs.setPref(_prefName, value);
         }
+        */
 
       console.info(script.preferences[_prefName][_varName]);
       
@@ -4687,7 +4727,7 @@ var currentTimeMs = new Date().getTime().toString();
 var timeSinceLastCheck = currentTimeMs - GM_getValue('lastUpdateCheck',0);
 
 
-UPDATER.newVersionActions = function(_newHeaders)
+UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 {
   var updateMsg ='New version available for your script!\n\n'+
     'Script: '+_newHeaders.name+'\n'+
@@ -4728,7 +4768,7 @@ UPDATER.newVersionActions = function(_newHeaders)
 
 };
 
-UPDATER.isOtherVersionNewer = function(currentVer_input,otherVer_input)
+UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_input,otherVer_input)
 {
 
   var currentVer = currentVer_input.toString().split('.');
@@ -4753,7 +4793,7 @@ UPDATER.isOtherVersionNewer = function(currentVer_input,otherVer_input)
   return otherVerIsNewer;
 };
 
-UPDATER.updateCallback = function(_responseText)
+UPDATER.updateCallback = function UPDATER_updateCallback(_responseText)
 {
   var _newHeaders = parseHeaders(_responseText);
   var isNewVersionAvailable = UPDATER.isOtherVersionNewer(fileMETA.version,_newHeaders.version);
@@ -4763,7 +4803,7 @@ UPDATER.updateCallback = function(_responseText)
   }
 };
 
-UPDATER.getRemoteMeta = function()
+UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta()
 {
   GM_xmlhttpRequest({
     method: 'GET',
@@ -4779,7 +4819,7 @@ UPDATER.getRemoteMeta = function()
 };
 
 
-UPDATER.check = function(_forceUpdate)
+UPDATER.check = function UPDATER_check(_forceUpdate)
 {
 
   if(timeSinceLastCheck > UPDATER.updateFrequency || _forceUpdate)
