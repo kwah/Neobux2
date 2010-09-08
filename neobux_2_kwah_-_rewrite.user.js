@@ -53,8 +53,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100908.1500;
-// @updateNoteMin  100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
+// @version        4.1.100908.2000;
+// @updateNoteMin  100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -103,6 +103,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100908.0230 = Gotten setterGetter_GM_Storage() to a workable state, where the script will save the default prefs recursively okay, but setters/getters do not allow setting/getting non-top-level variables in the object: columnPrefix and shownColumn are set as String || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.columnPrefix && Boolean || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.showColumn;
 // @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
 // @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
+// @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
 
 
 
@@ -294,6 +295,7 @@ var friendlyNameLookup = {
   'ch_extensions': 'renewalCost',
   'ch_autopay': 'autopayCost',
   'ch_trrb': 'transferAmounts',
+  'ch_ext_schedule': 'extensions',
   'ch_earnings': 'referralEarinings',
   'ch_profit': 'referralProfit'
 }
@@ -708,7 +710,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100908.1500 Dev)');
+GM_log('Neobux 2+ (v4.1.100908.2000 Dev)');
 
 
 
@@ -963,7 +965,8 @@ var defaultSettings = {
     largeGraph: [5,10,15],// Time Periods for larger 15day graphs
     recent: 7,// Time Period for 'recent' section of the Referral statistics sidebar
     minigraphs: 5,// Time Period for footer row clicks average
-    averageCols: [10,7]// Time Period for the 'average1' & 'average2' column (previously defined as the A10&A7 column)
+    averageCols: [10,7],// Time Period for the 'average1' & 'average2' column (previously defined as the A10&A7 column)
+    extensionsGraph: [7,15,30,60,90]
   }
 }
 
@@ -1696,7 +1699,7 @@ function extractGraphData()
       tmp_currentGraph.containerID = _currentGraph[0];
       tmp_currentGraph.name = _currentGraph[5][0]['name'];
 
-      tmp_currentGraph.rawData = _currentGraph[5][0]['data'].reverse();
+      tmp_currentGraph.rawData = (tmp_currentGraph.containerID !== 'ch_ext_schedule') ? _currentGraph[5][0]['data'].reverse() : _currentGraph[5][0]['data'];
 
       tmp_currentGraph.data = {};
       for(var i = 0, length = _currentGraph[2].length; i < length; i++) {
@@ -2136,28 +2139,42 @@ function generateSidebarData()
         this.personalClicks = _graphs.personalClicks.data[TODAY_STRING];
         this.rentedClicks = _graphs.rentedClicks.data[TODAY_STRING];
         this.directClicks = _graphs.directClicks.data[TODAY_STRING];
+
+        this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
+        this.expenses = _graphs.recycleCost.rawData[_days] + _graphs.autopayCost.rawData[_days] + _graphs.renewalCost.rawData[_days];
+            
       break;
       case 'yesterday':
         this.personalClicks = _graphs.personalClicks.data[YESTERDAY_STRING];
         this.rentedClicks = _graphs.rentedClicks.data[YESTERDAY_STRING];
         this.directClicks = _graphs.directClicks.data[YESTERDAY_STRING];
+
+        this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
+        this.expenses = _graphs.recycleCost.rawData[_days] + _graphs.autopayCost.rawData[_days] + _graphs.renewalCost.rawData[_days];
+
       break;
       case 'recent':
         this.personalClicks = _graphs.personalClicks.sum[_days+1];
         this.rentedClicks = _graphs.rentedClicks.sum[_days+1];
         this.directClicks = _graphs.directClicks.sum[_days+1];
+
+        this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
+        this.expenses = _graphs.recycleCost.sum[_days+1] + _graphs.autopayCost.sum[_days+1] + _graphs.renewalCost.sum[_days+1];
+
       break;
       default:
         this.personalClicks = _graphs.personalClicks.rawData[_days];
         this.rentedClicks = _graphs.rentedClicks.rawData[_days];
         this.directClicks = _graphs.directClicks.rawData[_days];
+
+        this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
+        this.expenses = _graphs.recycleCost.rawData[_days] + _graphs.autopayCost.rawData[_days] + _graphs.renewalCost.rawData[_days];
+            
       break;
     }
 
 
-    this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
-    this.expenses = _graphs.recycleCost.rawData[_days] + _graphs.autopayCost.rawData[_days] + _graphs.renewalCost.rawData[_days];
-    
+
     this.directAverage = (myAccountDetails.numberOfRefs.Direct > 0) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (_days+1)).toFixed(3) : 0;
     this.rentedAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? ((this.rentedClicks / myAccountDetails.numberOfRefs.Rented) / (_days+1)).toFixed(3) : 0;
     this.rentedRAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? (((this.rentedClicks - (_graphs.recycleCost.rawData[_days] * 100)) / myAccountDetails.numberOfRefs.Rented) / (_days+1)).toFixed(3) : 0;
@@ -2257,27 +2274,49 @@ function insertChartDataBars()
 
   var blah = {
     statsGraphs: ['ch_cd','ch_cr','ch_recycle','ch_autopay','ch_extensions','ch_trrb'],
-    accSummary: ['ch_cliques']
+    accSummary: ['ch_cliques'],
+    goldenGraphs: ['ch_ext_schedule']
   }
 
-  var graphsOnCurrentPage;
+  var graphsOnCurrentPage = [];
 
   if(currentPage.pageName() == 'refStats') {
-    graphsOnCurrentPage = blah.statsGraphs;
+    graphsOnCurrentPage.push(blah.statsGraphs);
+    if(myAccountDetails.accountType.numerical > 0) { graphsOnCurrentPage.push(blah.goldenGraphs); }
   }
   else if (currentPage.pageName() == 'accSummary'){
-    graphsOnCurrentPage = blah.accSummary;
+    graphsOnCurrentPage.push(blah.accSummary);
   }
 
-  for(var i=0; i < graphsOnCurrentPage.length; i++)
-  {
-    var _currentGraph = _graphs[friendlyNameLookup[graphsOnCurrentPage[i]]];
 
-//    console.info('_currentGraph');
-//    console.info(_currentGraph);
+  console.info('graphsOnCurrentPage');
+  console.info(graphsOnCurrentPage);
+
+  for(var i=0; i < graphsOnCurrentPage[0].length; i++)
+  {
+
+  console.info('graphsOnCurrentPage[0][i]');
+  console.info(graphsOnCurrentPage[0][i]);
+    var _currentGraph = _graphs[friendlyNameLookup[graphsOnCurrentPage[0][i]]];
+
+    console.info('_currentGraph');
+    console.info(_currentGraph);
 
     // Get the time periods appropriate for each graph size
-    var graph_timePeriod = (15 == _currentGraph.data.__count__) ? script.preferences.timePeriods.largeGraph : script.preferences.timePeriods.smallGraph;
+    var graph_timePeriod = [];
+
+    switch(_currentGraph.data.__count__)
+    {
+      case 15:
+        graph_timePeriod = script.preferences.timePeriods.largeGraph;
+        break;
+      case 10:
+        graph_timePeriod = script.preferences.timePeriods.smallGraph;
+        break;
+      case 90:
+        graph_timePeriod = script.preferences.timePeriods.extensionsGraph;
+        break;
+    }
 
     /**
      * Insert data bars below graphs
@@ -2350,6 +2389,12 @@ function insertChartDataBars()
         // in 'Referral Statistics' page
 
         addDataBarUnderGraph('Avg. Transfers :', _currentGraph.containerID, ' (', sum_Array, ') $');
+
+        break;
+      case 'ch_ext_schedule':
+        // ext_schedule = "Extension Schedule " in 'Referral Statistics' page
+
+        addDataBarUnderGraph(' :', _currentGraph.containerID, ' (', sum_Array, ') $');
 
         break;
       case 'ch_profit':
