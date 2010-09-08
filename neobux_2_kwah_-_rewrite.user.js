@@ -2155,7 +2155,7 @@ function generateSidebarData()
     }
 
 
-    this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue) + (this.personalClicks * myAccountDetails.ownClickValue);
+    this.income = ((this.rentedClicks + this.directClicks) * myAccountDetails.referralClickValue);
     this.expenses = _graphs.recycleCost.rawData[_days] + _graphs.autopayCost.rawData[_days] + _graphs.renewalCost.rawData[_days];
     
     this.directAverage = (myAccountDetails.numberOfRefs.Direct > 0) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (_days+1)).toFixed(3) : 0;
