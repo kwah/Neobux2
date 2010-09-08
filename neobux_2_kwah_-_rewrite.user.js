@@ -53,8 +53,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100908.1254;
-// @updateNoteMin  100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+// @version        4.1.100908.1500;
+// @updateNoteMin  100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -102,6 +102,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100907.1915 = Added Object.prototype.append();
 // @history        4.1.100908.0230 = Gotten setterGetter_GM_Storage() to a workable state, where the script will save the default prefs recursively okay, but setters/getters do not allow setting/getting non-top-level variables in the object: columnPrefix and shownColumn are set as String || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.columnPrefix && Boolean || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.showColumn;
 // @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+// @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
+
 
 
 // ==/UserScript==
@@ -249,6 +251,8 @@ k=t(c,f,b);f.css({visibility:"visible",position:"absolute",top:k.top,left:k.left
 A.test(b)});i.fn(":url","Please enter a valid URL",function(a,b){return!b||B.test(b)});i.fn(":number","Please enter a numeric value.",function(a,b){return z.test(b)});i.fn("[max]","Please enter a value smaller than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("max");return parseFloat(b)<=parseFloat(a)?true:[a]});i.fn("[min]","Please enter a value larger than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("min");return parseFloat(b)>=
 parseFloat(a)?true:[a]});i.fn("[required]","Please complete this mandatory field.",function(a,b){if(a.is(":checkbox"))return a.is(":checked");return!!b});i.fn("[pattern]",function(a){var b=new RegExp("^"+a.attr("pattern")+"$");return b.test(a.val())});e.fn.validator=function(a){var b=this.data("validator");if(b){b.destroy();this.removeData("validator")}a=e.extend(true,{},i.conf,a);if(this.is("form"))return this.each(function(){var c=e(this);b=new u(c.find(":input"),c,a);c.data("validator",b)});else{b=
 new u(this,this.eq(0).closest("form"),a);return this.data("validator",b)}}})(jQuery);
+
+
 
 
 
@@ -704,7 +708,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100908.1254 Dev)');
+GM_log('Neobux 2+ (v4.1.100908.1500 Dev)');
 
 
 
@@ -3912,19 +3916,65 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
               tipContent = tipContent + '<br>';
 
+              /*
 
-              // Create and insert a new script node for the prototip tooltip
-              // javascript code to be run from
-              var tooltipScript = document.createElement('script');
-              // var text = document.createTextNode("new mk_tt('Profit_"+refID+"',
-              // 'bm', '"+tipContent+"')");
-              var text = document.createTextNode("mk_tt('PROFIT_" + refID + "', 'bm', '<div style=\"text-align:left !important; font-size:x-small;\">" + tipContent + "</div>')");
-              tooltipScript.type = 'text/javascript';
-              tooltipScript.appendChild(text);
+               // Create and insert a new script node for the prototip tooltip
+               // javascript code to be run from
+               var tooltipScript = document.createElement('script');
+               // var text = document.createTextNode("new mk_tt('Profit_"+refID+"',
+               // 'bm', '"+tipContent+"')");
+               var text = document.createTextNode("mk_tt('PROFIT_" + refID + "', 'tm', '<div style=\"text-align:left !important; font-size:x-small;\">" + tipContent + "</div>')");
+               tooltipScript.type = 'text/javascript';
+               tooltipScript.appendChild(text);
 
-              document.body.appendChild(tooltipScript);
+               document.body.appendChild(tooltipScript);
+
+               */
+
+              var p1 = "topMiddle";
+              var p2 = "bottomRight";
+              var tooltipConfig = {
+                content: '<div style=\"text-align:left !important; font-size:x-small;\">' + tipContent + '</div>',
+                show: {
+                  when: {
+                    event: "mouseover"
+                  },
+                  delay: 700,
+                  solo: true
+                },
+                hide: {
+                  fixed: true
+                },
+                position: {
+                  corner: {
+                    target: p1,
+                    tooltip: p2
+                  },
+                   adjust: {
+                     screen: true
+                   } 
+                },
+                style: {
+                  width: "auto",
+                  padding: 0,
+                  background: "#444",
+                  color: "#fff",
+                  textAlign: "center",
+                  fontSize: "11px",
+                  border: {
+                    width: 1,
+                    radius: 8,
+                    color: "#444"
+                  },
+                  tip: p2
+                }
+              }
+
+              location.href = "javascript:void(jQuery('#PROFIT_"+refID+"').qtip("+JSON.stringify(tooltipConfig)+"))";
+
+
+
             }
-
           } //if(showColumn['profit'])
         }
 
