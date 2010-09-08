@@ -53,8 +53,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100905.0150;
-// @updateNoteMin  100905.0150 = Added auto-update code; Uploaded to userscripts.org;
+// @version        4.1.100908.1254;
+// @updateNoteMin  100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -99,6 +99,10 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100904.0145 = Many changes / fixes as outlined here < http://www.neobux.com/forum/?frmid=7&tpcid=141956&msgid=1583085#m1583085 >; Uploaded to userscripts.org;
 // @history        4.1.100904.1650 = Updated the preference editing code to be more resilient against storing objects; Updated some of the server time code;
 // @history        4.1.100905.0150 = Added auto-update code; Uploaded to userscripts.org;
+// @history        4.1.100907.1915 = Added Object.prototype.append();
+// @history        4.1.100908.0230 = Gotten setterGetter_GM_Storage() to a workable state, where the script will save the default prefs recursively okay, but setters/getters do not allow setting/getting non-top-level variables in the object: columnPrefix and shownColumn are set as String || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.columnPrefix && Boolean || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.showColumn;
+// @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+
 
 // ==/UserScript==
 ]]></>.toString());
@@ -700,7 +704,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100905.0150 Dev)');
+GM_log('Neobux 2+ (v4.1.100908.1254 Dev)');
 
 
 
