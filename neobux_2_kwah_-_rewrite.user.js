@@ -970,7 +970,7 @@ var testing = false;
 
 var setValue_InStoredObject = function setValue_InStoredObject(_prefName, _varName, _newValue)
 {
-  var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(defaultSettings.columnPrefixes)));
+  var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify( {} )));
   tmp_original[_varName] = _newValue;
 
   manipulatePrefs.setPref(_prefName,JSON.stringify(tmp_original));
@@ -1233,12 +1233,12 @@ addSettersGetters(myAccountDetails.numberOfRefs,'numberOfRefs',defaultSettings.n
 
 
 myAccountDetails.__defineGetter__('autopayCost', function() {
-    var currentStoredValues = manipulatePrefs.getPref('numberOfRefs', ACCOUNT_FUNCTIONS.getAutopayCost(getAccountType));
+    var currentStoredValues = manipulatePrefs.getPref('autopayCost', ACCOUNT_FUNCTIONS.getAutopayCost(getAccountType));
     return currentStoredValues;
   });
 
 myAccountDetails.__defineSetter__('autopayCost', function(_value) {
-    return manipulatePrefs.setPref('numberOfRefs', _value);
+    return manipulatePrefs.setPref('autopayCost', _value);
   });
 
 
