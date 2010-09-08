@@ -1397,6 +1397,7 @@ setterGetter_GM_Storage( storageVar,
 
 
 
+/*
 
    // Some logging to test whether the getters/setters work
    // note: getters appear to work, though setters appear to have the same problem
@@ -1415,6 +1416,7 @@ setterGetter_GM_Storage( storageVar,
    console.info('script.preferences.columnPrefix.profit = '+ script.preferences.columnPrefix.profit);
 
 
+*/
 
 
 
