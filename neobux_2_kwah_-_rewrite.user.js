@@ -1084,7 +1084,11 @@ var ACCOUNT_FUNCTIONS =
    */
   'getRenewalFees': function(_accType)
   {
+//    console.group();
     var defaultRenewalFees = Neobux.defaults.renewalFees[_accType.verbose];
+//    console.info('defaultRenewalFees');
+//    console.info(defaultRenewalFees);
+
 
     var _renewCost = {};
     // If the current page is the rented referral listings, store the *actual* renewal fees
@@ -1102,19 +1106,38 @@ var ACCOUNT_FUNCTIONS =
       _renewCost[150] = tmp[6];
       _renewCost[240] = tmp[7];
 
+//      console.info('JSON.stringify(_renewCost)');
+//      console.info(JSON.stringify(_renewCost));
+//      console.info("manipulatePrefs.setPref('renewalFees', JSON.stringify(_renewCost))");
       manipulatePrefs.setPref('renewalFees', JSON.stringify(_renewCost));
     }
 
+
+//    console.info("manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))");
+//    console.info(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)));
+
     //  console.info(arguments);
-    if(arguments.length == 1)
+    if(arguments.length == 2)
     {
-      return JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[0]];
+//        console.info('arguments[1]');
+//        console.info(arguments[1]);
+//        console.info("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]");
+//        console.info(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]);
+//      console.groupEnd();
+
+
+      return JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]];
     }
     else
     {
+//        console.info('arguments[0]');
+//        console.info(arguments[0]);
+//        console.info("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))");
+//        console.info(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))));
+//      console.groupEnd();
+
       return JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)));
     }
-
   }
 }
 
@@ -1145,6 +1168,7 @@ var getAccountType = new function()
 
     return this;
   }
+
 
 
 function extractNumberOfRefs()
@@ -1219,13 +1243,20 @@ var myAccountDetails = new setterGetter_GM_Storage('myAccountDetails',
   accountType: getAccountType,
 
   ownClickValue: (getAccountType.isUltimate) ? 0.02 : 0.01,
-  referralClickValue: (getAccountType.isStandard) ? 0.005 : 0.01,
+  referralClickValue: (getAccountType.isStandard) ? 0.005 : 0.01
 
-  autopayLimit: ACCOUNT_FUNCTIONS.getAutopayLimit(getAccountType),
-  recycleCost: ACCOUNT_FUNCTIONS.getRecycleCost(getAccountType),
-  goldenPackCost: ACCOUNT_FUNCTIONS.getGoldenPackCost(getAccountType),
-  renewalFees: ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType)
 });
+
+  myAccountDetails.autopayLimit = ACCOUNT_FUNCTIONS.getAutopayLimit(getAccountType);
+  myAccountDetails.recycleCost = ACCOUNT_FUNCTIONS.getRecycleCost(getAccountType);
+  myAccountDetails.goldenPackCost = ACCOUNT_FUNCTIONS.getGoldenPackCost(getAccountType);
+  myAccountDetails.renewalFees = ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType);
+
+
+//console.info('myAccountDetails.renewalFees = ');
+//console.info(myAccountDetails.renewalFees);
+//console.info('ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType)');
+//console.info(ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType));
 
 
 myAccountDetails.numberOfRefs = {};
@@ -1241,6 +1272,8 @@ myAccountDetails.__defineSetter__('autopayCost', function(_value) {
     return manipulatePrefs.setPref('autopayCost', _value);
   });
 
+console.info('myAccountDetails');
+console.info(myAccountDetails);
 
 /**
  * Tests due to issue with setting numberOfRefs - setters/getters were set for numberOfRefs but not .Rented / .Direct
@@ -1352,7 +1385,6 @@ script.preferences = new setterGetter_GM_Storage('scriptPrefs',
 
   // Average columnt;
   exactAverage_show: true,
-  exactAverage_seperator: ' | ',
   exactAverage_replace: false,
 
   // Profit Column
@@ -3639,6 +3671,12 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
             // Cost of renewing, per ref per day::
             var renewalCostPerRefPerDay = renewalCost / renewalPeriod;
+
+            console.info('myAccountDetails.renewalFees');
+            console.info(myAccountDetails.renewalFees);
+            console.info('renewalPeriod,renewalCost,renewalCostPerRefPerDay');
+            console.info(renewalPeriod,renewalCost,renewalCostPerRefPerDay);
+
 
             // Cost of golden & golden packs per ref, per day
             if (myAccountDetails.accountType.numerical  > 0)
