@@ -51,10 +51,11 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @exclude        http://www.neobux.com/?u=c&s=rba
 // @exclude        https://www.neobux.com/?u=c&s=rba
 
+// @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100909.1740;
-// @updateNoteMin  100909.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
+// @version        4.1.100910.1900;
+// @updateNoteMin  100910.1900 = userscripts is back up; extension schedule stuff doesn't seem to be working but doesn't appear to break anythnig so is left in..; Uploaded oto userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -105,8 +106,9 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
 // @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
 // @history        4.1.100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
-// @history        4.1.100909.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
-// @history        4.1.100909.1620 = userscripts is down so temporarily removing the @require and changing the update code; re-included the code for the extensions databar;
+// @history        4.1.100910.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
+// @history        4.1.100910.1820 = userscripts is down so temporarily removing the @require and changing the update code; re-included the code for the extensions databar;
+// @history        4.1.100910.1900 = userscripts is back up; extension schedule stuff doesn't seem to be working but doesn't appear to break anythnig so is left in..; Uploaded oto userscripts.org;
 
 
 
@@ -116,8 +118,6 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js
 // @require        http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js
 // @require        http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js
-
-// @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 
 /*
@@ -716,7 +716,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100909.1740 Dev)');
+GM_log('Neobux 2+ (v4.1.100910.1900 Dev)');
 
 
 
