@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100909.0230;
-// @updateNoteMin  100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
+// @version        4.1.100909.1740;
+// @updateNoteMin  100909.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -106,15 +106,19 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
 // @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
 // @history        4.1.100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
+// @history        4.1.100909.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
 
 
 
 // ==/UserScript==
 ]]></>.toString());
+
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js
 // @require        http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js
 // @require        http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js
 
+
+var remoteMeta_USO = parseHeaders(GM_getResourceText('remoteMeta_USO'));
 
 /*
  * jQuery JavaScript Library v1.3.2
@@ -712,7 +716,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100909.0230 Dev)');
+GM_log('Neobux 2+ (v4.1.100909.1740 Dev)');
 
 
 
@@ -2276,8 +2280,8 @@ function insertChartDataBars()
 
   var blah = {
     statsGraphs: ['ch_cd','ch_cr','ch_recycle','ch_autopay','ch_extensions','ch_trrb'],
-    accSummary: ['ch_cliques'],
-    goldenGraphs: ['ch_ext_schedule']
+    accSummary: ['ch_cliques']
+    //goldenGraphs: ['ch_ext_schedule']
   }
 
   var graphsOnCurrentPage = [];
@@ -4880,26 +4884,20 @@ var timeSinceLastCheck = currentTimeMs - GM_getValue('lastUpdateCheck',0);
 
 UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 {
-  var updateMsg ='New version available for your script!\n\n'+
-    'Script: '+_newHeaders.name+'\n'+
-    'v: '+_newHeaders.version+'\n'+
-    '\n'+
-    'UpdateNote:\n'+
-    _newHeaders.updateNote+'\n'+
-    _newHeaders.updateNoteMin+'\n'+
-    '\n'+
-    'Do you want to install this update?';
+  /*Alert the user to the result of the update check*/
 
-  console.info(updateMsg);
-
-  var shouldInstallUpdate = confirm(updateMsg);
-
-  if(shouldInstallUpdate)
+  if(manipulatePrefs.getPref('updateAvailable',false) || true)
   {
-    document.location.href = UPDATER.scriptUrl;
-  }
-  else
-  {
+    var updateMsg ='New version available for your '+_newHeaders.name+'!\n' +
+      '\n'+
+      'Script name: '+_newHeaders.name+'\n'+
+      'Version available: '+_newHeaders.version+'\n'+
+      '\n'+
+      'Update Note:\n'+
+      _newHeaders.updateNote+'\n'+
+      _newHeaders.updateNoteMin+'\n'+
+      '\n'+
+      'Do you want to install this update?';
 
     var msToWait = UPDATER.updateFrequency;
     msToWait = (msToWait < 0) ? 0 : msToWait;
@@ -4908,13 +4906,98 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
     var hoursToWait = Math.floor(((msToWait / 1000) / 60) / 60);
 
 
-    var denyUpdateMessage = 'Script not updated. \nYou will be reminded in' +
+    var denyUpdateMessage = 'Script not updated. \nYou will be reminded again in' +
       hoursToWait + 'hours, ' +
       minsToWait + 'mins, ' +
       secsToWait + 'seconds';
 
-    console.info(denyUpdateMessage);
-    alert(denyUpdateMessage);
+
+
+    var container = document.createElement('div');
+      container.id = "updateMessage_container";
+      container.setAttribute('style','bottom:0; position:fixed; width:100%;');
+    var innerContainer = document.createElement('div');
+      innerContainer.id = "updateMessage_innerContainer";
+
+    var stickyFooter = document.createElement('div');
+      stickyFooter.setAttribute('style','background-color:#FFDD00; border-top:1px solid #AA0000; bottom:0; margin:0 auto; min-height:30px; width:650px;');
+
+    stickyFooter.innerHTML = "<table width='100%'><tr>" +
+      "<td>"+
+        "<p style='margin: 2px 10px;'>" +
+          "New version available for <strong>"+_newHeaders.name+"</strong>! " +
+        "</p><p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>" +
+          "Installed Version: "+fileMETA.version+"</i>" +
+          " | New Version: <i>"+_newHeaders.version+"</i>"+
+        "</p> " +
+      "</td>" +
+      "<td align='right'>" +
+        "<table width='100%'><tr>" +
+        "<td align='center'>"+
+          "<p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>What would you like to do?</p>"+
+        "</td>" +
+        "</tr><tr>" +
+        "<td align='center'>" +
+//          "<input id='UpdateMessage_Upgrade' type='button' value=''/>" +
+          "<select id='UpdateMessage_Options'>" +
+            "<option id=''>------ Options ------</option>" +
+            "<option id='UpdateMessage_Upgrade'>Upgrade</option>" +
+      "<option id='UpdateMessage_showUpdateNotes'>Show Update Notes</option>" +
+      "<option id='UpdateMessage_Postpone'>Remind Me Later</option>" +
+      "<option id='UpdateMessage_Hide'>Hide</option>" +
+          "</select>" +
+        "</td>" +
+        "</tr></table>";
+      "</td>" +
+      "</tr></table>";
+
+    container.appendChild(stickyFooter);
+
+    if(document.getElementById("updateMessageContainer")) {
+      document.getElementById("updateMessageContainer").innerHTML = container.innerHTML;
+    } else {
+      document.body.appendChild(container);
+    }
+
+
+
+    function onChange_UpdateMessage_Options(event){
+      var selector = event.currentTarget;
+      var selectedID = selector.options[selector.options.selectedIndex].id;
+
+      switch(selectedID)
+      {
+        case 'UpdateMessage_showUpdateNotes':
+          var upgradeScript = confirm(updateMsg);
+          if(upgradeScript){
+            document.location.href = UPDATER.scriptUrl;
+          } else {
+            alert(denyUpdateMessage);
+          }
+        break;
+        case 'UpdateMessage_Upgrade':
+          document.location.href = UPDATER.scriptUrl;
+        break;
+        case 'UpdateMessage_Hide':
+          document.getElementById('updateMessage_container').style.display = 'none';
+        break;
+        case 'UpdateMessage_Postpone':
+          document.getElementById('updateMessage_container').style.display = 'none';
+
+
+          console.info(denyUpdateMessage);
+          alert(denyUpdateMessage);
+        break;
+      }
+
+    }
+
+
+    var foo = document.getElementById('UpdateMessage_Options');
+    console.info(foo);
+
+    foo.addEventListener('change',function(event){ onChange_UpdateMessage_Options(event); },false);
+
   }
 
 };
@@ -4925,8 +5008,9 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
   var currentVer = currentVer_input.toString().split('.');
   var otherVer = otherVer_input.toString().split('.');
 
-  var numberOfPieces = (currentVer.length < otherVer.length) ? otherVer.length : currentVer.length;
+  console.info(currentVer_input,  otherVer_input);
 
+  var numberOfPieces = (currentVer.length < otherVer.length) ? otherVer.length : currentVer.length;
   var otherVerIsNewer = false;
 
   for(var i=0; i<numberOfPieces; i++) {
@@ -4934,11 +5018,20 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
     otherVer[i] = parseInt(otherVer[i]) || 0;
 
     if(otherVer[i] > currentVer[i]) {
+      // If we have already determined that the other version number is larger, we do not need to continue testing the remaining components
       otherVerIsNewer = true;
+      console.info("The version at userscripts.org has a newer version number than the currently install version.");
+      manipulatePrefs.setPref('updateAvailable',true);
+      break;
+    }
+    else if(otherVer[i] < currentVer[i]) {
+      //Other version has a lower version number than the current version so the rest of the version string should be ignored
+      otherVerIsNewer = false;
+      console.info("The version at userscripts.org has an older version number than the currently install version.");
+      manipulatePrefs.setPref('updateAvailable',false);      
+      break;
     }
 
-    // If we have already determined that the other version number is larger, we do not need to continue testing the remaining components
-    if(otherVerIsNewer) { break; }
   }
 
   return otherVerIsNewer;
@@ -4947,25 +5040,106 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
 UPDATER.updateCallback = function UPDATER_updateCallback(_responseText)
 {
   var _newHeaders = parseHeaders(_responseText);
+  console.info(_newHeaders);
   var isNewVersionAvailable = UPDATER.isOtherVersionNewer(fileMETA.version,_newHeaders.version);
 
-  if(isNewVersionAvailable){
+  if(isNewVersionAvailable || !isNewVersionAvailable) {
     UPDATER.newVersionActions(_newHeaders);
   }
 };
 
-UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta()
+UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_dummy)
 {
-  GM_xmlhttpRequest({
-    method: 'GET',
-    url: UPDATER.metaUrl,
-    headers: {
-       'User-Agent': navigator.userAgent,
-       'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    onload: function(r) { UPDATER.updateCallback(r.responseText); },
-    onerror: function(e) { console.info(e); }
-   });
+  if(!_dummy){
+    GM_xmlhttpRequest({
+      method: 'GET',
+      url: UPDATER.metaUrl,
+      headers: {
+         'User-Agent': navigator.userAgent,
+         'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      onload: function(r) { UPDATER.updateCallback(r.responseText); },
+      onerror: function(e) { console.info(e); }
+     });
+  }else{
+    var dummyMETA = <><![CDATA[
+      // ==UserScript==
+      // @name           Neobux 2+ (kwah) - reWrite
+      // @namespace      http://userscripts.org/users/158890
+      // @homepage       http://kwah.org/
+
+      // @description    This script provides detailed statistics for your Neobux account and referrals (eg: ages of referrals, recent income/outcome averages, plus more!)
+
+      // @include        http://www.neobux.com/*
+      // @include        https://www.neobux.com/*
+      // @exclude        http://www.neobux.com/v/*
+      // @exclude        https://www.neobux.com/v/*
+      // @exclude        http://www.neobux.com/?u=c&s=rba
+      // @exclude        https://www.neobux.com/?u=c&s=rba
+
+      // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
+
+      // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
+      // @version        4.1.100908.0230;
+      // @updateNoteMin  100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
+
+      // @versionStatus  Developmental (Dev)
+      // @updateNote     4.1 = Started over to reorganise & structure the script properly;
+
+      // // Changelog ::
+      // @history        4.0.100615.1500 = Start of second refactoring of code to modularise code; Re-licenced to GPL;
+      // @history        4.0.100626.2110 = Started to create a kind of structure for the script, will start on referral statistics page first;
+      // @history        4.0.100627.1900 = Started extraction of the data from the graph data into the graphData[graphNumber] variable -- will start using the extracted data next;
+      // @history        4.0.100702.0816 = Added yellow bar under graphs - averages deisplayed in this bar not yet working properly;
+      // @history        4.0.100703.2035 = Reduced the amount of redundant code though not yet done completely (duplicate code across stats page and account summary to analyse graph data and show bars under graphs); Calculation of averages and sums now working; Toying with styling of the bars - applies only to stats page currently;
+      // @history        4.0.100708.1315 = ;
+      // @history        4.0.100710.0830 = Heavily reduced the amount of code by modularising the code into more specific functions; Statistics sidebar now pretty much working though multi-lingual support (temporarily) removed and a few NaN errors to fix.. needs more thorough testing;
+      // @history        4.0.100711.1115 = Split up the actions in the ref stats page some more and made the graph data available to all functions in run on that page by defining the variables outside of where they are defined; Ref stats page now mostly finished - TODO: add export tabs, clean up sidebar data labels, clean up how the sidebar is generated;
+      // @history        4.0.100711.1230 = As standard member, rented referral listings page working pretty much perfectly (i think) though zero code simplifications have been made and I am pretty much certain that script does not yet work for ultimates (not yet sorted out the function to read the minigraph data);
+      // @history        4.0.100713.0845 = w00t all nighter... A lot of code changes / refactoring etc.. Rented referral listings page now extracts the data from mtx not the table and is somewhat testing okay for all member types though not sure if the ultimate clicks/day, a10, 17 and rsa columns are working properly though -- needs more testing; not sure if the script will read the minigraphs properly; Added sort asc/desc buttons for all columns (working okay when you select a sorting direction though doesn't indicate what sorting is being applied if you load the ref listing via the menu/top bar);
+      // @history        4.0.100813.0300 = Fixed a couple bugs in sidebar calculations; Massively improved code re-use in processGraphs(); Moved some functions around that were out of structure somewhat; Moved statically set 'recent' timeframe to a preference; TODO: cleanup the preferences, figure out why manipulatePrefs() doesn't seem to be cacheing the vars to about:config;
+      // @history        4.0.100819.1615 = In middle of *MAJOR* edits - HUGE number of changes big & small (using "JetBrains WebStorm" code editor -- awesome!); Settings editor (probably) working; Fixed a number of aesthetic issues (jaunted columns/'congratulations message overflowing to right etc); Fixed issue with manipulatePrefs() (was checking for existance of pref using the default value); Added donate button to stats sidebar; Fixed & improved aspects of detcecting # of refs (will now correctly identify zero refs); Fixed positioning of bigred arrow; Added placeholder for the local/server time (TODO: make it show actual times);
+      // @history        4.0.100820.0230 = Added profit graph to Stats page;
+      // @history        4.0.100822.2250 = The code is a bit of a hack-together after quick mashups of code; Added storage of the graph data from the personal clicks graph and ref stats page and added info to stats sidebar; Uploaded code to userscript.org;
+      // @history        4.0.100822.2330 = Added ads page to @includes; Uploaded code to userscript.org;
+      // @history        4.0.100823.0020 = Fixed a few 'first run' issues; Uploaded code to userscript.org;
+      // @history        4.0.100823.0100 = Attempt at fixing the account type detection code. Need samples of pages however to understand how it is displayed on other account types; Uploaded code to userscript.org;
+      // @history        4.0.100823.0155 = Fixed mismatch in code relating to variable names and showing columns etc - LARGE problem with settings editor not being able to handle many settings stored as a stringified object; Uploaded code to userscript.org;
+      // @history        4.0.100823.0215 = Fixed clicks/day column to show the clicks in the correct order now; Edited @include and @exclude rules to allow the local/server time to show in forums pages; Uploaded code to userscript.org;
+      // @history        4.0.100823.1400 = Fixed Error: today.projectedDirectIncome is undefined - Line: 2627;
+      // @history        4.0.100823.1500 = Fixed tooltip over profit column to 'working' but TODO: needs updating; Uploaded code to userscript.org;
+      // @history        4.0.100825.0300 = Started over to reorganise & structure the script properly;
+      // @history        4.0.100826.0235 = **AWESOME** progress - accSummary and refStats pages functioning pretty much perfectly, rentedRefListing is somewhat sorted out;
+      // @history        4.0.100826.1625 = accSummary, rentedRefListings and refStats pages working great; Not done yet: 'income' / 'net' values do not yet take the personal clicks into account, the export tabs won't show, local/server time and settings editor not added yet;
+      // @history        4.1.100827.0840 = whole bunch of stuff, don't remember.. ; Added instructions that load up on the first run / checks on following runs that inform the user that they need to run the script on a few pages to collect info before the script will function correctly;
+      // @history        4.1.100829.2330 = Fixed widenPage() to take into account the added items within existing columns - the rented referral listings page should now work correctly;
+      // @history        4.1.100829.2345 = Fixed error in grabbing cost to renew for 15 days instead of the recycle cost;
+      // @history        4.1.100830.2045 = Gotten the new settings editor to handle storing the values as objects - need to 'fill it out' now for it to edit other prefs too;
+      // @history        4.1.100830.2355 = Settings editor can now handle non-object variables too now; Setup the option for accordion-style menus to save space;
+      // @history        4.1.100831.1325 = Temporary fix for totalClickAverage counting new refs (<24hrs old) as having an average of 999 but earlier in the script it doesn't;
+      // @history        4.1.100901.1445 = Added the personal click income into the 'income' section of the stats sidebar; Fixed a few issues with the ordering of data causing the stats sidebar to show it in reverse; Fixed a few typos in variable names; Fixed a few issues with the raverage; Uploaded to userscripts.org;
+      // @history        4.1.100903.0245 = Redesigned definition of myAccountDetails and script.preferences; Made the column indexes not specific to the rented ref page (should now run okay on the direct refs page though likely to be NaN errors or similar); Changed the stats code to not calculate the sum based on the mean * time period (errors with lack of accuracy in the mean causing the sum to be wrong by (1 - 0.999...) ; Fixed the dates in the generated profit graph to not be hard-coded as July 2010 (now generated dynamically);
+      // @history        4.1.100903.0525 = Fixed many of the direct referral page issues - the direct refs page should now function well;
+      // @history        4.1.100903.1150 = Fixed the balance transfer to correctly identify and alert when a successful transfer occurs when the Portuguese language is being used;
+      // @history        4.1.100903.1900 = Major overhaul of the data structure to bring all the graph info into the _graphs object; Added the 'sum's to the graph databars; Redesigned code to allow easy switching of the order of the timeperiods;
+      // @history        4.1.100903.2100 = Added local/server time code (copy paste from previous versions);
+      // @history        4.1.100904.0145 = Many changes / fixes as outlined here < http://www.neobux.com/forum/?frmid=7&tpcid=141956&msgid=1583085#m1583085 >; Uploaded to userscripts.org;
+      // @history        4.1.100904.1650 = Updated the preference editing code to be more resilient against storing objects; Updated some of the server time code;
+      // @history        4.1.100905.0150 = Added auto-update code; Uploaded to userscripts.org;
+      // @history        4.1.100907.1915 = Added Object.prototype.append();
+      // @history        4.1.100908.0230 = Gotten setterGetter_GM_Storage() to a workable state, where the script will save the default prefs recursively okay, but setters/getters do not allow setting/getting non-top-level variables in the object: columnPrefix and shownColumn are set as String || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.columnPrefix && Boolean || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.showColumn;
+      // @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+      // @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
+      // @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
+      // @history        4.1.100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
+
+
+
+      // ==/UserScript==
+      ]]></>.toString();
+
+    UPDATER.updateCallback(dummyMETA);
+  }
 
 };
 
@@ -4976,7 +5150,7 @@ UPDATER.check = function UPDATER_check(_forceUpdate)
   if(timeSinceLastCheck > UPDATER.updateFrequency || _forceUpdate)
   {
     console.info('Checking for updates..');
-    UPDATER.getRemoteMeta();
+    UPDATER.getRemoteMeta(_forceUpdate);
     GM_setValue('lastUpdateCheck',currentTimeMs);
 
   }
@@ -5003,5 +5177,6 @@ UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta
 UPDATER.metaUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.meta.js';
 
 UPDATER.updateFrequency = 1000 * 60 * script.preferences.updateFrequency; // { updateFrequency } mins
+//UPDATER.updateFrequency = 0;
 
 UPDATER.check(false);

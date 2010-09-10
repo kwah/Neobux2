@@ -15,8 +15,8 @@
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100908.1254;
-// @updateNoteMin  100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+// @version        4.1.100908.1500;
+// @updateNoteMin  100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -64,15 +64,17 @@
 // @history        4.1.100907.1915 = Added Object.prototype.append();
 // @history        4.1.100908.0230 = Gotten setterGetter_GM_Storage() to a workable state, where the script will save the default prefs recursively okay, but setters/getters do not allow setting/getting non-top-level variables in the object: columnPrefix and shownColumn are set as String || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.columnPrefix && Boolean || greasemonkey.scriptvals.http:// userscripts.org/users/158890/Neobux 2+ (kwah) - reWrite.showColumn;
 // @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
+// @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
+
 
 
 // @uso:script      61349
-// @uso:version     249811
-// @uso:timestamp   Wed, 08 Sep 2010 12:11:54 +0000
-// @uso:installs    25856
+// @uso:version     249837
+// @uso:timestamp   Wed, 08 Sep 2010 13:32:55 +0000
+// @uso:installs    25971
 // @uso:reviews     2
 // @uso:rating      5.00
 // @uso:discussions 4
 // @uso:fans        25
-// @uso:hash        a15340ceaf624ec1e2617174c820653284201a6d
+// @uso:hash        60021112d4046ba9b3f08d723f779a37dc8d1884
 // ==/UserScript==
