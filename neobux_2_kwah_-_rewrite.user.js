@@ -4,7 +4,8 @@ function parseHeaders(metadataBlock) {
 
     var lines = metadataBlock.split(/\n/).filter(/\/\/ @/);
     for each (line in lines) {
-      [, name, value] = line.match(/\/\/ @(\S+)\s*(.*)/);
+      var name = line.match(/\/\/ @(\S+)\s*(.*)/)[1];
+      var value = line.match(/\/\/ @(\S+)\s*(.*)/)[2];
 
       switch (name) {
         case "licence":
@@ -53,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100908.2000;
-// @updateNoteMin  100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
+// @version        4.1.100909.0230;
+// @updateNoteMin  100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -104,6 +105,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100908.1254 = Problems with myAccountDetails && ACCOUNT_FUNCTIONS  --  not functioning correctly when used with setterGetter_GM_Storage, so defining myAccountDetails.renewalFees outside of the main myAccountDetails declaration.;
 // @history        4.1.100908.1500 = Fixed tooltips to stay on the page and allow the mouse to move over the tooltip; Uploaded to userscripts.org;
 // @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
+// @history        4.1.100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
 
 
 
@@ -710,7 +712,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100908.2000 Dev)');
+GM_log('Neobux 2+ (v4.1.100909.0230 Dev)');
 
 
 
@@ -4653,33 +4655,43 @@ function insertLocalServerTime()
     var TimeOffset_Seconds;
 
     // If the offset is negative, must round 'up'
-    if (_serverTimeOffset < 0){
+    if (_serverTimeOffset < 0) {
        TimeOffset_Hours =   Math.ceil(_serverTimeOffset);
        TimeOffset_Minutes = Math.ceil((_serverTimeOffset - TimeOffset_Hours) * 60);
        TimeOffset_Seconds = Math.ceil(((_serverTimeOffset - TimeOffset_Hours) * 60 - TimeOffset_Minutes) * 60);
     }
-    else if (_serverTimeOffset > 0)
+    else if (_serverTimeOffset >= 0)
     {
        TimeOffset_Hours =   Math.floor(_serverTimeOffset);
        TimeOffset_Minutes = Math.floor((_serverTimeOffset - TimeOffset_Hours) * 60);
        TimeOffset_Seconds = Math.floor(((_serverTimeOffset - TimeOffset_Hours) * 60 - TimeOffset_Minutes) * 60);
      }
 
-    
+
     var currentLocalTime = new Date();
     var currentServerTime = currentLocalTime;
-
-
 
     var localHours = currentServerTime.getHours();
     var localMinutes = currentServerTime.getMinutes();
     var localSeconds = currentServerTime.getSeconds();
-    
+
+
     var serverHours = currentServerTime.getHours() + TimeOffset_Hours;
     var serverMinutes = currentServerTime.getMinutes() + TimeOffset_Minutes;
     var serverSeconds = currentServerTime.getSeconds() + TimeOffset_Seconds;
 
+    /* an attempt at some mathematical trickery to avoid outputting a negative hour (.setHours doesn't seem to handle negative serverHours correctly) */
+//    var serverHours = (currentServerTime.getHours() + (TimeOffset_Hours * -1)) % 24;
 
+    
+    /* The folowing appears to work perfectly w/ timeset < 0 and timeset >= 24 */
+    serverHours = (serverHours < 0) ? serverHours + (Math.floor(serverHours/24) * -24): serverHours;
+    serverMinutes = (serverMinutes < 0) ? serverMinutes + (Math.floor(serverMinutes/60) * -60): serverMinutes;
+    serverSeconds = (serverSeconds < 0) ? serverSeconds + (Math.floor(serverSeconds/60) * -60): serverSeconds;
+
+    if(serverSeconds > 60) { serverSeconds = serverSeconds % 60; serverMinutes++; }
+    if(serverMinutes > 60) { serverMinutes = serverMinutes % 60; serverHours++; }
+    serverHours = serverHours % 24;
 
     currentServerTime.setHours(serverHours, serverMinutes, serverSeconds);
 
