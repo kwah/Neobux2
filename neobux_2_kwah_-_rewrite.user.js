@@ -51,7 +51,6 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @exclude        http://www.neobux.com/?u=c&s=rba
 // @exclude        https://www.neobux.com/?u=c&s=rba
 
-// @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
 // @version        4.1.100909.1740;
@@ -107,6 +106,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100908.2000 = Added handling for the golden extension scheduling graph for - needs testing by > golden members;
 // @history        4.1.100909.0230 = Fixed problems with the server time w/ the server hour not being checked if it is <0 or >=24;
 // @history        4.1.100909.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
+// @history        4.1.100909.1620 = userscripts is down so temporarily removing the @require and changing the update code; re-included the code for the extensions databar;
 
 
 
@@ -117,8 +117,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @require        http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js
 // @require        http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js
 
+// @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
-var remoteMeta_USO = parseHeaders(GM_getResourceText('remoteMeta_USO'));
 
 /*
  * jQuery JavaScript Library v1.3.2
@@ -2280,8 +2280,8 @@ function insertChartDataBars()
 
   var blah = {
     statsGraphs: ['ch_cd','ch_cr','ch_recycle','ch_autopay','ch_extensions','ch_trrb'],
+    goldenGraphs: ['ch_ext_schedule'],
     accSummary: ['ch_cliques']
-    //goldenGraphs: ['ch_ext_schedule']
   }
 
   var graphsOnCurrentPage = [];
@@ -5173,9 +5173,16 @@ UPDATER.check = function UPDATER_check(_forceUpdate)
   }
 };
 
-UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.user.js';
-UPDATER.metaUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.meta.js';
+var remoteMeta_USO = '';
+if(remoteMeta_USO = parseHeaders(GM_getResourceText('remoteMeta_USO')))
+{
+  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.user.js';
+  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.meta.js';
+}else{
 
+  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/61349.user.js';
+  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/61349.meta.js';
+}
 UPDATER.updateFrequency = 1000 * 60 * script.preferences.updateFrequency; // { updateFrequency } mins
 //UPDATER.updateFrequency = 0;
 
