@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100910.1900;
-// @updateNoteMin  100910.1900 = userscripts is back up; extension schedule stuff doesn't seem to be working but doesn't appear to break anythnig so is left in..; Uploaded oto userscripts.org;
+// @version        4.1.100913.1430;
+// @updateNoteMin  100913.1430 = Removed testing code that forces the updater to show, regardless of whether the userscripts.org version is newer; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -109,6 +109,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100910.1740 = Fixed some issues with the autoupdator; Still some problems for golden members wrt the scheduling graph so have removed that code for this release; Uploaded to userscripts.org;
 // @history        4.1.100910.1820 = userscripts is down so temporarily removing the @require and changing the update code; re-included the code for the extensions databar;
 // @history        4.1.100910.1900 = userscripts is back up; extension schedule stuff doesn't seem to be working but doesn't appear to break anythnig so is left in..; Uploaded oto userscripts.org;
+// @history        4.1.100913.1310 = Detection of the server time offset should now work in EN & PT;
+// @history        4.1.100913.1430 = Removed testing code that forces the updater to show, regardless of whether the userscripts.org version is newer; Uploaded to userscripts.org;
 
 
 
@@ -716,7 +718,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100910.1900 Dev)');
+GM_log('Neobux 2+ (v4.1.100913.1430 Dev)');
 
 
 
@@ -4637,18 +4639,15 @@ insertLogoActions();
 function insertLocalServerTime()
 {
   
-
-  // Get and return the local time and format it correctly
-  function GetLocalTime()
+  function formatTime(_time)
   {
+    var _Hours = _time.getHours()
+    var _Minutes = _time.getMinutes();
+    var _Seconds = _time.getSeconds();
 
-    var localHours = Today.getHours()
-    var localMinutes = Today.getMinutes();
-    var localSeconds = Today.getSeconds();
-
-    return padZeros(localHours,2) + ':' + padZeros(localMinutes,2); //+ ":" + padZeros(localSeconds,2);
-
+    return padZeros(_Hours,2) + ':' + padZeros(_Minutes,2); //+ ":" + padZeros(_Seconds,2);
   }
+
 
   // Calculate and return the server time formatted correctly
   function GetServerTime(_serverTimeOffset)
@@ -4671,6 +4670,13 @@ function insertLocalServerTime()
        TimeOffset_Seconds = Math.floor(((_serverTimeOffset - TimeOffset_Hours) * 60 - TimeOffset_Minutes) * 60);
      }
 
+    var TimeOffset = {
+      decimal: _serverTimeOffset,
+      hours: TimeOffset_Hours,
+      minutes: TimeOffset_Minutes,
+      seconds: TimeOffset_Seconds
+    };
+
 
     var currentLocalTime = new Date();
     var currentServerTime = currentLocalTime;
@@ -4684,10 +4690,38 @@ function insertLocalServerTime()
     var serverMinutes = currentServerTime.getMinutes() + TimeOffset_Minutes;
     var serverSeconds = currentServerTime.getSeconds() + TimeOffset_Seconds;
 
-    /* an attempt at some mathematical trickery to avoid outputting a negative hour (.setHours doesn't seem to handle negative serverHours correctly) */
-//    var serverHours = (currentServerTime.getHours() + (TimeOffset_Hours * -1)) % 24;
+
+
+    var neoMidnight = Today;
+    neoMidnight.setHours(0);
+    neoMidnight.setMinutes(0);
+    neoMidnight.setSeconds(0);
+
+    neoMidnight.setHours(neoMidnight.getHours() - TimeOffset_Hours);
+    neoMidnight.setMinutes(neoMidnight.getMinutes() - TimeOffset_Minutes);
+
+    neoMidnight = new Date(neoMidnight);
+
+    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
+
+    var adResetTime = Today;
+    adResetTime.setHours(20);
+    adResetTime.setMinutes(29);
+
+    adResetTime = new Date(adResetTime);
+
+
+    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+        
+
+    var timePeriodForClicking = (adResetTime - neoMidnight) / (1000 * 60 * 60);
+    console.info(adResetTime);
+    console.info(neoMidnight);
+    console.info(timePeriodForClicking);
 
     
+    
+    /* an attempt at some mathematical trickery to avoid outputting a negative hour (.setHours doesn't seem to handle negative serverHours correctly) */
     /* The folowing appears to work perfectly w/ timeset < 0 and timeset >= 24 */
     serverHours = (serverHours < 0) ? serverHours + (Math.floor(serverHours/24) * -24): serverHours;
     serverMinutes = (serverMinutes < 0) ? serverMinutes + (Math.floor(serverMinutes/60) * -60): serverMinutes;
@@ -4698,7 +4732,6 @@ function insertLocalServerTime()
     serverHours = serverHours % 24;
 
     currentServerTime.setHours(serverHours, serverMinutes, serverSeconds);
-
 
     if (_serverTimeOffset > 0)
     {
@@ -4720,94 +4753,76 @@ function insertLocalServerTime()
 
   }
 
+  
   // Calculate and return the size of the time difference/offset
-  function SetTimeOffset()
+  function FetchAndSetTimeOffset()
   {
     // Hunt for the current server time string
-    var locationOfTimeString = document.evaluate('//td[contains(.,"The current server time is")]',
+    var locationOfTimeString = document.evaluate('//td[@class="f_r"]/span',
       document,
       null,
       XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
       null);
 
-    if(locationOfTimeString.snapshotLength == 1)
+    if(locationOfTimeString.snapshotLength == 2)
     {
-      // var String = 'The current server time is 2009/06/07 20:46';
-      var dateTimeString = locationOfTimeString.snapshotItem(0).textContent;
+      // var dateTimeString = '2009/06/07 20:46';
+      var dateTimeString = locationOfTimeString.snapshotItem(1).textContent;
 
       // Grab only the neccessary info (assuming format yyyy/mm/dd hh:dd )
-      dateTimeString = dateTimeString.match(/[\d]{4}\/[\d]{2}\/[\d]{2}\ [\d]{2}\:[\d]{2}/)[0];
+      dateTimeString = dateTimeString.match(/([\d]{4})\/([\d]{2})\/([\d]{2})\ ([\d]{2})\:([\d]{2})/);
 
 
-      dateTimeString = dateTimeString.split(" ");
-  //    GM_log('dateTimeString = ' + dateTimeString);
+//    Really want integer, but parseInt("08") == 0 so using parseFloat instead
+//    UPDATE: now taking advantage of the implicit type conversion caused by * 1 and using parseInt()
+      var ST = {
+        year: parseInt(dateTimeString[1] * 1),
+        month: parseInt(dateTimeString[2] * 1),
+        day: parseInt(dateTimeString[3] * 1),
 
-      var date = dateTimeString[0].split("/");
-  //    GM_log('date [yyyy,mm,dd] = ' + date);
-      var year = date[0];
-      var month = date[1];
-      var day = date[2];
+        hour: parseInt(dateTimeString[4] * 1),
+        minute: parseInt(dateTimeString[5] * 1)
+      }
 
-      var time = dateTimeString[1].split(":");
-  //    GM_log('time [hh,mm] = ' + time);
-      var hour = time[0];
-      var minute = time[1];
-
-  //    GM_log('day/month/year hour:minute = ' + day + '/' + month + '/' + year + ' ' + hour + ':' + minute + '\n');
+      console.info(ST);
 
       var ServerDateTime = new Date();
-      ServerDateTime.setFullYear(year, (month - 1), day);
-      ServerDateTime.setHours(hour, minute);
-
-  //    GM_log('ServerDateTime = ' + ServerDateTime + '\n');
+      ServerDateTime.setFullYear(ST.year, (ST.month - 1), ST.day);
+      ServerDateTime.setHours(ST.hour, ST.minute);
 
       var ServerTime = ServerDateTime.getTime();
       var LocalTime = Today.getTime();
       var one_hour = 1000 * 60 * 60;
 
-      var Difference = (ServerTime - LocalTime) / (one_hour);
-      Difference = Math.floor(Difference * 1000) / 1000;
-  //    GM_log('Difference = ' + Difference);
+      var serverTimeDifference = (ServerTime - LocalTime) / (one_hour);
+      serverTimeDifference = Math.floor(serverTimeDifference * 1000) / 1000;
 
-      GM_setValue('serverTimeOffset',Difference);
+      manipulatePrefs.setPref('serverTimeOffset', serverTimeDifference);
+
+      
+
     }
   }
 
 
   // Check whether the page being loaded is the 'View Advertisements' page
-  // If it is, call GetTimeOffset() to calculate & store the offset amount [if autodetecting the offset is enabled]
-  function GetTimeOffset()
+  // If it is, call GetServerTimeOffset() to calculate & store the offset amount [if autodetecting the offset is enabled]
+  function GetServerTimeOffset()
   {
-
     // Check whether current page is the "View Advertisements" page
     var CurrentUrl = document.location.href;
     var RegExp_AdPage = /^http[s]?:\/\/www\.neobux\.com\/\?u\=v/;
     var IsMatch = RegExp_AdPage.test(CurrentUrl);
 
     // If it is the ads page AND the script should automatically detect the offset,
-    // OR there is an error retrieving the value, set the Time Offset before retrieving it
-    if (IsMatch && GM_getValue("AutoDetectTimeOffset", true))
-    {
-      SetTimeOffset();
-
-/*      if (GM_getValue("SetupComplete", false) !== true)
-      {
-        GM_setValue("SetupComplete", true);
-        if (GM_getValue("SetupComplete", false) === true && !!GM_getValue('serverTimeOffset'))
-        {
-          alert("Congratulations, the script should now be setup correctly. \n\nIf the script does not work after visiting your 'view advertisements' link, please contact 'kwah' at UserScripts.org or at Neobux.");
-        } else
-        {
-          alert("There was a problem setting this script up. Please try refreshing this page.\n\nIf the script still does not work, please contact 'kwah' at UserScripts.org or at Neobux.");
-        }
-      }*/
+    if (IsMatch && manipulatePrefs.getPref("AutoDetectTimeOffset", true)) {
+      FetchAndSetTimeOffset();
     }
 
-
-    var serverTimeOffset = parseFloat(GM_getValue('serverTimeOffset',0));
+    var serverTimeOffset = parseFloat(manipulatePrefs.getPref('serverTimeOffset',0));
 
     GM_log('serverTimeOffset = ' + serverTimeOffset);
-    GM_setValue('serverTimeOffset', String(serverTimeOffset));
+    manipulatePrefs.setPref('serverTimeOffset', String(serverTimeOffset));
 
 
     return serverTimeOffset;
@@ -4815,7 +4830,30 @@ function insertLocalServerTime()
   }
 
 
+  function AdClickingPeriods()
+  {
+    // Check whether current page is the "View Advertisements" page
+    var CurrentUrl = document.location.href;
+    var RegExp_AdPage = /^http[s]?:\/\/www\.neobux\.com\/\?u\=v/;
+    var IsMatch = RegExp_AdPage.test(CurrentUrl);
 
+    // If it is the ads page AND the script should automatically detect the offset,
+    if (IsMatch && manipulatePrefs.getPref("AutoDetectTimeOffset", true)) {
+      FetchAndSetTimeOffset();
+    }
+
+    var serverTimeOffset = parseFloat(manipulatePrefs.getPref('serverTimeOffset',0));
+
+    GM_log('serverTimeOffset = ' + serverTimeOffset);
+    manipulatePrefs.setPref('serverTimeOffset', String(serverTimeOffset));
+
+
+    return serverTimeOffset;
+
+  }
+  
+  
+  
   // TODO: simplify *VERY* ugly xpath, whilst maintaining robustness..
   // Cannot search for td that only has &nbsp; as it's contents
   // Cannot search for td@align=left because returns multiple results
@@ -4838,30 +4876,8 @@ function insertLocalServerTime()
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null);
 
-
-
-/*
-  // Check whether this is the first use of the script
-  // If so, set some variables
-  if (GM_getValue("FirstUse", 1) == 1)
-  {
-    GM_setValue("FirstUse", 0);
-    GM_setValue("SetupComplete", 0);
-    GM_setValue("AutoDetectTimeOffset", true);
-
-    alert("Welcome and enjoy your use of this greasemonkey script =]\n\nIf the script does not work as expected, please contact 'kwah' at UserScripts.org or at Neobux.");
-    var AllowRefresh = confirm("In order for the script to function correctly, you must first visit your 'view advertisements' link.\n\nView Now?");
-    if (AllowRefresh)
-    {
-      location.href = 'http://www.neobux.com/?u=v';
-    }
-  }
-*/
-
-
-  var localTime = GetLocalTime();
-
-  var serverTime = (!!GetTimeOffset()) ? GetServerTime(GetTimeOffset()) : 'You must "View Advertisements" for this to show correctly.';
+  var localTime = formatTime(Today);
+  var serverTime = (!!GetServerTimeOffset()) ? GetServerTime(GetServerTimeOffset()) : 'You must "View Advertisements" for this to show correctly.';
 
   GM_log('Local: ' + localTime + ' Server: ' + serverTime);
 
@@ -4944,7 +4960,7 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
             "<option id='UpdateMessage_Upgrade'>Upgrade</option>" +
       "<option id='UpdateMessage_showUpdateNotes'>Show Update Notes</option>" +
       "<option id='UpdateMessage_Postpone'>Remind Me Later</option>" +
-      "<option id='UpdateMessage_Hide'>Hide</option>" +
+      "<option id='UpdateMessage_Hide24Hours'>Hide for 24hours</option>" +
           "</select>" +
         "</td>" +
         "</tr></table>";
@@ -4978,7 +4994,7 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
         case 'UpdateMessage_Upgrade':
           document.location.href = UPDATER.scriptUrl;
         break;
-        case 'UpdateMessage_Hide':
+        case 'UpdateMessage_Hide24Hours':
           document.getElementById('updateMessage_container').style.display = 'none';
         break;
         case 'UpdateMessage_Postpone':
@@ -5043,14 +5059,15 @@ UPDATER.updateCallback = function UPDATER_updateCallback(_responseText)
   console.info(_newHeaders);
   var isNewVersionAvailable = UPDATER.isOtherVersionNewer(fileMETA.version,_newHeaders.version);
 
-  if(isNewVersionAvailable || !isNewVersionAvailable) {
+  if(isNewVersionAvailable) {
     UPDATER.newVersionActions(_newHeaders);
   }
 };
 
-UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_dummy)
+UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_useDummyResponseText)
 {
-  if(!_dummy){
+  if(!_useDummyResponseText)
+  {
     GM_xmlhttpRequest({
       method: 'GET',
       url: UPDATER.metaUrl,
@@ -5061,7 +5078,9 @@ UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_dummy)
       onload: function(r) { UPDATER.updateCallback(r.responseText); },
       onerror: function(e) { console.info(e); }
      });
-  }else{
+  }
+  else
+  {
     var dummyMETA = <><![CDATA[
       // ==UserScript==
       // @name           Neobux 2+ (kwah) - reWrite
