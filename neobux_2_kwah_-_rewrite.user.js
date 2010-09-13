@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100913.1430;
-// @updateNoteMin  100913.1430 = Removed testing code that forces the updater to show, regardless of whether the userscripts.org version is newer; Uploaded to userscripts.org;
+// @version        4.1.100913.1515;
+// @updateNoteMin  100913.1515 = Fixed ultimate only columns being shown when more than 100 refs showing on a page; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -111,6 +111,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100910.1900 = userscripts is back up; extension schedule stuff doesn't seem to be working but doesn't appear to break anythnig so is left in..; Uploaded oto userscripts.org;
 // @history        4.1.100913.1310 = Detection of the server time offset should now work in EN & PT;
 // @history        4.1.100913.1430 = Removed testing code that forces the updater to show, regardless of whether the userscripts.org version is newer; Uploaded to userscripts.org;
+// @history        4.1.100913.1500 = Fixed handling of (boolean) false settings - last click column and average colmun should no longer be replace; Increased updater checking period to 2hours (120mins);
+// @history        4.1.100913.1515 = Fixed ultimate only columns being shown when more than 100 refs showing on a page; Uploaded to userscripts.org;
 
 
 
@@ -718,7 +720,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100913.1430 Dev)');
+GM_log('Neobux 2+ (v4.1.100913.1515 Dev)');
 
 
 
@@ -1350,9 +1352,14 @@ function setterGetter_GM_Storage(storageVar, defaultPreferences)
   {
 //    console.group();
 //    console.info(JSON.stringify(this));
-
-
-    this[property] = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(defaultPreferences)))[property] || {};
+    if(defaultPreferences[property] === false)
+    {
+      this[property] = false;
+    }
+    else
+    {
+      this[property] = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(defaultPreferences)))[property] || {};
+    }
 //    console.info(JSON.stringify(this));
 
     bindGettersSetters(this, defaultPreferences, property);
@@ -1374,7 +1381,7 @@ script.preferences = new setterGetter_GM_Storage('scriptPrefs',
 {
   // Script Settings
   scriptLanguage: 'EN',
-  updateFrequency: 20,
+  updateFrequency: 120,
 
   // Referral Counts
   overrideRentedReferralCount: false,
@@ -3048,7 +3055,8 @@ function extractRefData()
     referrals[z].ownedSince_summarised = NumDaysSince(referrals[z].referralSince, 'mins', script.preferences.referralSince_fullerTimers, script.preferences.referralSince_shortFormatTimer, 'daysOwned');
 
 
-    if(myAccountDetails.accountType.showUltimateFeatures)
+    /* Ultimate only stuff, based on the ultimate minigraphs */
+    if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
       referrals[z].minigraph = {
         'rawClickData': (currentReferral[14] == '0') ? '0000000000'.split('') : currentReferral[14].split(''),
@@ -3661,7 +3669,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
         function insertClicksDayColumn(currentReferral)
         {
-          if(myAccountDetails.accountType.showUltimateFeatures && script.preferences.showColumn['clickText'])
+          if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures && script.preferences.showColumn['clickText'])
           {
             // clickText column == A textual representation of the data in the mini
             if (script.preferences.showColumn['clickText'] === true) {
@@ -4032,7 +4040,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
         }
 
 
-        if(myAccountDetails.accountType.showUltimateFeatures)
+        if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
         {
           try {
             insertClicksDayColumn(currentReferral);
@@ -4108,7 +4116,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
         " | " + ('Total Clicks') + " : " + clickSum +
         " | " + ('Total Click Avg') + " : " + (totalClickAvg).toFixed(3);
 
-//      if(myAccountDetails.accountType.showUltimateFeatures)
+//      if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
       // {
       // footerRow_text = footerRow_text + " | "+('lastdaysClickAvg')+"
       // ("+myAccount.ultimatePreferences.minigraphAvgInterval+") :
@@ -4164,7 +4172,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     current_width += (script.preferences.flag_textify) ? 15 : 0;
     current_width += (script.preferences.exactAverage_show && !script.preferences.exactAverage_replace) ? 20 : 0;
 
-    if(myAccountDetails.accountType.showUltimateFeatures)
+    if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
       current_width += (script.preferences.showColumn['clickText'] === true) ? 88 : 0;
       current_width += (script.preferences.showColumn['average_1'] === true) ? 23 : 0;
