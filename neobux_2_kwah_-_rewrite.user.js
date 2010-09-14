@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100914.1600;
-// @updateNoteMin  100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
+// @version        4.1.100914.1615;
+// @updateNoteMin  100914.1615 = Added the option to disable the local/server time clock; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -116,6 +116,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100914.0300 = Added an *awesome* new feature - click on the local/server time to see which time periods you should be clicking in to follow TOS 3.7.. red is one time period, blue is another; Uploaded to userscripts.org;
 // @history        4.1.100914.1400 = Added the fixes suggested bp surbrec: Fixed the profit columns for goldens & ultimates, changed the column header for the average column; Uploaded to userscripts.org;
 // @history        4.1.100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
+// @history        4.1.100914.1615 = Added the option to disable the local/server time clock; Uploaded to userscripts.org;
 
 
 
@@ -723,7 +724,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100914.1600 Dev)');
+GM_log('Neobux 2+ (v4.1.100914.1615 Dev)');
 
 
 
@@ -1412,7 +1413,7 @@ script.preferences =
   lastClick_replace: manipulatePrefs.getPref('lastClick_replace',false),
   lastClick_replaceNilClicks: manipulatePrefs.getPref('lastClick_replaceNilClicks',false),
 
-  // Average columnt;
+  // Average column;
   exactAverage_show: manipulatePrefs.getPref('exactAverage_show',true),
   exactAverage_replace: manipulatePrefs.getPref('exactAverage_replace',false),
   exactAverage_seperator: manipulatePrefs.getPref('exactAverage_seperator',' | '),
@@ -1431,8 +1432,10 @@ script.preferences =
 
 
   /** Time Periods **/
-  timePeriods: JSON.parse(manipulatePrefs.getPref('timePeriods',JSON.stringify(defaultSettings.timePeriods)))
+  timePeriods: JSON.parse(manipulatePrefs.getPref('timePeriods',JSON.stringify(defaultSettings.timePeriods))),
 
+  /* Local = Server Time clock */
+  localServerTimeClock_show: manipulatePrefs.getPref('localServerTimeClock_show',true)
 }
 
 /*
@@ -5341,8 +5344,9 @@ function insertLocalServerTime()
   },false)
 }
 
-insertLocalServerTime();
-
+if(script.preferences.localServerTimeClock_show) {
+  insertLocalServerTime();
+}
 
 
 
