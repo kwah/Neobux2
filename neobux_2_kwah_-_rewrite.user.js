@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100914.1400;
-// @updateNoteMin  100914.1400 = Added the fixes suggested bp surbrec: Fixed the profit columns for goldens & ultimates, changed the column header for the average column; Uploaded to userscripts.org;
+// @version        4.1.100914.1600;
+// @updateNoteMin  100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -115,6 +115,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100913.1515 = Fixed ultimate only columns being shown when more than 100 refs showing on a page; Uploaded to userscripts.org;
 // @history        4.1.100914.0300 = Added an *awesome* new feature - click on the local/server time to see which time periods you should be clicking in to follow TOS 3.7.. red is one time period, blue is another; Uploaded to userscripts.org;
 // @history        4.1.100914.1400 = Added the fixes suggested bp surbrec: Fixed the profit columns for goldens & ultimates, changed the column header for the average column; Uploaded to userscripts.org;
+// @history        4.1.100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
 
 
 
@@ -722,7 +723,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100914.1400 Dev)');
+GM_log('Neobux 2+ (v4.1.100914.1600 Dev)');
 
 
 
@@ -1775,12 +1776,12 @@ function extractGraphData()
 
       tmp_currentGraph.export = {
         'text': text.join('\n'),
-        'CSV': CSV.join(',\n'),
-        'TSV': TSV.join('\t\n'),
+        'csv': CSV.join(',\n'),
+        'tsv': TSV.join('\t\n'),
         'reverse': {
           'text': text.reverse().join('\n'),
-          'CSV': CSV.reverse().join(',\n'),
-          'TSV': TSV.reverse().join('\t\n')
+          'csv': CSV.reverse().join(',\n'),
+          'tsv': TSV.reverse().join('\t\n')
         }
       };
 
@@ -2429,8 +2430,179 @@ function insertChartDataBars()
 }
 
 
+  var newDialog_Style = "" +
+    "#modalContainer {"+
+      "background-color: transparent;"+
+      "position: absolute;"+
+      "width: 100%;"+
+      "height: 100%;"+
+      "top: 0px;"+
+      "left: 0px;"+
+      "z-index: 10000;"+
+      "background-image: url(tp.png); /* required by MSIE to prevent actions on lower z-index elements */"+
+   " }"+
+
+    "#alertBox {"+
+      "position: relative;"+
+      "width: 300px;"+
+      "min-height: 100px;"+
+      "margin-top: 50px;"+
+      "border: 2px solid #000;"+
+      "background-color: #F2F5F6;"+
+      "background-image: url(alert.png);"+
+      "background-repeat: no-repeat;"+
+      "background-position: 20px 30px;"+
+   " }"+
+
+    "#modalContainer > #alertBox {"+
+      "position: fixed;"+
+   " }"+
+
+    "#alertBox h1 {"+
+      "margin: 0;"+
+      "font: bold 0.9em verdana,arial;"+
+      "background-color: #78919B;"+
+      "color: #FFF;"+
+      "border-bottom: 1px solid #000;"+
+      "padding: 2px 0 2px 5px;"+
+   " }"+
+
+    "#alertBox p {"+
+      "font-family: verdana,arial;"+
+      "padding: 10px;"+
+      "margin: 10px;"+
+      "height: auto;"+
+   " }"+
+
+    "#alertBox textarea {"+
+      "font-family: monospace,courier new,verdana,arial;"+
+      "font-size: x-small;"+
+      "margin: 15px;"+
+      "margin-top: 0px;"+
+      "height: auto;"+
+      "width: 85%;"+
+   " }"+
+
+    "#alertBox #closeBtn {"+
+      "display: block;"+
+      "position: relative;"+
+      "margin: 15px auto;"+
+      "padding: 3px;"+
+      "border: 2px solid #000;"+
+      "width: 70px;"+
+      "font: 0.7em verdana,arial;"+
+      "text-transform: uppercase;"+
+      "text-align: center;"+
+      "color: #FFF;"+
+      "background-color: #78919B;"+
+      "text-decoration: none;"+
+    "}";
+
+
+
+// over-ride the alert method only if this a newer browser.
+// Older browser will see standard alerts
+// if(document.getElementById) {
+    // window.alert = function (txt) {
+      // createExportDialog(txt);
+    // }
+// }
+
+  function createExportDialog(txt,exportText,ALERT_TITLE,ALERT_BUTTON_TEXT,exportText_reversed,event) {
+    var textareaContents = exportText;
+    if(event.ctrlKey && exportText_reversed) { var textareaContents = exportText_reversed; }
+
+    createCustomAlert(txt,textareaContents,ALERT_TITLE,ALERT_BUTTON_TEXT);
+  }
+
+  function createCustomAlert(txt,textareaContents,ALERT_TITLE,ALERT_BUTTON_TEXT) {
+// constants to define the title of the alert and button text.
+    if(!txt) { var txt = ''; }
+    if(!textareaContents) { var textareaContents = ''; }
+    if(!ALERT_TITLE) { var ALERT_TITLE = "Oops!"; }
+    if(!ALERT_BUTTON_TEXT) { var ALERT_BUTTON_TEXT = "Ok"; }
+
+    // shortcut reference to the document object
+    var d = document;
+
+    // if the modalContainer object already exists in the DOM, bail out.
+    if(d.getElementById("modalContainer")) return;
+
+    // create the modalContainer div as a child of the BODY element
+     // make sure its as tall as it needs to be to overlay all the content on the page
+    var mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
+      mObj.id = "modalContainer";
+      mObj.style.height = document.documentElement.scrollHeight + "px";
+
+    // create the DIV that will be the alert
+    var alertObj = mObj.appendChild(d.createElement("div"));
+      alertObj.id = "alertBox";
+
+
+    var newDialogStyle = alertObj.appendChild(d.createElement('style'));
+      newDialogStyle.setAttribute('type','text/css');
+      newDialogStyle.innerHTML = newDialog_Style;
+
+
+    // MSIE doesnt treat position:fixed correctly, so this compensates for positioning the alert
+    if(d.all && !window.opera) alertObj.style.top = document.documentElement.scrollTop + "px";
+
+    // center the alert box
+    alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth)/2 + "px";
+
+    // create an H1 element as the title bar
+    var h1 = alertObj.appendChild(d.createElement("h1"));
+      h1.appendChild(d.createTextNode(ALERT_TITLE));
+
+    if(txt != '')
+    {
+      // create a paragraph element to contain the txt argument
+      var msg = alertObj.appendChild(d.createElement("p"));
+      msg.innerHTML = txt;
+    }
+
+    if(textareaContents != '')
+    {
+      // create a textarea
+      var textarea = alertObj.appendChild(d.createElement("center")).appendChild(d.createElement("textarea"));
+      textarea.value = textareaContents;
+
+      var maxHeight = 300;
+
+      var adjustedHeight = textarea.clientHeight;
+      if(!maxHeight || maxHeight > adjustedHeight )
+      {
+        adjustedHeight = Math.max(textarea.scrollHeight, adjustedHeight);
+        if(maxHeight ) {
+          adjustedHeight = Math.min(maxHeight, adjustedHeight);
+        }
+        if(adjustedHeight > textarea.clientHeight ) {
+          textarea.style.height = adjustedHeight + "px";
+        }
+      }
+
+    }
+
+    // create an anchor element to use as the confirmation button.
+    var btn = alertObj.appendChild(d.createElement("a"));
+      btn.id = "closeBtn";
+      btn.appendChild(d.createTextNode(ALERT_BUTTON_TEXT));
+
+    // set up the onclick event to remove the alert when the anchor is clicked
+    btn.addEventListener('click', function () { removeCustomAlert(); }, false);
+
+  }
+
+// removes the custom alert from the DOM
+  function removeCustomAlert() {
+    document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
+  }
+
 function insertExportTabs()
 {
+
+
+
 
   function EXPORT_TAB(_exportType,_tabText)
   {
@@ -2443,13 +2615,15 @@ function insertExportTabs()
 
     exportTab.innerHTML = _tabText;
 
+    var textareaContents = _currentGraph.export[_exportType];
+    var textareaContentsReverse = _currentGraph.export.reverse[_exportType];
+    var messageHeader = 'Exporting the "'+_currentGraph.name+'" graph as '+_tabText+':';
 
     exportTab.addEventListener('click', function (event)
     {
       // (event.ctrlKey && event.altKey && event.shiftKey)
-      var textareaContents = (event.ctrlKey) ? _currentGraph.export[_exportType] : _currentGraph.export.reverse[_exportType];
 
-      createCustomAlert('Exporting the "'+_currentGraph.name+'" graph as '+_exportType+':',textareaContents,'Exporting to '+_tabText+'..');
+        createExportDialog(messageHeader,textareaContents,'Exporting to '+_tabText+'..','Close',textareaContentsReverse,event);
 
     }, false);
 
