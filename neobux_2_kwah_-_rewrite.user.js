@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100915.0300;
-// @updateNoteMin  100915.0300 = Fixed the spacer row in referrals pages not spanning the whole table and the footer row information bar not showing if there are fewer than 3 refs on the page (common with direct refs for example); Uploaded to userscripts.org;
+// @version        4.1.100915.1420;
+// @updateNoteMin  100915.1420 = Hopefully fixed the ultimate graphs issue and added some logging code to help identify cause if it doesn't work; Uploaded to Userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -118,6 +118,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
 // @history        4.1.100914.1615 = Added the option to disable the local/server time clock; Uploaded to userscripts.org;
 // @history        4.1.100915.0300 = Fixed the spacer row in referrals pages not spanning the whole table and the footer row information bar not showing if there are fewer than 3 refs on the page (common with direct refs for example); Uploaded to userscripts.org;
+// @history        4.1.100915.1200 = Altered the local/server time to be appended to the uppor-right corner rather than overwriting the contents of that area (eg, to stop it hiding "1 New History");
+// @history        4.1.100915.1420 = Hopefully fixed the ultimate graphs issue and added some logging code to help identify cause if it doesn't work; Uploaded to Userscripts.org;
 
 
 
@@ -725,7 +727,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100915.0300 Dev)');
+GM_log('Neobux 2+ (v4.1.100915.1420 Dev)');
 
 
 
@@ -1188,13 +1190,12 @@ var getAccountType = new function()
   this.numerical =  _acctype.numerical;
   this.verbose =  _acctype.verbose;
 
-  this.showUltimateFeatures =  (6 == _acctype.numerical || testing) ? true : false;
+  this.showUltimateFeatures =  ((6 == _acctype.numerical) || testing) ? true : false;
   this.isUltimate =  (6 == _acctype.numerical) ? true : false;
   this.isStandard =  (0 == _acctype.numerical) ? true : false;
 
   return this;
 }
-
 
 
 function extractNumberOfRefs()
@@ -1261,9 +1262,7 @@ function extractNumberOfRefs()
 
 }
 
-console.info(ACCOUNT_FUNCTIONS.getAutopayLimit(getAccountType));
-
-var myAccountDetails = new setterGetter_GM_Storage('myAccountDetails',
+var myAccountDetails =
 {
   username: document.getElementById('t_conta').textContent,
   accountType: getAccountType,
@@ -1271,7 +1270,7 @@ var myAccountDetails = new setterGetter_GM_Storage('myAccountDetails',
   ownClickValue: (getAccountType.isUltimate) ? 0.02 : 0.01,
   referralClickValue: (getAccountType.isStandard) ? 0.005 : 0.01
 
-});
+};
 
 myAccountDetails.autopayLimit = ACCOUNT_FUNCTIONS.getAutopayLimit(getAccountType);
 myAccountDetails.recycleCost = ACCOUNT_FUNCTIONS.getRecycleCost(getAccountType);
@@ -1422,10 +1421,7 @@ script.preferences =
   // Profit Column
   profit_includeRecycleCost: manipulatePrefs.getPref('profit_includeRecycleCost',false),
 
-  // Standard Deviation (SDEV / SD) Column
-  showSDEVColumn: manipulatePrefs.getPref('showSDEVColumn',true),
-
-
+  
   // Referral listings. Column preferences
   columnPrefix: JSON.parse(manipulatePrefs.getPref('columnPrefix',JSON.stringify(defaultSettings.columnPrefixes))),
   shrinkContents: JSON.parse(manipulatePrefs.getPref('shrinkContents',JSON.stringify(defaultSettings.shrinkColumnContents))),
@@ -3028,7 +3024,6 @@ function extractRefData()
    */
 
 
-
   // Iterate through mtx data and assign into the referrals object for easier
   // access later
   for (var z = 0; z < mtx.length; z++)
@@ -3090,6 +3085,12 @@ function extractRefData()
 
 
     /* Ultimate only stuff, based on the ultimate minigraphs */
+        GM_log('refsPerPage = ' + refsPerPage);
+    GM_log('(refsPerPage <= 100) = ' + (refsPerPage <= 100));
+
+    GM_log('testing = ' + testing);
+    GM_log('getAccountType.showUltimateFeatures = ' + getAccountType.showUltimateFeatures);
+    GM_log('myAccountDetails.accountType.showUltimateFeatures = ' + myAccountDetails.accountType.showUltimateFeatures);
     if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
       referrals[z].minigraph = {
@@ -3316,6 +3317,20 @@ function shrinkColumns(_currentReferral)
 
 if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'directRefListing')
 {
+    /*
+   Check how many referrals are being shown per page
+   If the user is ultimate and has more than 100 referrals showing, minigraphs
+   will not be displayed
+   If the user has fewer than 10 referrals, the option to select the # of
+   referrals is not present, thus refsPerPage must be set manually
+   */
+  var refsPerPageSelector = document.getElementById('rlpp');
+  var refsPerPage = (refsPerPageSelector != null) ? parseInt(refsPerPageSelector.options[refsPerPageSelector.selectedIndex].value) : 10;
+
+  console.info(refsPerPage);
+
+
+
   var referrals = {};
   extractRefData();
 
@@ -3339,6 +3354,13 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
      * Ultimate-only columns::
      * Ultimate's minigraphs will not be shown if there are more than 100 referrals per page
      */
+
+    GM_log('refsPerPage = ' + refsPerPage);
+    GM_log('(refsPerPage <= 100) = ' + (refsPerPage <= 100));
+
+    GM_log('testing = ' + testing);
+    GM_log('getAccountType.showUltimateFeatures = ' + getAccountType.showUltimateFeatures);
+    GM_log('myAccountDetails.accountType.showUltimateFeatures = ' + myAccountDetails.accountType.showUltimateFeatures);
 
     if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
@@ -3558,18 +3580,6 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       AVG: 6
     };
   }
-
-  /*
-   Check how many referrals are being shown per page
-   If the user is ultimate and has more than 100 referrals showing, minigraphs
-   will not be displayed
-   If the user has fewer than 10 referrals, the option to select the # of
-   referrals is not present, thus refsPerPage must be set manually
-   */
-  var refsPerPageSelector = document.getElementById('rlpp');
-  var refsPerPage = (refsPerPageSelector != null) ? parseInt(refsPerPageSelector.options[refsPerPageSelector.selectedIndex].value) : 10;
-
-  console.info(refsPerPage);
 
   // mainTable = the table within which the referrals are contained
   // Specifically the tbody element so that {tbody}.rows can be used
@@ -4893,7 +4903,7 @@ function insertLocalServerTime()
     localMidnight.setSeconds(0);
 
     manipulatePrefs.setPref('localMidnight', localMidnight);
-    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
+//    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
 
     var neoMidnight = new Date(localMidnight);
     neoMidnight.setHours(neoMidnight.getHours() - TimeOffset_Hours);
@@ -4902,7 +4912,7 @@ function insertLocalServerTime()
     neoMidnight = new Date(neoMidnight);
 
     manipulatePrefs.setPref('neoMidnight', neoMidnight);
-    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
+//    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
 
     var adResetTime = new Date(Today);
     adResetTime.setHours(20);
@@ -4911,12 +4921,12 @@ function insertLocalServerTime()
     adResetTime = new Date(adResetTime);
 
     manipulatePrefs.setPref('adResetTime', adResetTime);
-    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+//    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
 
 
-    console.info(localMidnight);
-    console.info(neoMidnight);
-    console.info(adResetTime);
+//    console.info(localMidnight);
+//    console.info(neoMidnight);
+//    console.info(adResetTime);
 
 
 
@@ -4984,7 +4994,7 @@ function insertLocalServerTime()
         minute: parseInt(dateTimeString[5] * 1)
       }
 
-      console.info(ST);
+//      console.info(ST);
 
       var ServerDateTime = new Date(Today);
       ServerDateTime.setFullYear(ST.year, (ST.month - 1), ST.day);
@@ -5010,7 +5020,7 @@ function insertLocalServerTime()
         minute: parseInt(adResetTimeString[2] * 1)
       }
 
-      console.info(ART);
+//      console.info(ART);
 
       var AdResetTimeDifference = (ART.hour + (ART.minute / 60)) * -1;
       manipulatePrefs.setPref('AdResetTimeOffset', AdResetTimeDifference);
@@ -5037,7 +5047,7 @@ function insertLocalServerTime()
 
     var serverTimeOffset = parseFloat(manipulatePrefs.getPref('serverTimeOffset',0));
 
-    GM_log('serverTimeOffset = ' + serverTimeOffset);
+//    GM_log('serverTimeOffset = ' + serverTimeOffset);
     manipulatePrefs.setPref('serverTimeOffset', String(serverTimeOffset));
 
 
@@ -5076,7 +5086,7 @@ function insertLocalServerTime()
   GM_log('Local: ' + localTime + ' Server: ' + serverTime);
 
 
-  xpathResults_timeLocation.snapshotItem(0).innerHTML ='<div style="font-family: mono; font-size:x-small;">&nbsp; Local time: ' + localTime + '  --  Server time: ' + serverTime + '</div>';
+  xpathResults_timeLocation.snapshotItem(0).innerHTML +='<span style="font-family: mono; font-size:x-small;">&nbsp; Local time: ' + localTime + '  --  Server time: ' + serverTime + '</span>';
   xpathResults_timeLocation.snapshotItem(0).setAttribute('valign', '');
 
 
@@ -5147,28 +5157,28 @@ function insertLocalServerTime()
     adResetTime = new Date(adResetTime);
 
 
-    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
-    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
-    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
-
-    console.info((localMidnight));
-    console.info((neoMidnight));
-    console.info((adResetTime));
+//    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
+//    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
+//    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+//
+//    console.info((localMidnight));
+//    console.info((neoMidnight));
+//    console.info((adResetTime));
 
 
     var localMidnightToAdResetTime = (adResetTime - localMidnight) / (1000 * 60 * 60);
     var localMidnightToNeobuxMidnight = (neoMidnight - localMidnight) / (1000 * 60 * 60);
 
 
-    console.info(localMidnightToAdResetTime);
-    console.info(localMidnightToNeobuxMidnight);
+//    console.info(localMidnightToAdResetTime);
+//    console.info(localMidnightToNeobuxMidnight);
 
 
     var _timePeriods = [];
 
     if(localMidnightToAdResetTime < localMidnightToNeobuxMidnight)
     {
-      console.info('localMidnightToAdResetTime < localMidnightToNeobuxMidnight');
+//      console.info('localMidnightToAdResetTime < localMidnightToNeobuxMidnight');
       var localMidnightToFirst = localMidnightToAdResetTime;
       var FirstToSecond = localMidnightToNeobuxMidnight - localMidnightToAdResetTime;
       var SecondToLocalMidnight = 24 - (localMidnightToFirst + FirstToSecond);
@@ -5250,7 +5260,7 @@ function insertLocalServerTime()
     location.href = "javascript:void(window.neoMidnight = new Date('"+neoMidnight.toString()+"'))";
     location.href = "javascript:void(window.localMidnight = new Date('"+localMidnight.toString()+"'))";
 
-    console.info(_timePeriods);
+//    console.info(_timePeriods);
 
     location.href = "javascript:(" + function() {
 
@@ -5338,7 +5348,7 @@ function insertLocalServerTime()
   addClock(GetServerTimeOffset(),manipulatePrefs.getPref('AdResetTimeOffset', 0));
 
 
-  xpathResults_timeLocation.snapshotItem(0).addEventListener('click',function(){
+  xpathResults_timeLocation.snapshotItem(0).lastChild.addEventListener('click',function(){
     document.getElementById('containerDiv_timer').style.display = (document.getElementById('containerDiv_timer').style.display == 'none') ? '' : 'none' ;
   },false)
 }
