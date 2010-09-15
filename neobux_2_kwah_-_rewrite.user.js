@@ -54,8 +54,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100914.1615;
-// @updateNoteMin  100914.1615 = Added the option to disable the local/server time clock; Uploaded to userscripts.org;
+// @version        4.1.100915.0300;
+// @updateNoteMin  100915.0300 = Fixed the spacer row in referrals pages not spanning the whole table and the footer row information bar not showing if there are fewer than 3 refs on the page (common with direct refs for example); Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -117,6 +117,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100914.1400 = Added the fixes suggested bp surbrec: Fixed the profit columns for goldens & ultimates, changed the column header for the average column; Uploaded to userscripts.org;
 // @history        4.1.100914.1600 = Re-added the graph export tabs (ctrl+click on the export tab to reverse the order); Uploaded to userscripts.org;
 // @history        4.1.100914.1615 = Added the option to disable the local/server time clock; Uploaded to userscripts.org;
+// @history        4.1.100915.0300 = Fixed the spacer row in referrals pages not spanning the whole table and the footer row information bar not showing if there are fewer than 3 refs on the page (common with direct refs for example); Uploaded to userscripts.org;
 
 
 
@@ -724,7 +725,7 @@ var currentPage = new PAGE();
 
 
 
-GM_log('Neobux 2+ (v4.1.100914.1615 Dev)');
+GM_log('Neobux 2+ (v4.1.100915.0300 Dev)');
 
 
 
@@ -3588,10 +3589,10 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
     null);
 
-  var rows = new Array();
+  var rows_referrals = new Array();
   for(var i=0; i<refRows.snapshotLength; i++)
   {
-    rows[i] = refRows.snapshotItem(i);
+    rows_referrals[i] = refRows.snapshotItem(i);
   }
 
 
@@ -3617,9 +3618,9 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     var otherClickers = 0;
 
 
-    for(refIndex in rows)
+    for(refIndex in rows_referrals)
     {
-      var currentReferral = rows[refIndex];
+      var currentReferral = rows_referrals[refIndex];
 
 
       columns.flag = currentReferral.childNodes[columns.indexes.FLAG];
@@ -4117,10 +4118,13 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       insertExtraColumns(currentReferral);
 
 
+    }
+
+
       // Widen remaining rows
       function widenRemainingRows()
       {
-        var requiredColspan = rows[1].children.length;
+        var requiredColspan = rows_referrals[0].children.length;
         for(var i=0; i < mainTable.rows.length; i++)
         {
           if(10 == mainTable.rows[i].children[0].getAttribute('colspan'))
@@ -4131,17 +4135,12 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       }
       widenRemainingRows();
 
-    }
-
-
-
-
     function insertFooterData(footerRow)
     {
       // SUMMARY ROW @ bottom of the referral listing table //
       // Set the size of the bottom row to match the size of the **first referral
       // row** to accomodate for extra columns that have been added
-      footerRow.childNodes[0].colSpan = rows[2].childNodes.length;
+      footerRow.childNodes[0].colSpan = rows_referrals[0].childNodes.length;
 
 
       var totalClickAvg = sumOfAverages / activeRefCount;
