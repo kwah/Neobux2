@@ -59,8 +59,8 @@ var fileMETA = parseHeaders(<>
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100919.1230;
-// @updateNoteMin  100919.1230 = Big/many changes all rolled into one update note..: Inserted a slightly modified copy of surebrec's update to insertChartDataBars() - hopefully the extensions databars should work for >=golden members now; Updated the updater code to look to kwah.org for its updates because userscripts.org keeps going down; Fixed the 'yesterday's average issues; I managed to make a large push towards 'fixing' a whole bunch of code style issues and inconsistencies; Fixed existing problems with the preferences editor; Changed how the server time is calculated; Uploaded to userscripts.org;
+// @version        4.1.100920.1530;
+// @updateNoteMin  100920.1530 = Fixed a few issues with the extensions graph; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -126,6 +126,7 @@ var fileMETA = parseHeaders(<>
 // @history        4.1.100915.1200 = Altered the local/server time to be appended to the uppor-right corner rather than overwriting the contents of that area (eg, to stop it hiding "1 New History");
 // @history        4.1.100915.1420 = Hopefully fixed the ultimate graphs issue and added some logging code to help identify cause if it doesn't work; Uploaded to Userscripts.org;
 // @history        4.1.100919.1230 = Big/many changes all rolled into one update note..: Inserted a slightly modified copy of surebrec's update to insertChartDataBars() - hopefully the extensions databars should work for >=golden members now; Updated the updater code to look to kwah.org for its updates because userscripts.org keeps going down; Fixed the 'yesterday's average issues; I managed to make a large push towards 'fixing' a whole bunch of code style issues and inconsistencies; Fixed existing problems with the preferences editor; Changed how the server time is calculated; Uploaded to userscripts.org;
+// @history        4.1.100920.1530 = Fixed a few issues with the extensions graph; Uploaded to userscripts.org;
 
 
 
@@ -135,6 +136,7 @@ var fileMETA = parseHeaders(<>
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.js
 // @require        http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.js
 // @require        http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js
+
 
 
 /*
@@ -280,7 +282,6 @@ new u(this,this.eq(0).closest("form"),a);return this.data("validator",b)}}})(jQu
 
 
 
-
 /* CONSTANTS */
 
 var MSPD = 86400000; // MilliSeconds Per Day
@@ -303,7 +304,7 @@ do
   dates_array[9-i] = blah.getFullYear() + '/' + padZeros(blah.getMonth()+1, 2) + '/' + padZeros(blah.getDate(), 2);
   i++;
 
-}while(i<90);
+}while(90 > i);
 
 
 
@@ -331,7 +332,7 @@ if ('undefined' == typeof GM_log)
   // Firebug & Opera
   if ('undefined' !== typeof console.info) {
     console.info('typeof console.info = ' + (typeof console.info));
-    function GM_log(message) { console.info(message); }
+    function GM_log(_message) { console.info(_message); }
   }
 }
 
@@ -348,11 +349,11 @@ if ('undefined' == typeof GM_registerMenuCommand)
 // The same function as used within the Greasemonkey source
 if ('undefined' == typeof GM_addStyle) 
 {
-  function GM_addStyle(css) {
+  function GM_addStyle(_css) {
     var head = document.getElementsByTagName("head")[0];
     if (head) {
       var style = document.createElement("style");
-      style.textContent = css;
+      style.textContent = _css;
       style.type = "text/css";
       head.appendChild(style);
     }
@@ -385,39 +386,39 @@ if ('undefined' == typeof GM_addStyle)
 // GM_get/setValue (lesser of the evils?)
 if ('undefined' == typeof GM_setValue)
 {
-  function GM_setValue(key, value) {
+  function GM_set_value(_key, _value) {
     try {
-      window.localStorage[key] = value;
+      window.localStorage[_key] = _value;
     } catch(e) {
-      GM_log("Error inside GM_setValue");
+      GM_log("Error inside GM_set_value");
       GM_log(e);
     }
-    // GM_log("Return from GM_setValue.\n" + key + ":" + value);
+    // GM_log("Return from GM_set_value.\n" + _key + ":" + _value);
   }
 }
 
-if ('undefined' == typeof GM_getValue)
+if ('undefined' == typeof GM_get_value)
 {
-  function GM_getValue(key, value) {
-    // GM_log('Get Item:' + key);
+  function GM_get_value(_key, _value) {
+    // GM_log('Get Item:' + _key);
     // Store item in local storage:
-    if ('undefined' !== typeof window.localStorage[key] && 'undefined' !== window.localStorage[key]) {
-      // if ("false" === window.localStorage[key]) {
+    if ('undefined' !== typeof window.localStorage[_key] && 'undefined' !== window.localStorage[_key]) {
+      // if ("false" === window.localStorage[_key]) {
       // return false;
-      // } else if ("true" === window.localStorage[key]) {
+      // } else if ("true" === window.localStorage[_key]) {
       // return true;
       // } else {
-      return window.localStorage[key];
+      return window.localStorage[_key];
       // }
     } else {
-      GM_log("GM_getValue: Could not find key:" + key);
-      if ('undefined' !== typeof value) {
-        GM_log("GM_getValue: setting default value");
-        GM_setValue(key, value);
-        GM_log("GM_getValue: returning default value");
-        return value;
+      GM_log("GM_get_value: Could not find _key:" + _key);
+      if ('undefined' !== typeof _value) {
+        GM_log("GM_get_value: setting default _value");
+        GM_set_value(_key, _value);
+        GM_log("GM_get_value: returning default _value");
+        return _value;
       } else {
-        GM_log("GM_getValue: no default value set");
+        GM_log("GM_get_value: no default _value set");
         return undefined;
       }
     }
@@ -433,7 +434,7 @@ function utils() { }
 
 function logger()
 {
-  if(arguments.__count__ > 0){
+  if(0 < arguments.__count__){
     console.info(arguments);
   }
   else
@@ -474,7 +475,7 @@ Object.merge = function Object_merge(_newObj)
         break;
 
       case "function":
-        if(newVar !== 'append'){
+        if('append' !== newVar){
           this[newVar] = _newObj[newVar];
         }
         break;
@@ -486,7 +487,7 @@ Object.merge = function Object_merge(_newObj)
 
   return this;
 
-}
+};
 
 function padZeros(_input,_desiredStringLength)
 {
@@ -506,9 +507,9 @@ function sanitiseDate(_dateString)
   return _dateString;
 }
 
-function toBool(str)
+function toBool(_str)
 {
-  switch(str){
+  switch(_str){
     case "false":
       return false;
       break;
@@ -516,7 +517,7 @@ function toBool(str)
       return true;
       break;
     default:
-      return str;
+      return _str;
       break;
   }
 }
@@ -525,7 +526,7 @@ function toBool(str)
 function manipulatePrefs() {}
 
 /**
- * Sets a stored variable using whatever storage methods are avalaible
+ * Sets a stored variable using whatever storage methods are available
  * NOTE: Currently only supports GM_setValue()
  *
  * @param    _pref    The name of the stored variable being set
@@ -571,7 +572,7 @@ manipulatePrefs.setPref = function manipulatePrefs_setPref(_pref, _value)
 };
 
 /**
- * Gets a stored variable using whatever storage methods are avalaible [currently only supports GM_getValue() ]
+ * Gets a stored variable using whatever storage methods are available [currently only supports GM_getValue() ]
  * Will create the stored variable with the default value if it does not already exist
  *
  * @param    _pref           The name of the preference being retrieved
@@ -709,7 +710,7 @@ function PAGE()
       _currentPage = 'scriptConfig';
 
     }
-    if(null == _currentPage)
+    if(null === _currentPage)
     {
       message += '\n\n' +('unknown page');
       _currentPage = 'unknown';
@@ -723,12 +724,12 @@ function PAGE()
   this.languageCode = function PAGE_languageCode()
   {
     var message = '';
-    if (document.body.innerHTML.indexOf(' src="http://neobux.cachefly.net/imagens/band1.png"') > 0)
+    if (0 < document.body.innerHTML.indexOf(' src="http://neobux.cachefly.net/imagens/band1.png"'))
     {
       message += '\n\n' +('currentPage.languageCode() = "PT"');
       return 'PT';
     }
-    else if (document.body.innerHTML.indexOf(' src="http://neobux.cachefly.net/imagens/band2.png"') > 0)
+    else if (0 < document.body.innerHTML.indexOf(' src="http://neobux.cachefly.net/imagens/band2.png"'))
     {
       message += '\n\n' +('currentPage.languageCode() = "EN"');
       return 'EN';
@@ -753,7 +754,7 @@ if(manipulatePrefs.getPref('firstRun',true))
   manipulatePrefs.setPref('firstRun',false);
 }
 
-if(manipulatePrefs.getPref('setupComplete',false) === false)
+if(false === manipulatePrefs.getPref('setupComplete', false))
 {
   logger("(manipulatePrefs.getPref('setupComplete',false) === false)");
 
@@ -786,7 +787,7 @@ if(manipulatePrefs.getPref('setupComplete',false) === false)
   logger('setupLevel = '+setupLevel);
   manipulatePrefs.setPref('setupLevel',setupLevel);
 
-  if(manipulatePrefs.getPref('setupLevel',0) == 5)
+  if(5 === manipulatePrefs.getPref('setupLevel', 0))
   {
     alert('Thanks. The script should now work okay. If you have any problems, contact kwah in the Neobux forums, kwah.org or at userscripts.org,');
     manipulatePrefs.setPref('setupComplete',true);
@@ -1037,37 +1038,37 @@ var testing = false;
  * Extra functions needed to deal with closures
  */
 
-function setValue_InStoredObject(_preferralName, _varName, _newValue)
+function setValue_InStoredObject(_referralName, _varName, _newValue)
 {
-  var tmp_original = JSON.parse(manipulatePrefs.getPref(_preferralName, JSON.stringify( {} )));
+  var tmp_original = JSON.parse(manipulatePrefs.getPref(_referralName, JSON.stringify( {} )));
   tmp_original[_varName] = _newValue;
 
-  manipulatePrefs.setPref(_preferralName,JSON.stringify(tmp_original));
+  manipulatePrefs.setPref(_referralName,JSON.stringify(tmp_original));
 };
 
-function getValue_FromStoredObject(_preferralName, _varName, _defaultValue) 
+function getValue_FromStoredObject(_referralName, _varName, _defaultValue)
 {
   return function () {
-    return JSON.parse(manipulatePrefs.getPref(_preferralName, JSON.stringify(_defaultValue)))[_varName];
+    return JSON.parse(manipulatePrefs.getPref(_referralName, JSON.stringify(_defaultValue)))[_varName];
   };
 };
 
-function setFunction(_preferralName,loop_columnName)
+function setFunction(_referralName,_loop_columnName)
 {
   return function(_newValue) {
-    setValue_InStoredObject(_preferralName,loop_columnName, _newValue)
+    setValue_InStoredObject(_referralName,_loop_columnName, _newValue)
   }
 };
 
-function addSettersGetters(_obj, _preferralName, _defaults)
+function addSettersGetters(_obj, _referralName, _defaults)
 {
   logger(arguments);
   for(var loop_columnName in _defaults)
   {
-    var getFunc = getValue_FromStoredObject(_preferralName,loop_columnName, _defaults);
+    var getFunc = getValue_FromStoredObject(_referralName,loop_columnName, _defaults);
     _obj.__defineGetter__(loop_columnName, getFunc);
 
-    var setfunc = setFunction(_preferralName,loop_columnName);
+    var setfunc = setFunction(_referralName,loop_columnName);
     _obj.__defineSetter__(loop_columnName, setfunc);
   }
 }
@@ -1117,7 +1118,7 @@ var ACCOUNT_FUNCTIONS =
 
 
   /**
-   * Function that returns the cost of paying via autopay for one renewal
+   * Function that returns the cost of paying via Autopay for one renewal
    */
   'getAutopayCost': function getAutopayCost(_accType,_numberOfRentedRefs)
   {
@@ -1230,7 +1231,7 @@ var getAccountType = new function ()
 
   this.showUltimateFeatures =  ((6 == _acctype.numerical) || testing) ? true : false;
   this.isUltimate =  (6 == _acctype.numerical) ? true : false;
-  this.isStandard =  (0 == _acctype.numerical) ? true : false;
+  this.isStandard =  (0 === _acctype.numerical) ? true : false;
 
   return this;
 };
@@ -1238,7 +1239,7 @@ var getAccountType = new function ()
 function extractNumberOfRefs()
 {
   // If currently viewing the rented/direct ref listings, update the stored values accordingly
-  if ((currentPage.pageName() == 'rentedRefListing') || (currentPage.pageName() == 'directRefListing'))
+  if (('rentedRefListing' == currentPage.pageName()) || ('directRefListing' == currentPage.pageName()))
   {
     // Deduce which page is being viewed
     var _pageRefType = null;
@@ -1248,7 +1249,7 @@ function extractNumberOfRefs()
         _pageRefType = 'Rented';
         break;
       case 'directRefListing':
-        _pageRefType = 'Direct'
+        _pageRefType = 'Direct';
         break;
     }
 
@@ -1409,9 +1410,9 @@ script.preferences =
   lastClick_replaceNilClicks: manipulatePrefs.getPref('lastClick_replaceNilClicks',false),
 
   // Average column;
-  exactaverageshow: manipulatePrefs.getPref('exactaverageshow',true),
-  exactaveragereplace: manipulatePrefs.getPref('exactaveragereplace',false),
-  exactaverageseperator: manipulatePrefs.getPref('exactaverageseperator',' | '),
+  exactAverageShow: manipulatePrefs.getPref('exactAverageShow',true),
+  exactAverageReplace: manipulatePrefs.getPref('exactAverageReplace',false),
+  exactAverageSeperator: manipulatePrefs.getPref('exactAverageSeperator',' | '),
 
   // Profit Column
   profit_includeRecycleCost: manipulatePrefs.getPref('profit_includeRecycleCost',false),
@@ -1456,7 +1457,7 @@ function extractGraphData()
       tmp_currentGraph.containerID = _currentGraph[0];
       tmp_currentGraph.name = _currentGraph[5][0]['name'];
 
-      tmp_currentGraph.rawData = (tmp_currentGraph.containerID !== 'ch_ext_schedule') ? _currentGraph[5][0]['data'].reverse() : _currentGraph[5][0]['data'];
+      tmp_currentGraph.rawData = ('ch_ext_schedule' !== tmp_currentGraph.containerID) ? _currentGraph[5][0]['data'].reverse() : _currentGraph[5][0]['data'];
 
       tmp_currentGraph.data = {};
       for(var i = 0, length = _currentGraph[2].length; i < length; i++) {
@@ -1701,14 +1702,14 @@ function extractGraphData()
    */
 
   // Decode evalString using the w(i) function from the Neobux page
-  function U(a)
+  function U(_a)
   {
-    return a * 10
+    return _a * 10
   }
 
-  function u0(a)
+  function u0(_a)
   {
-    return String.fromCharCode(U(a))
+    return String.fromCharCode(U(_a))
   }
 
   // function w(_i) {
@@ -1728,11 +1729,11 @@ function extractGraphData()
       c2 = (e2 & 15) << 4 | e3 >> 2;
       c3 = (e3 & 3) << 6 | e4;
       o = o + u0(c1 / 10);
-      if (e3 != 64)
+      if (64 != e3)
       {
         o = o + u0(c2 / 10);
       }
-      if (e4 != 64)
+      if (64 != e4)
       {
         o = o + u0(c3 / 10);
       }
@@ -1796,18 +1797,18 @@ function insertProfitGraph()
 
   // Transfer script variables to the window
   location.href = "javascript:void(window.profit = new Array())";
-  for(var i = 0; i < 10; i++) {
+  for(var i = 0; 10 > i; i++) {
     location.href = "javascript:void(window.profit["+i+"] = '"+parseFloat(sidebarDATA[i].netIncome)+"')";
   }
   location.href = "javascript:void(window.income = new Array())";
-  for(var i = 0; i < 10; i++) {
+  for(var i = 0; 10 > i; i++) {
     location.href = "javascript:void(window.income["+i+"] = '"+parseFloat(sidebarDATA[i].income)+"')";
   }
 
   // Multiplying expenses values by -1 to indicate that they have a negative impact upon profit
   // (for the benefit of the profit graph)
   location.href = "javascript:void(window.expenses = new Array())";
-  for(var i = 0; i < 10; i++) {
+  for(var i = 0; 10 > i; i++) {
     location.href = "javascript:void(window.expenses["+i+"] = '"+(parseFloat(sidebarDATA[i].expenses) * -1)+"')";
   }
 
@@ -1829,31 +1830,31 @@ function insertProfitGraph()
     // mn = y-axis minimum
     // p = x-axis plot bands (3-value array or 0)
 
-    function mk_ch2(containerID, graphTitle, x_axisCategories, tooltipPrefix, tooltipSuffix, x_ValuesAndTitle, LegendEnabled, y_axisPlotBands, y_axisMin, x_axisPlotBands) {
+    function mk_ch2(_containerID, _graphTitle, _x_axisCategories, _tooltipPrefix, _tooltipSuffix, _x_ValuesAndTitle, _legendEnabled, _y_axisPlotBands, _y_axisMin, _x_axisPlotBands) {
       var pn;
 
-      if (y_axisPlotBands == 0) {
+      if (0 === _y_axisPlotBands) {
         n = [0, 0, 0];
       } else {
-        n = y_axisPlotBands;
+        n = _y_axisPlotBands;
       }
-      if (x_axisPlotBands == 0) {
+      if (0 === _x_axisPlotBands) {
         pn = [0, 0, 0, 0];
       } else {
-        pn = x_axisPlotBands;
+        pn = _x_axisPlotBands;
       }
       var s1 = 30,
           s2 = 20,
           s3 = 20,
           s4 = 50;
-      if (LegendEnabled == 1) {
+      if (1 == _legendEnabled) {
         s1 = 20, s3 = 30;
       }
-      if (graphTitle == "") {
+      if ("" == _graphTitle) {
         s1 = 10;
       }
-      if (y_axisMin == "x") {
-        y_axisMin = -0.2;
+      if ("x" == _y_axisMin) {
+        _y_axisMin = -0.2;
         maxout = 4;
       } else {
         maxout = null;
@@ -1863,7 +1864,7 @@ function insertProfitGraph()
 
       var chart = new(Highcharts.Chart)({
         chart: {
-          renderTo: containerID,
+          renderTo: _containerID,
           defaultSeriesType: "line",
           margin: g,
           showAxes: 1,
@@ -1873,7 +1874,7 @@ function insertProfitGraph()
           shadow: 0
         },
         title: {
-          text: graphTitle,
+          text: _graphTitle,
           style: {
             margin: "10px 0 0 10px",
             textAlign: "center",
@@ -1881,7 +1882,7 @@ function insertProfitGraph()
           }
         },
         xAxis: {
-          categories: x_axisCategories,
+          categories: _x_axisCategories,
           labels: {
             enabled: 0
           },
@@ -1889,7 +1890,7 @@ function insertProfitGraph()
           gridLineWidth: 1,
           lineColor: "#fff",
           tickColor: "#fff",
-          gridLineColor: x_axisPlotBands == 0 ? "#eee" : "",
+          gridLineColor: 0 === _x_axisPlotBands ? "#eee" : "",
           plotBands: [{
             from: 0,
             to: pn[0],
@@ -1916,7 +1917,7 @@ function insertProfitGraph()
             enabled: 0,
             text: null
           },
-          min: y_axisMin,
+          min: _y_axisMin,
           max: maxout,
           endOnTick: 0,
           startOnTick: 0,
@@ -1944,11 +1945,11 @@ function insertProfitGraph()
         },
         tooltip: {
           formatter: function () {
-            return "<b>" + this.series.name + "</b><br/>" + this.x + ": " + tooltipPrefix + this.y + " " + tooltipSuffix;
+            return "<b>" + this.series.name + "</b><br/>" + this.x + ": " + _tooltipPrefix + this.y + " " + _tooltipSuffix;
           }
         },
         legend: {
-          enabled: LegendEnabled,
+          enabled: _legendEnabled,
           layout: "horizontal",
           symbolWidth: 5,
           style: {
@@ -1975,7 +1976,7 @@ function insertProfitGraph()
             }
           }
         },
-        series: x_ValuesAndTitle,
+        series: _x_ValuesAndTitle,
         credits: {
           enabled: 0
         }
@@ -1998,11 +1999,11 @@ function insertProfitGraph()
       var blah = new Date();
       blah.setDate(new Date().getDate() - i);
 
-      var tmp_DateString = blah.getFullYear() + '/' + (((blah.getMonth()+1) < 10) ? '0' + (blah.getMonth()+1) : (blah.getMonth()+1)) + '/' + (((blah.getDate()) < 10) ? '0' + (blah.getDate()) : (blah.getDate()));
+      var tmp_DateString = blah.getFullYear() + '/' + ((10 > (blah.getMonth() + 1)) ? '0' + (blah.getMonth()+1) : (blah.getMonth()+1)) + '/' + ((10 > (blah.getDate())) ? '0' + (blah.getDate()) : (blah.getDate()));
       dates_array[9-i] = tmp_DateString;
       i++;
 
-    }while(i<10);
+    }while(10 > i);
 
     mk_ch2('ch_scriptProfit', '',
         dates_array,
@@ -2117,10 +2118,10 @@ function generateSidebarData()
         break;
     }
 
-    this.directAverage = (myAccountDetails.numberOfRefs.Direct > 0) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (dividerDays)).toFixed(3) : 0;
-    this.rentedAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? ((this.rentedClicks / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
-    this.rentedRAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? (((this.rentedClicks - (_graphs.recycleCost.rawData[_days] * 100)) / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
-    this.totalRAverage = ((myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct) > 0) ? ((((this.rentedClicks + this.directClicks) - (_graphs.recycleCost.sum[_days + 1] * 100)) / (myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct)) / (dividerDays)).toFixed(3) : 0;
+    this.directAverage = (0 < myAccountDetails.numberOfRefs.Direct) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (dividerDays)).toFixed(3) : 0;
+    this.rentedAverage = (0 < myAccountDetails.numberOfRefs.Rented) ? ((this.rentedClicks / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
+    this.rentedRAverage = (0 < myAccountDetails.numberOfRefs.Rented) ? (((this.rentedClicks - (_graphs.recycleCost.rawData[_days] * 100)) / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
+    this.totalRAverage = (0 < (myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct)) ? ((((this.rentedClicks + this.directClicks) - (_graphs.recycleCost.sum[_days + 1] * 100)) / (myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct)) / (dividerDays)).toFixed(3) : 0;
 
     this.netIncome = (this.income - this.expenses).toFixed(3);
     this.personalClicksIncome = myAccountDetails.ownClickValue * this.personalClicks;
@@ -2141,7 +2142,7 @@ function generateSidebarData()
   };
 
 
-  for(var i=0; i<10; i++)
+  for(var i=0; 10 > i; i++)
   {
     sidebarDATA[i] = new SIDEBAR_STATS(i);
   }
@@ -2167,7 +2168,7 @@ function generateSidebarData()
 
 
   // If the user has no rented referrals, these stats do not apply
-  if (!myAccountDetails.numberOfRefs.Rented > 0)
+  if (0 < !myAccountDetails.numberOfRefs.Rented)
   {
     sidebarDATA.today.rentedAverage = '<i>N/A</i>';
     sidebarDATA.today.rentedRAverage = '<i>N/A</i>';
@@ -2178,7 +2179,7 @@ function generateSidebarData()
   }
 
   // If the user has no referrals *AT ALL*, these stats do not apply either
-  if (myAccountDetails.numberOfRefs.Direct == 0 && myAccountDetails.numberOfRefs.Rented == 0)
+  if (0 === myAccountDetails.numberOfRefs.Direct && 0 === myAccountDetails.numberOfRefs.Rented)
   {
     sidebarDATA.today.totalRAverage = '<i>N/A <small>(zero refs)</small></i>';
     sidebarDATA.yesterday.totalRAverage = '<i>N/A <small>(zero refs)</small></i>';
@@ -2243,25 +2244,39 @@ function insertChartDataBars()
 
   if ('refStats' == currentPage.pageName())
   {
-    graphsOnCurrentPage.push(availableGraphs.standardGraphs);
-    if (0 < myAccountDetails.accountType.numerical) {
-      graphsOnCurrentPage.push(availableGraphs.goldenGraphs);
+    for (var i = 0; i < availableGraphs.standardGraphs.length; i++)
+    {
+      graphsOnCurrentPage.push(availableGraphs.standardGraphs[i]);
+    }
+
+    if (0 < myAccountDetails.accountType.numerical)
+    {
+      for (var i = 0; i < availableGraphs.goldenGraphs.length; i++)
+      {
+        graphsOnCurrentPage.push(availableGraphs.goldenGraphs[i]);
+      }
     }
   }
-  else if ('accSummary' == currentPage.pageName())
+  else
   {
-    graphsOnCurrentPage.push(availableGraphs.accSummary);
+    if ('accSummary' == currentPage.pageName())
+    {
+      for (var i = 0; i < availableGraphs.accSummary.length; i++)
+      {
+        graphsOnCurrentPage.push(availableGraphs.accSummary[i]);
+      }
+    }
   }
 
   logger('graphsOnCurrentPage');
   logger(graphsOnCurrentPage);
 
-  for (var i = 0; i < graphsOnCurrentPage[0].length; i++)
+  for (var i = 0; i < graphsOnCurrentPage.length; i++)
   {
 
-    logger('graphsOnCurrentPage[0][i]');
-    logger(graphsOnCurrentPage[0][i]);
-    var _currentGraph = _graphs[friendlyNameLookup[graphsOnCurrentPage[0][i]]];
+    logger('graphsOnCurrentPage[i]');
+    logger(graphsOnCurrentPage[i]);
+    var _currentGraph = _graphs[friendlyNameLookup[graphsOnCurrentPage[i]]];
 
     logger('_currentGraph');
     logger(_currentGraph);
@@ -2282,18 +2297,29 @@ function insertChartDataBars()
         break;
     }
 
+    var sum_Array = new Array();
+    var avg_Array = new Array();
+
+    for (var j = 0; j < graph_timePeriod.length; j++)
+    {
+      sum_Array.push([graph_timePeriod[j], _currentGraph.sum[graph_timePeriod[j]].toFixed(3)]);
+      avg_Array.push([graph_timePeriod[j], _currentGraph.mean[graph_timePeriod[j]].toFixed(3)]);
+    }
+
+
+    
     // Extra processing needed for the extensions graph so process seperately..
     if ('ch_ext_schedule' == _currentGraph.containerID)
     {
       var extensionsArray = [];
 
-      for(var i=0; i<sum_Array.length; i++) {
-        var foo = (i==0) ? sum_Array[ i ]: (sum_Array[ i ] - sum_Array[i-1]);
+      for (var i = 0; i < sum_Array.length; i++)
+      {
+        var foo = (0 === i) ? sum_Array[ i ] : (sum_Array[ i ] - sum_Array[i - 1]);
         extensionsArray.push(foo);
       }
-      addDataBarUnderGraph('Extensions due: :', _currentGraph.containerID, ' (', extensionsArray, ') ',null);
 
-      //      addExtensionsBarUnderGraph('Extensions due :', _currentGraph.containerID, ' (', extensionsArray, ') ', 'margin-top:0px;');
+      addDataBarUnderGraph('Extensions due: :', _currentGraph.containerID, ' (', extensionsArray, ') ', 'margin-top:0px;');
 
     } else
     {
@@ -2302,14 +2328,6 @@ function insertChartDataBars()
        * Insert data bars below graphs
        */
 
-      var sum_Array = new Array();
-      var avg_Array = new Array();
-
-      for (var j = 0; j < graph_timePeriod.length; j++)
-      {
-        sum_Array.push([graph_timePeriod[j], _currentGraph.sum[graph_timePeriod[j]].toFixed(3)]);
-        avg_Array.push([graph_timePeriod[j], _currentGraph.mean[graph_timePeriod[j]].toFixed(3)]);
-      }
 
       document.getElementById(_currentGraph.containerID).parentNode.style.height = '150px';
 
@@ -2520,14 +2538,14 @@ function createCustomAlert(_txt, _textareaContents, _alertTitle, _alertButtonTex
   var h1 = alertObj.appendChild(d.createElement("h1"));
   h1.appendChild(d.createTextNode(_alertTitle));
 
-  if (_txt != '')
+  if ('' !== _txt)
   {
     // create a paragraph element to contain the _txt argument
     var msg = alertObj.appendChild(d.createElement("p"));
     msg.innerHTML = _txt;
   }
 
-  if (_textareaContents != '')
+  if ('' !== _textareaContents)
   {
     // create a textarea
     var textarea = alertObj.appendChild(d.createElement("center")).appendChild(d.createElement("textarea"));
@@ -2701,8 +2719,8 @@ function insertSidebar()
     - rented : " + _graphs.rentedClicks.today + " / $" + (sidebarDATA.today.rentedIncome).toFixed(3) + "<br>\
     - direct : " + _graphs.directClicks.today + " / $" + (sidebarDATA.today.directIncome).toFixed(3) + "<br>\
     <i>Projected Income:</i><br>\
-    - rented : " + ((myAccountDetails.numberOfRefs.Rented > 0) ? sidebarDATA.today.projectedRentedClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedRentedIncome).toFixed(3) : "N/A") + "<br>\
-    - direct : " + ((myAccountDetails.numberOfRefs.Direct > 0) ? sidebarDATA.today.projectedDirectClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedDirectIncome).toFixed(3) : "N/A") + "<br>\
+    - rented : " + ((0 < myAccountDetails.numberOfRefs.Rented) ? sidebarDATA.today.projectedRentedClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedRentedIncome).toFixed(3) : "N/A") + "<br>\
+    - direct : " + ((0 < myAccountDetails.numberOfRefs.Direct) ? sidebarDATA.today.projectedDirectClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedDirectIncome).toFixed(3) : "N/A") + "<br>\
     </div>\
     <h6> + Expenses</h6>\
     <div class='sidebarDetails'>\
@@ -2850,23 +2868,23 @@ if('refStats' == currentPage.pageName() || 'accSummary' == currentPage.pageName(
  * Calculate the number of days since the date 'tmp'
  * Will work with the words 'today' & 'yesterday' too
  */
-function NumDaysSince(a_inputDateTimeString, a_levelOfDetail, a_fullerSinceTimer, a_shortFormat, a_column)
+function NumDaysSince(_inputDateTimeString, _levelOfDetail, _fullerSinceTimer, _shortFormat, _column)
 {
 
   // Clean the input string and split it to [0] = date, [1] = time
-  a_inputDateTimeString = a_inputDateTimeString.replace(/Today/,Today.getFullYear()+'/'+(Today.getMonth()+1)+'/'+Today.getDate());
-  a_inputDateTimeString = a_inputDateTimeString.replace(/Yesterday/,Yesterday.getFullYear()+'/'+(Yesterday.getMonth()+1)+'/'+Yesterday.getDate());
+  _inputDateTimeString = _inputDateTimeString.replace(/Today/,Today.getFullYear()+'/'+(Today.getMonth()+1)+'/'+Today.getDate());
+  _inputDateTimeString = _inputDateTimeString.replace(/Yesterday/,Yesterday.getFullYear()+'/'+(Yesterday.getMonth()+1)+'/'+Yesterday.getDate());
 
-  a_inputDateTimeString = a_inputDateTimeString.replace('&nbsp;', '').split(' ');
+  _inputDateTimeString = _inputDateTimeString.replace('&nbsp;', '').split(' ');
 
 
   var timeArray = new Array(2);
-  timeArray[0] = (a_inputDateTimeString[1]) ? (a_inputDateTimeString[1].split(":")[0]) : "00";
-  timeArray[1] = (a_inputDateTimeString[1]) ? (a_inputDateTimeString[1].split(":")[1]) : "00";
+  timeArray[0] = (_inputDateTimeString[1]) ? (_inputDateTimeString[1].split(":")[0]) : "00";
+  timeArray[1] = (_inputDateTimeString[1]) ? (_inputDateTimeString[1].split(":")[1]) : "00";
 
 
   //var _Since = new Date(year, month, day, hours, minutes);
-  var _Since = new Date(a_inputDateTimeString[0] + ' ' + timeArray[0] + ':' + timeArray[1]);
+  var _Since = new Date(_inputDateTimeString[0] + ' ' + timeArray[0] + ':' + timeArray[1]);
 
 
   var timeElapsed = '';
@@ -2875,36 +2893,36 @@ function NumDaysSince(a_inputDateTimeString, a_levelOfDetail, a_fullerSinceTimer
   var wholeHoursOwned = Math.floor((dateDiff - wholeDaysOwned) * 24);
   var wholeMinsOwned = Math.floor((((dateDiff - wholeDaysOwned) * 24) - wholeHoursOwned) * 60);
 
-  var day_text = (a_shortFormat) ? ' day' : 'd';
-  var days_text = (a_shortFormat) ? ' days' : 'd';
-  var hr_text = (a_shortFormat) ? ' hr' : 'h';
-  var hrs_text = (a_shortFormat) ? ' hrs' : 'h';
-  var min_text = (a_shortFormat) ? ' min' : 'm';
-  var mins_text = (a_shortFormat) ? ' mins' : 'm';
+  var day_text = (_shortFormat) ? ' day' : 'd';
+  var days_text = (_shortFormat) ? ' days' : 'd';
+  var hr_text = (_shortFormat) ? ' hr' : 'h';
+  var hrs_text = (_shortFormat) ? ' hrs' : 'h';
+  var min_text = (_shortFormat) ? ' min' : 'm';
+  var mins_text = (_shortFormat) ? ' mins' : 'm';
 
   var spacer = ', ';
 
 
-  if (a_fullerSinceTimer || 'decimal' == a_levelOfDetail)
+  if (_fullerSinceTimer || 'decimal' == _levelOfDetail)
   {
-    if ('decimal' == a_levelOfDetail)
+    if ('decimal' == _levelOfDetail)
     {
       timeElapsed = dateDiff;
     }
     else
     {
-      if ('days' == a_levelOfDetail || 'hrs' == a_levelOfDetail || 'mins' == a_levelOfDetail)
+      if ('days' == _levelOfDetail || 'hrs' == _levelOfDetail || 'mins' == _levelOfDetail)
       {
         timeElapsed += wholeDaysOwned;
         timeElapsed += (1 == wholeDaysOwned) ? day_text : days_text;
       }
-      if ('hrs' == a_levelOfDetail || 'mins' == a_levelOfDetail)
+      if ('hrs' == _levelOfDetail || 'mins' == _levelOfDetail)
       {
         timeElapsed += spacer;
         timeElapsed += wholeHoursOwned;
         timeElapsed += (1 == wholeHoursOwned) ? hr_text : hrs_text;
       }
-      if ('mins' == a_levelOfDetail)
+      if ('mins' == _levelOfDetail)
       {
         timeElapsed += spacer;
         timeElapsed += wholeMinsOwned;
@@ -2913,7 +2931,7 @@ function NumDaysSince(a_inputDateTimeString, a_levelOfDetail, a_fullerSinceTimer
     }
   }
 
-  if ((!a_fullerSinceTimer || a_levelOfDetail == 'wholeDays') && a_levelOfDetail != 'decimal')
+  if ((!_fullerSinceTimer || 'wholeDays' == _levelOfDetail) && 'decimal' != _levelOfDetail)
   {
     timeElapsed = Math.floor(dateDiff);
   }
@@ -2921,7 +2939,7 @@ function NumDaysSince(a_inputDateTimeString, a_levelOfDetail, a_fullerSinceTimer
   return timeElapsed;
 }
 
-function extractRefData(a_column)
+function extractRefData(_column)
 {
   var mtx = new Array();
 
@@ -2990,24 +3008,24 @@ function extractRefData(a_column)
     if ('rentedRefListing' == currentPage.pageName())
     {
       referrals[z] = {
-        ID: (currentReferral[1] == 0) ? 'R' + currentReferral[19] : currentReferral[1],
+        ID: (0 === currentReferral[1]) ? 'R' + currentReferral[19] : currentReferral[1],
         flagType: currentReferral[15],
-        referralSince: (currentReferral[2] == '9') ? referrals[z - 1].referralSince : currentReferral[2],
+        referralSince: ('9' == currentReferral[2]) ? referrals[z - 1].referralSince : currentReferral[2],
         nextPayment: currentReferral[3],
-        lastClick: (currentReferral[4] == '9') ? referrals[z - 1].lastClick : (currentReferral[4] == 'N') ? 'No clicks yet' : (currentReferral[4] == 'O') ? 'Yesterday' : (currentReferral[4] == 'H') ? 'Today' : currentReferral[4],
+        lastClick: ('9' == currentReferral[4]) ? referrals[z - 1].lastClick : ('N' == currentReferral[4]) ? 'No clicks yet' : ('O' == currentReferral[4]) ? 'Yesterday' : ('H' == currentReferral[4]) ? 'Today' : currentReferral[4],
         totalClicks: currentReferral[5],
-        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6]
+        overallAverage: ('-.---' == currentReferral[6] || 999 == currentReferral[6]) ? '-.---' : currentReferral[6]
       };
     }
     else if ('directRefListing' == currentPage.pageName())
     {
       referrals[z] = {
-        ID: (currentReferral[1] === 0) ? 'D' + currentReferral[19] : currentReferral[1],
+        ID: (0 === currentReferral[1]) ? 'D' + currentReferral[19] : currentReferral[1],
         cameFrom: currentReferral[2],
-        referralSince: (currentReferral[3] == '9') ? referrals[z - 1].referralSince : currentReferral[3],
-        lastClick: (currentReferral[4] == '9') ? referrals[z - 1].lastClick : (currentReferral[4] == 'N') ? 'No clicks yet' : (currentReferral[4] == 'O') ? 'Yesterday' : (currentReferral[4] == 'H') ? 'Today' : currentReferral[4],
+        referralSince: ('9' == currentReferral[3]) ? referrals[z - 1].referralSince : currentReferral[3],
+        lastClick: ('9' == currentReferral[4]) ? referrals[z - 1].lastClick : ('N' == currentReferral[4]) ? 'No clicks yet' : ('O' == currentReferral[4]) ? 'Yesterday' : ('H' == currentReferral[4]) ? 'Today' : currentReferral[4],
         totalClicks: currentReferral[5],
-        overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6]
+        overallAverage: ('-.---' == currentReferral[6] || 999 == currentReferral[6]) ? '-.---' : currentReferral[6]
       };
     }
 
@@ -3030,15 +3048,15 @@ function extractRefData(a_column)
 
     /* Ultimate only stuff, based on the ultimate minigraphs */
     GM_log('refsPerPage = ' + refsPerPage);
-    GM_log('(refsPerPage <= 100) = ' + (refsPerPage <= 100));
+    GM_log('(refsPerPage <= 100) = ' + (100 >= refsPerPage));
 
     GM_log('testing = ' + testing);
     GM_log('getAccountType.showUltimateFeatures = ' + getAccountType.showUltimateFeatures);
     GM_log('myAccountDetails.accountType.showUltimateFeatures = ' + myAccountDetails.accountType.showUltimateFeatures);
-    if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+    if(100 >= refsPerPage && myAccountDetails.accountType.showUltimateFeatures)
     {
       referrals[z].minigraph = {
-        'rawClickData': (currentReferral[14] == '0') ? '0000000000'.split('') : currentReferral[14].split(''),
+        'rawClickData': ('0' == currentReferral[14]) ? '0000000000'.split('') : currentReferral[14].split(''),
         'clicks': new Array()
       };
 
@@ -3097,7 +3115,7 @@ function extractRefData(a_column)
   }
 }
 
-function addSortingArrows(a_column)
+function addSortingArrows(_column)
 {
   /**
    * Adds sort ascending and descending arrows to all columns
@@ -3133,7 +3151,7 @@ function addSortingArrows(a_column)
 
   var blah = new Array();
 
-  for(var i = 1; i < 7; i++)
+  for(var i = 1; 7 > i; i++)
   {
     blah [i] = {
       colUrlIndex: vars[i][0],
@@ -3192,17 +3210,16 @@ function addSortingArrows(a_column)
   }
 }
 
-function addColumnHeader(a_currentHeaderRow, a_newHeaderText)
+function addColumnHeader(_currentHeaderRow, _newHeaderText)
 {
   var newHeaderColumn = document.createElement('td');
   newHeaderColumn.setAttribute('class', 'bgt');
   newHeaderColumn.setAttribute('nowrap', '');
   newHeaderColumn.setAttribute('align', 'center');
-  newHeaderColumn.innerHTML = '<font class="branco">' + a_newHeaderText + '</font>';
+  newHeaderColumn.innerHTML = '<font class="branco">' + _newHeaderText + '</font>';
 
-  a_currentHeaderRow.appendChild(newHeaderColumn);
+  _currentHeaderRow.appendChild(newHeaderColumn);
 }
-
 
 function addNewColumn(_currentRow, _newColumnText, _shrinkContents)
 {
@@ -3221,16 +3238,15 @@ function addNewColumn(_currentRow, _newColumnText, _shrinkContents)
   _currentRow.appendChild(newColumn);
 }
 
-function shrinkContents(a_column)
+function shrinkContents(_column)
 {
-  a_column.style.letterSpacing = '-0.05em';
-  a_column.style.wordSpacing = '-0.1em';
+  _column.style.letterSpacing = '-0.05em';
+  _column.style.wordSpacing = '-0.1em';
 }
 
-
-function shrinkColumns(a_currentReferral)
+function shrinkColumns(_currentReferral)
 {
-  if (currentPage.pageName() == 'rentedRefListing') {
+  if ('rentedRefListing' == currentPage.pageName()) {
     if (script.preferences.shrinkContents['flag']) {
       shrinkContents(columns.flag);
     }
@@ -3260,9 +3276,7 @@ function shrinkColumns(a_currentReferral)
 
 
 
-if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == currentPage.pageName()))
-{
-} else
+if (('rentedRefListing' == currentPage.pageName() || 'directRefListing' == currentPage.pageName()))
 {
   /*
    Check how many referrals are being shown per page
@@ -3287,14 +3301,14 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
   function editHeaderRow()
   {
     // Exact Average column
-    if (script.preferences.exactaverageshow)
+    if (script.preferences.exactAverageShow)
     {
-      if (script.preferences.exactaveragereplace)
+      if (script.preferences.exactAverageReplace)
       {
         headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>(Exact)</small>';
       } else
       {
-        headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>' + script.preferences.exactaverageseperator + 'Exact Avg.</small>';
+        headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>' + script.preferences.exactAverageSeperator + 'Exact Avg.</small>';
       }
     }
 
@@ -3304,13 +3318,13 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
      */
 
     GM_log('refsPerPage = ' + refsPerPage);
-    GM_log('(refsPerPage <= 100) = ' + (refsPerPage <= 100));
+    GM_log('(refsPerPage <= 100) = ' + (100 >= refsPerPage));
 
     GM_log('testing = ' + testing);
     GM_log('getAccountType.showUltimateFeatures = ' + getAccountType.showUltimateFeatures);
     GM_log('myAccountDetails.accountType.showUltimateFeatures = ' + myAccountDetails.accountType.showUltimateFeatures);
 
-    if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+    if (100 >= refsPerPage && myAccountDetails.accountType.showUltimateFeatures)
     {
       logger('script.preferences.showColumn');
       logger(script.preferences.showColumn);
@@ -3444,7 +3458,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
      */
     if (script.preferences.numeriseDates.lastClick)
     {
-      if (script.preferences.lastClick_replace || (script.preferences.lastClick_replaceNilClicks && parseInt(referrals[refIndex].totalClicks, 10) == 0))
+      if (script.preferences.lastClick_replace || (script.preferences.lastClick_replaceNilClicks && 0 === parseInt(referrals[refIndex].totalClicks, 10)))
       {
         columns.lastClick.innerHTML = "<font style='font-size: 9px; color:#777'>" + referrals[refIndex].inactiveDays + "</font>";
       }
@@ -3462,19 +3476,19 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
     var accurateAverage = parseInt(referrals[refIndex].totalClicks) / accurateOwnedSince;
 
 
-    if (script.preferences.exactaverageshow)
+    if (script.preferences.exactAverageShow)
     {
       // Replace the displayed average (accurate to a 24hour period) with one
       // that that is more accurate
       // (takes hours and minutes into account)
 
-      if (script.preferences.exactaveragereplace)
+      if (script.preferences.exactAverageReplace)
       {
         columns.overallAvg.innerHTML = (accurateAverage).toFixed(3);
       }
       else
       {
-        columns.overallAvg.innerHTML = columns.overallAvg.innerHTML + '<small>' + script.preferences.exactaverageseperator + (accurateAverage).toFixed(3) + '</small>';
+        columns.overallAvg.innerHTML = columns.overallAvg.innerHTML + '<small>' + script.preferences.exactAverageSeperator + (accurateAverage).toFixed(3) + '</small>';
       }
     }
 
@@ -3593,7 +3607,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
       // TODO:: Find out why referrals[refIndex].overallAverage is set to 999 for new refs <24hours old here but not earlier in the script
       //      logger(referrals[refIndex].overallAverage);
 
-      if (100 > parseFloat(referrals[refIndex].overallAverage) > 0)
+      if (0 < 100 > parseFloat(referrals[refIndex].overallAverage))
       {
         sumOfAverages += parseFloat(referrals[refIndex].overallAverage);
         clickSum += parseInt(referrals[refIndex].totalClicks);
@@ -3603,13 +3617,13 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
       }
 
       /* Keep a tally of how many referrals clicked today / yesterday / never / other */
-      if (parseInt(referrals[refIndex].totalClicks) === 0)
+      if (0 === parseInt(referrals[refIndex].totalClicks))
       {
         zeroClickers++;
-      } else if (Math.floor(referrals[refIndex].accurateLastClick) === 0)
+      } else if (0 === Math.floor(referrals[refIndex].accurateLastClick))
       {
         todayClickers++;
-      } else if (Math.floor(referrals[refIndex].accurateLastClick) === 1)
+      } else if (1 === Math.floor(referrals[refIndex].accurateLastClick))
       {
         ydayClickers++;
       } else
@@ -3651,15 +3665,15 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
 
         function insertClicksDayColumn(currentReferral)
         {
-          if (script.preferences.showColumn['clickText'] === true)
+          if (true === script.preferences.showColumn['clickText'])
           {
             // clickText column == A textual representation of the data in the mini
-            if (script.preferences.showColumn['clickText'] === true)
+            if (true === script.preferences.showColumn['clickText'])
             {
               var columnText_clickText = '';
               columnText_clickText += referrals[refIndex].minigraph.clicks[referrals[refIndex].minigraph.clicks.length - 1].toFixed(0);
 
-              for (var x = referrals[refIndex].minigraph.clicks.length - 2; x >= 0; x--)
+              for (var x = referrals[refIndex].minigraph.clicks.length - 2; 0 <= x; x--)
               {
                 columnText_clickText += '|' + referrals[refIndex].minigraph.clicks[x].toFixed(0);
               }
@@ -3672,14 +3686,14 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
         function insertMinigraphAveragesColumns(currentReferral)
         {
           // 'average1' column == Average for the last timePeriod_average1 days
-          if (script.preferences.showColumn['average1'] === true)
+          if (true === script.preferences.showColumn['average1'])
           {
             var columnText_average1 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[0] - 1].toFixed(2);
             addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['average1'] + columnText_average1 + "</font>", script.preferences.shrinkContents['average1']);
           }
 
           // 'average2' column == Average for the last 7 days
-          if (script.preferences.showColumn['average2'] === true)
+          if (true === script.preferences.showColumn['average2'])
           {
             var columnText_average2 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[1] - 1].toFixed(2);
             addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['average2'] + columnText_average2 + "</font>", script.preferences.shrinkContents['average2']);
@@ -3689,7 +3703,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
         function insertSDColumn(currentReferral)
         {
           // 'SDEV' column == Standard DEViation for the last 10 days
-          if (script.preferences.showColumn['SD'] === true)
+          if (true === script.preferences.showColumn['SD'])
           {
             var columnText_SD = referrals[refIndex].minigraph.sdev[9].toFixed(2);
             addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['SD'] + columnText_SD + "</font>", script.preferences.shrinkContents['SD']);
@@ -3700,7 +3714,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
         function insertRSAColumn(currentReferral)
         {
           // 'RSA' column == Ratio of standard deviation / average (mean)
-          if (script.preferences.showColumn['RSA'] === true)
+          if (true === script.preferences.showColumn['RSA'])
           {
             var columnText_RSA = (referrals[refIndex].minigraph.sdev[9] / referrals[refIndex].minigraph.mean[9]).toFixed(2);
             addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['RSA'] + columnText_RSA + "</font>", script.preferences.shrinkContents['SD']);
@@ -3709,7 +3723,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
 
 
         /* insertProfitColumn */
-        function insertProfitColumn(currentReferral)
+        function insertProfitColumn(_currentReferral)
         {
           if (script.preferences.showColumn['profit'])
           {
@@ -3732,7 +3746,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
 
 
             // Cost of golden & golden packs per ref, per day
-            if (myAccountDetails.accountType.numerical > 0)
+            if (0 < myAccountDetails.accountType.numerical)
             {
               var goldenFeePerRefPerDay = ((90 / 365) / myAccountDetails.numberOfRefs.Rented);
               var goldenPackFeePerRefPerDay = ((myAccountDetails.goldenPackCost / 365) / myAccountDetails.numberOfRefs.Rented);
@@ -3786,10 +3800,10 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
             // the minute)
             var grossIn = (refClicks * myAccountDetails.referralClickValue);
 
-            if (currentPage.pageName() == 'rentedRefListing')
+            if ('rentedRefListing' == currentPage.pageName())
             {
               var grossOut = numDaysOwned_decimal * expensesPerRefPerDay;
-            } else if (currentPage.pageName() == 'directRefListing')
+            } else if ('directRefListing' == currentPage.pageName())
             {
               grossOut = 0;
             } else
@@ -3820,7 +3834,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
             // in the gross expenses for the referral
 
             var PROFIT;
-            if (!script.preferences.profit_includeRecycleCost || (currentPage.pageName() == 'directRefListing'))
+            if (!script.preferences.profit_includeRecycleCost || ('directRefListing' == currentPage.pageName()))
             {
               PROFIT = netProfit_exclRecycles;
             }
@@ -3830,28 +3844,28 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
             }
 
             // Functions used by script::
-            function getDaysTilPaidOwnRecycle(indivAvg, currentProfit, expensesPerRefPerDay)
+            function getDaysTilPaidOwnRecycle(_individualAvg, _currentProfit, _expensesPerRefPerDay)
             {
-              var incomePerRefPerDay = indivAvg * myAccountDetails.referralClickValue;
+              var incomePerRefPerDay = _individualAvg * myAccountDetails.referralClickValue;
               var dayCounter = 0;
               var indivProfit = new Array();
               var dayLimit = 30;
-              var profitNeeded = myAccountDetails.recycleCost - currentProfit;
+              var profitNeeded = myAccountDetails.recycleCost - _currentProfit;
 
               // Pre-Calculate the amount of profit that will be made after
-              // dayCounter days at indivAvg clicks per day
+              // dayCounter days at _individualAvg clicks per day
               do
               {
                 dayCounter++;
-                indivProfit[dayCounter] = dayCounter * (incomePerRefPerDay - expensesPerRefPerDay);
+                indivProfit[dayCounter] = dayCounter * (incomePerRefPerDay - _expensesPerRefPerDay);
               } while (dayCounter < dayLimit);
 
 
-              // If currentProfit is less than the cost of recycling, return number
-              // of days until currentProfit > recycleCost
+              // If _currentProfit is less than the cost of recycling, return number
+              // of days until _currentProfit > recycleCost
               // Else return 'N/A' to signify that the referral has already
               // generated enough profit to pay for its own recycle
-              if (myAccountDetails.recycleCost > currentProfit)
+              if (myAccountDetails.recycleCost > _currentProfit)
               {
                 // Find the point where projected individual profit will be equal to
                 // or greater than
@@ -3916,18 +3930,18 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
 
 
             // If the net profit is negative, format it differently
-            if (PROFIT > 0)
+            if (0 < PROFIT)
             {
-              addNewColumn(currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
+              addNewColumn(_currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
             } else
             {
-              addNewColumn(currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#800; font-style:italic;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
+              addNewColumn(_currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#800; font-style:italic;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
             }
 
 
             // If the current page is the rented referral listing page, create and
             // insert the tooltips
-            if (currentPage.pageName() == 'rentedRefListing')
+            if ('rentedRefListing' == currentPage.pageName())
             {
               var tipContent = '<p>Referral: <b>' + refID + '</b></p>' +
                   '<hr>' +
@@ -3935,11 +3949,11 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
                   'Renewals <i><small>(' + renewalPeriod + ' day renewal)</small></i> = <b>$' + renewalCostPerRefPerDay.toFixed(5) + '</b><br>';
 
               // Add Golden / Golden Pack-specific lines to the tooltip
-              if (myAccountDetails.accountType.numerical == 1)
+              if (1 == myAccountDetails.accountType.numerical)
               {
                 tipContent = tipContent + 'Golden fee <i><small>(per ref per day)</small></i> = <b>$' + goldenFeePerRefPerDay.toFixed(5) + '</b><br>';
               }
-              if (myAccountDetails.accountType.numerical > 1)
+              if (1 < myAccountDetails.accountType.numerical)
               {
                 tipContent = tipContent + 'Golden-Pack fee <i><small>(per ref per day)</small></i> = <b>$' + goldenPackFeePerRefPerDay.toFixed(5) + '</b><br>';
               }
@@ -4028,7 +4042,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
         }
 
 
-        if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+        if (100 >= refsPerPage && myAccountDetails.accountType.showUltimateFeatures)
         {
           try
           {
@@ -4166,9 +4180,9 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
     current_width += (script.preferences.numeriseDates.referralSince && !script.preferences.referralSince_replace) ? 80 : 0;
     current_width += (script.preferences.numeriseDates.lastClick && !script.preferences.lastClick_replace) ? 5 : 0;
     current_width += (script.preferences.flag_textify) ? 15 : 0;
-    current_width += (script.preferences.exactaverageshow && !script.preferences.exactaveragereplace) ? 20 : 0;
+    current_width += (script.preferences.exactAverageShow && !script.preferences.exactAverageReplace) ? 20 : 0;
 
-    if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+    if (100 >= refsPerPage && myAccountDetails.accountType.showUltimateFeatures)
     {
       current_width += (true === script.preferences.showColumn['clickText']) ? 88 : 0;
       current_width += (true === script.preferences.showColumn['average1']) ? 23 : 0;
@@ -4178,7 +4192,7 @@ if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == curr
     }
 
     current_width += (true === script.preferences.showColumn['profit']) ? 30 : 0;
-    current_width = (current_width < 902) ? 902 : current_width;
+    current_width = (902 > current_width) ? 902 : current_width;
 
     document.body.children[1].style.width = current_width + 'px';
   }
@@ -4202,7 +4216,7 @@ function insertAccountBalanceTransferHandlers()
 {
   var accountBalanceNode = docEvaluate('//span[@id="t_saldo"]');
 
-  if(accountBalanceNode.snapshotLength > 0)
+  if(0 < accountBalanceNode.snapshotLength)
   {
     accountBalanceNode = accountBalanceNode.snapshotItem(1);
 
@@ -4298,24 +4312,24 @@ function insertAccountBalanceTransferHandlers()
         var transferError = 'Neobux: The transfer was rejected by Neobux!';
         var transferRejected = false;
 
-        if(_responseDetails.responseText.indexOf(successfulTransferText) > 0)
+        if(0 < _responseDetails.responseText.indexOf(successfulTransferText))
         {
           GM_log('Transfer completed successfully');
           alert('Transfer completed successfully');
           //updateBalances(_transferAmount);
         }
-        else if(_responseDetails.responseText.indexOf(successfulTransferText_PT) > 0)
+        else if(0 < _responseDetails.responseText.indexOf(successfulTransferText_PT))
         {
           GM_log('Transfer completed successfully');
           alert('Transfer completed successfully');
           //updateBalances(_transferAmount);
         }
-        else if(_responseDetails.responseText.indexOf(unsuccessfulTransferText) > 0)
+        else if(0 < _responseDetails.responseText.indexOf(unsuccessfulTransferText))
         {
           transferRejected = true;
           transferError += "\n * You don't have sufficient funds to complete the transfer or an error occurred.";
         }
-        else if(_responseDetails.responseText.indexOf(unsuccessfulTransferText_PT) > 0)
+        else if(0 < _responseDetails.responseText.indexOf(unsuccessfulTransferText_PT))
         {
           transferRejected = true;
           transferError += "\n * Não tem fundos suficientes para completar a transacção ou ocorreu um erro.";
@@ -4424,9 +4438,9 @@ function insertLogoActions()
     }
 
 
-    function addCheckbox(_inputType, _preferralName, _prefVar, _defaultValue, _inputTitle)
+    function addCheckbox(_inputType, _referralName, _prefVar, _defaultValue, _inputTitle)
     {
-      var tmp = _preferralName + '_' + _prefVar;
+      var tmp = _referralName + '_' + _prefVar;
       var inputIsChecked = (true === _defaultValue ? "checked" : "");
       var inputIsDisabled = (null === _defaultValue ? "disabled" : "");
 
@@ -4683,7 +4697,7 @@ function insertLogoActions()
   $('#scriptPreferences input').change(function scriptPreferences_inputFields_onChange(event)
   {
     var _varName = event.target.id.split('_')[0];
-    var _preferralName = event.target.id.split('_')[1];
+    var _referralName = event.target.id.split('_')[1];
 
     var value;
 
@@ -4698,27 +4712,27 @@ function insertLogoActions()
         break;
     }
 
-    function saveValue(_preferralName,_varName, _value)
+    function saveValue(_referralName,_varName, _value)
     {
       console.group();
       logger(arguments);
-      logger([_varName,_preferralName]);
-      logger(typeof _preferralName);
-      logger(GM_getValue(_preferralName));
-      logger(script.preferences[_preferralName][_varName]);
+      logger([_varName,_referralName]);
+      logger(typeof _referralName);
+      logger(GM_getValue(_referralName));
+      logger(script.preferences[_referralName][_varName]);
 
-      script.preferences[_preferralName][_varName] = _value;
+      script.preferences[_referralName][_varName] = _value;
 
-      manipulatePrefs.setPref(_preferralName,JSON.stringify(script.preferences[_preferralName]));
+      manipulatePrefs.setPref(_referralName,JSON.stringify(script.preferences[_referralName]));
 
-      logger(script.preferences[_preferralName][_varName]);
-      logger(GM_getValue(_preferralName));
+      logger(script.preferences[_referralName][_varName]);
+      logger(GM_getValue(_referralName));
 
-      //      logger(GM_getValue([_varName,_preferralName].join('_')));
+      //      logger(GM_getValue([_varName,_referralName].join('_')));
       console.groupEnd();
     }
 
-    saveValue(_preferralName,_varName, value);
+    saveValue(_referralName,_varName, value);
 
   });
 }
@@ -4954,7 +4968,7 @@ function insertLocalServerTime()
 
 
 
-  function addClock(_TimeOffset,_AdResetOffset)
+  function addClock(_timeOffset,_adResetOffset)
   {
     var containerDiv_timer = document.createElement('div');
 
@@ -5017,7 +5031,7 @@ function insertLocalServerTime()
     }
     else if(localMidnightToAdResetTime > localMidnightToNeobuxMidnight)
     {
-      logger('localMidnightToAdResetTime > localMidnightToNeobuxMidnight')
+      logger('localMidnightToAdResetTime > localMidnightToNeobuxMidnight');
       var localMidnightToFirst = localMidnightToNeobuxMidnight;
       var FirstToSecond = localMidnightToAdResetTime - localMidnightToNeobuxMidnight;
       var SecondToLocalMidnight = 24 - (localMidnightToFirst + FirstToSecond);
@@ -5125,7 +5139,7 @@ function insertLocalServerTime()
                     }
                     return output;
                   }
-                  if(this.x==0){localMidnight.setHours(0,0,0);}
+                  if(0 === this.x){localMidnight.setHours(0,0,0);}
                   var _from = padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2);
                   localMidnight = new Date(localMidnight.setHours(localMidnight.getHours() + Math.floor(this.y),localMidnight.getMinutes() + ((this.y - Math.floor(this.y))*60) ));
                   var _to = padZeros(localMidnight.getHours(),2) + ':' + padZeros(localMidnight.getMinutes(),2);
@@ -5161,7 +5175,7 @@ function insertLocalServerTime()
 
 
   xpathResults_timeLocation.snapshotItem(0).lastChild.addEventListener('click',function localServerTime_onClick(){
-    document.getElementById('containerDiv_timer').style.display = (document.getElementById('containerDiv_timer').style.display == 'none') ? '' : 'none' ;
+    document.getElementById('containerDiv_timer').style.display = ('none' == document.getElementById('containerDiv_timer').style.display) ? '' : 'none' ;
   },false)
 }
 
@@ -5198,7 +5212,7 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
         'Do you want to install this update?';
 
     var msToWait = UPDATER.updateFrequency;
-    msToWait = (msToWait < 0) ? 0 : msToWait;
+    msToWait = (0 > msToWait) ? 0 : msToWait;
     var secsToWait = Math.floor(msToWait / 1000) % 60;
     var minsToWait = Math.floor((msToWait / 1000) / 60) % 60;
     var hoursToWait = Math.floor(((msToWait / 1000) / 60) / 60);
@@ -5259,8 +5273,8 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 
 
 
-    function onChange_UpdateMessage_Options(event){
-      var selector = event.currentTarget;
+    function onChange_UpdateMessage_Options(_event){
+      var selector = _event.currentTarget;
       var selectedID = selector.options[selector.options.selectedIndex].id;
 
       switch(selectedID)
@@ -5457,7 +5471,7 @@ UPDATER.check = function UPDATER_check(_forceUpdate)
   else
   {
     var msToWait = UPDATER.updateFrequency - timeSinceLastCheck;
-    msToWait = (msToWait < 0) ? 0 : msToWait;
+    msToWait = (0 > msToWait) ? 0 : msToWait;
     var secsToWait = Math.floor(msToWait / 1000) % 60;
     var minsToWait = Math.floor((msToWait / 1000) / 60) % 60;
     var hoursToWait = Math.floor(((msToWait / 1000) / 60) / 60);
