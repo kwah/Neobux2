@@ -1,13 +1,16 @@
-function parseHeaders(metadataBlock) {
+function parseHeaders(_metadataBlock)
+{
   var headers = {};
   var line, name, prefix, header, key, value;
 
-  var lines = metadataBlock.split(/\n/).filter(/\/\/ @/);
-  for each (line in lines) {
+  var lines = _metadataBlock.split(/\n/).filter(/\/\/ @/);
+  for each (line in lines)
+  {
     var name = line.match(/\/\/ @(\S+)\s*(.*)/)[1];
     var value = line.match(/\/\/ @(\S+)\s*(.*)/)[2];
 
-    switch (name) {
+    switch (name)
+    {
       case "licence":
         name = "license";
         break;
@@ -15,7 +18,8 @@ function parseHeaders(metadataBlock) {
 
     [key, prefix] = name.split(/:/).reverse();
 
-    if (prefix) {
+    if (prefix)
+    {
       if (!headers[prefix])
         headers[prefix] = new Object;
       header = headers[prefix];
@@ -36,7 +40,8 @@ function parseHeaders(metadataBlock) {
   return headers;
 }
 
-var fileMETA = parseHeaders(<><![CDATA[
+var fileMETA = parseHeaders(<>
+  <![CDATA[
 // ==UserScript==
 // @name           Neobux 2+ (kwah) - reWrite
 // @namespace      http://userscripts.org/users/158890
@@ -54,8 +59,8 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @resource       remoteMeta_USO http://userscripts.org/scripts/source/61349.meta.js
 
 // // version = major.minor.date.time // date.time = yymmdd.hhmm (GMT)
-// @version        4.1.100915.1420;
-// @updateNoteMin  100915.1420 = Hopefully fixed the ultimate graphs issue and added some logging code to help identify cause if it doesn't work; Uploaded to Userscripts.org;
+// @version        4.1.100919.1230;
+// @updateNoteMin  100919.1230 = Big/many changes all rolled into one update note..: Inserted a slightly modified copy of surebrec's update to insertChartDataBars() - hopefully the extensions databars should work for >=golden members now; Updated the updater code to look to kwah.org for its updates because userscripts.org keeps going down; Fixed the 'yesterday's average issues; I managed to make a large push towards 'fixing' a whole bunch of code style issues and inconsistencies; Fixed existing problems with the preferences editor; Changed how the server time is calculated; Uploaded to userscripts.org;
 
 // @versionStatus  Developmental (Dev)
 // @updateNote     4.1 = Started over to reorganise & structure the script properly;
@@ -120,6 +125,7 @@ var fileMETA = parseHeaders(<><![CDATA[
 // @history        4.1.100915.0300 = Fixed the spacer row in referrals pages not spanning the whole table and the footer row information bar not showing if there are fewer than 3 refs on the page (common with direct refs for example); Uploaded to userscripts.org;
 // @history        4.1.100915.1200 = Altered the local/server time to be appended to the uppor-right corner rather than overwriting the contents of that area (eg, to stop it hiding "1 New History");
 // @history        4.1.100915.1420 = Hopefully fixed the ultimate graphs issue and added some logging code to help identify cause if it doesn't work; Uploaded to Userscripts.org;
+// @history        4.1.100919.1230 = Big/many changes all rolled into one update note..: Inserted a slightly modified copy of surebrec's update to insertChartDataBars() - hopefully the extensions databars should work for >=golden members now; Updated the updater code to look to kwah.org for its updates because userscripts.org keeps going down; Fixed the 'yesterday's average issues; I managed to make a large push towards 'fixing' a whole bunch of code style issues and inconsistencies; Fixed existing problems with the preferences editor; Changed how the server time is calculated; Uploaded to userscripts.org;
 
 
 
@@ -143,13 +149,13 @@ var fileMETA = parseHeaders(<><![CDATA[
  * Revision: 6246
  */
 (function(){var l=this,g,y=l.jQuery,p=l.$,o=l.jQuery=l.$=function(E,F){return new o.fn.init(E,F)},D=/^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,f=/^.[^:#\[\.,]*$/;o.fn=o.prototype={init:function(E,H){E=E||document;if(E.nodeType){this[0]=E;this.length=1;this.context=E;return this}if(typeof E==="string"){var G=D.exec(E);if(G&&(G[1]||!H)){if(G[1]){E=o.clean([G[1]],H)}else{var I=document.getElementById(G[3]);if(I&&I.id!=G[3]){return o().find(E)}var F=o(I||[]);F.context=document;F.selector=E;return F}}else{return o(H).find(E)}}else{if(o.isFunction(E)){return o(document).ready(E)}}if(E.selector&&E.context){this.selector=E.selector;this.context=E.context}return this.setArray(o.isArray(E)?E:o.makeArray(E))},selector:"",jquery:"1.3.2",size:function(){return this.length},get:function(E){return E===g?Array.prototype.slice.call(this):this[E]},pushStack:function(F,H,E){var G=o(F);G.prevObject=this;G.context=this.context;if(H==="find"){G.selector=this.selector+(this.selector?" ":"")+E}else{if(H){G.selector=this.selector+"."+H+"("+E+")"}}return G},setArray:function(E){this.length=0;Array.prototype.push.apply(this,E);return this},each:function(F,E){return o.each(this,F,E)},index:function(E){return o.inArray(E&&E.jquery?E[0]:E,this)},attr:function(F,H,G){var E=F;if(typeof F==="string"){if(H===g){return this[0]&&o[G||"attr"](this[0],F)}else{E={};E[F]=H}}return this.each(function(I){for(F in E){o.attr(G?this.style:this,F,o.prop(this,E[F],G,I,F))}})},css:function(E,F){if((E=="width"||E=="height")&&parseFloat(F)<0){F=g}return this.attr(E,F,"curCSS")},text:function(F){if(typeof F!=="object"&&F!=null){return this.empty().append((this[0]&&this[0].ownerDocument||document).createTextNode(F))}var E="";o.each(F||this,function(){o.each(this.childNodes,function(){if(this.nodeType!=8){E+=this.nodeType!=1?this.nodeValue:o.fn.text([this])}})});return E},wrapAll:function(E){if(this[0]){var F=o(E,this[0].ownerDocument).clone();if(this[0].parentNode){F.insertBefore(this[0])}F.map(function(){var G=this;while(G.firstChild){G=G.firstChild}return G}).append(this)}return this},wrapInner:function(E){return this.each(function(){o(this).contents().wrapAll(E)})},wrap:function(E){return this.each(function(){o(this).wrapAll(E)})},append:function(){return this.domManip(arguments,true,function(E){if(this.nodeType==1){this.appendChild(E)}})},prepend:function(){return this.domManip(arguments,true,function(E){if(this.nodeType==1){this.insertBefore(E,this.firstChild)}})},before:function(){return this.domManip(arguments,false,function(E){this.parentNode.insertBefore(E,this)})},after:function(){return this.domManip(arguments,false,function(E){this.parentNode.insertBefore(E,this.nextSibling)})},end:function(){return this.prevObject||o([])},push:[].push,sort:[].sort,splice:[].splice,find:function(E){if(this.length===1){var F=this.pushStack([],"find",E);F.length=0;o.find(E,this[0],F);return F}else{return this.pushStack(o.unique(o.map(this,function(G){return o.find(E,G)})),"find",E)}},clone:function(G){var E=this.map(function(){if(!o.support.noCloneEvent&&!o.isXMLDoc(this)){var I=this.outerHTML;if(!I){var J=this.ownerDocument.createElement("div");J.appendChild(this.cloneNode(true));I=J.innerHTML}return o.clean([I.replace(/ jQuery\d+="(?:\d+|null)"/g,"").replace(/^\s*/,"")])[0]}else{return this.cloneNode(true)}});if(G===true){var H=this.find("*").andSelf(),F=0;E.find("*").andSelf().each(function(){if(this.nodeName!==H[F].nodeName){return}var I=o.data(H[F],"events");for(var K in I){for(var J in I[K]){o.event.add(this,K,I[K][J],I[K][J].data)}}F++})}return E},filter:function(E){return this.pushStack(o.isFunction(E)&&o.grep(this,function(G,F){return E.call(G,F)})||o.multiFilter(E,o.grep(this,function(F){return F.nodeType===1})),"filter",E)},closest:function(E){var G=o.expr.match.POS.test(E)?o(E):null,F=0;return this.map(function(){var H=this;while(H&&H.ownerDocument){if(G?G.index(H)>-1:o(H).is(E)){o.data(H,"closest",F);return H}H=H.parentNode;F++}})},not:function(E){if(typeof E==="string"){if(f.test(E)){return this.pushStack(o.multiFilter(E,this,true),"not",E)}else{E=o.multiFilter(E,this)}}var F=E.length&&E[E.length-1]!==g&&!E.nodeType;return this.filter(function(){return F?o.inArray(this,E)<0:this!=E})},add:function(E){return this.pushStack(o.unique(o.merge(this.get(),typeof E==="string"?o(E):o.makeArray(E))))},is:function(E){return !!E&&o.multiFilter(E,this).length>0},hasClass:function(E){return !!E&&this.is("."+E)},val:function(K){if(K===g){var E=this[0];if(E){if(o.nodeName(E,"option")){return(E.attributes.value||{}).specified?E.value:E.text}if(o.nodeName(E,"select")){var I=E.selectedIndex,L=[],M=E.options,H=E.type=="select-one";if(I<0){return null}for(var F=H?I:0,J=H?I+1:M.length;F<J;F++){var G=M[F];if(G.selected){K=o(G).val();if(H){return K}L.push(K)}}return L}return(E.value||"").replace(/\r/g,"")}return g}if(typeof K==="number"){K+=""}return this.each(function(){if(this.nodeType!=1){return}if(o.isArray(K)&&/radio|checkbox/.test(this.type)){this.checked=(o.inArray(this.value,K)>=0||o.inArray(this.name,K)>=0)}else{if(o.nodeName(this,"select")){var N=o.makeArray(K);o("option",this).each(function(){this.selected=(o.inArray(this.value,N)>=0||o.inArray(this.text,N)>=0)});if(!N.length){this.selectedIndex=-1}}else{this.value=K}}})},html:function(E){return E===g?(this[0]?this[0].innerHTML.replace(/ jQuery\d+="(?:\d+|null)"/g,""):null):this.empty().append(E)},replaceWith:function(E){return this.after(E).remove()},eq:function(E){return this.slice(E,+E+1)},slice:function(){return this.pushStack(Array.prototype.slice.apply(this,arguments),"slice",Array.prototype.slice.call(arguments).join(","))},map:function(E){return this.pushStack(o.map(this,function(G,F){return E.call(G,F,G)}))},andSelf:function(){return this.add(this.prevObject)},domManip:function(J,M,L){if(this[0]){var I=(this[0].ownerDocument||this[0]).createDocumentFragment(),F=o.clean(J,(this[0].ownerDocument||this[0]),I),H=I.firstChild;if(H){for(var G=0,E=this.length;G<E;G++){L.call(K(this[G],H),this.length>1||G>0?I.cloneNode(true):I)}}if(F){o.each(F,z)}}return this;function K(N,O){return M&&o.nodeName(N,"table")&&o.nodeName(O,"tr")?(N.getElementsByTagName("tbody")[0]||N.appendChild(N.ownerDocument.createElement("tbody"))):N}}};o.fn.init.prototype=o.fn;function z(E,F){if(F.src){o.ajax({url:F.src,async:false,dataType:"script"})}else{o.globalEval(F.text||F.textContent||F.innerHTML||"")}if(F.parentNode){F.parentNode.removeChild(F)}}function e(){return +new Date}o.extend=o.fn.extend=function(){var J=arguments[0]||{},H=1,I=arguments.length,E=false,G;if(typeof J==="boolean"){E=J;J=arguments[1]||{};H=2}if(typeof J!=="object"&&!o.isFunction(J)){J={}}if(I==H){J=this;--H}for(;H<I;H++){if((G=arguments[H])!=null){for(var F in G){var K=J[F],L=G[F];if(J===L){continue}if(E&&L&&typeof L==="object"&&!L.nodeType){J[F]=o.extend(E,K||(L.length!=null?[]:{}),L)}else{if(L!==g){J[F]=L}}}}}return J};var b=/z-?index|font-?weight|opacity|zoom|line-?height/i,q=document.defaultView||{},s=Object.prototype.toString;o.extend({noConflict:function(E){l.$=p;if(E){l.jQuery=y}return o},isFunction:function(E){return s.call(E)==="[object Function]"},isArray:function(E){return s.call(E)==="[object Array]"},isXMLDoc:function(E){return E.nodeType===9&&E.documentElement.nodeName!=="HTML"||!!E.ownerDocument&&o.isXMLDoc(E.ownerDocument)},globalEval:function(G){if(G&&/\S/.test(G)){var F=document.getElementsByTagName("head")[0]||document.documentElement,E=document.createElement("script");E.type="text/javascript";if(o.support.scriptEval){E.appendChild(document.createTextNode(G))}else{E.text=G}F.insertBefore(E,F.firstChild);F.removeChild(E)}},nodeName:function(F,E){return F.nodeName&&F.nodeName.toUpperCase()==E.toUpperCase()},each:function(G,K,F){var E,H=0,I=G.length;if(F){if(I===g){for(E in G){if(K.apply(G[E],F)===false){break}}}else{for(;H<I;){if(K.apply(G[H++],F)===false){break}}}}else{if(I===g){for(E in G){if(K.call(G[E],E,G[E])===false){break}}}else{for(var J=G[0];H<I&&K.call(J,H,J)!==false;J=G[++H]){}}}return G},prop:function(H,I,G,F,E){if(o.isFunction(I)){I=I.call(H,F)}return typeof I==="number"&&G=="curCSS"&&!b.test(E)?I+"px":I},className:{add:function(E,F){o.each((F||"").split(/\s+/),function(G,H){if(E.nodeType==1&&!o.className.has(E.className,H)){E.className+=(E.className?" ":"")+H}})},remove:function(E,F){if(E.nodeType==1){E.className=F!==g?o.grep(E.className.split(/\s+/),function(G){return !o.className.has(F,G)}).join(" "):""}},has:function(F,E){return F&&o.inArray(E,(F.className||F).toString().split(/\s+/))>-1}},swap:function(H,G,I){var E={};for(var F in G){E[F]=H.style[F];H.style[F]=G[F]}I.call(H);for(var F in G){H.style[F]=E[F]}},css:function(H,F,J,E){if(F=="width"||F=="height"){var L,G={position:"absolute",visibility:"hidden",display:"block"},K=F=="width"?["Left","Right"]:["Top","Bottom"];function I(){L=F=="width"?H.offsetWidth:H.offsetHeight;if(E==="border"){return}o.each(K,function(){if(!E){L-=parseFloat(o.curCSS(H,"padding"+this,true))||0}if(E==="margin"){L+=parseFloat(o.curCSS(H,"margin"+this,true))||0}else{L-=parseFloat(o.curCSS(H,"border"+this+"Width",true))||0}})}if(H.offsetWidth!==0){I()}else{o.swap(H,G,I)}return Math.max(0,Math.round(L))}return o.curCSS(H,F,J)},curCSS:function(I,F,G){var L,E=I.style;if(F=="opacity"&&!o.support.opacity){L=o.attr(E,"opacity");return L==""?"1":L}if(F.match(/float/i)){F=w}if(!G&&E&&E[F]){L=E[F]}else{if(q.getComputedStyle){if(F.match(/float/i)){F="float"}F=F.replace(/([A-Z])/g,"-$1").toLowerCase();var M=q.getComputedStyle(I,null);if(M){L=M.getPropertyValue(F)}if(F=="opacity"&&L==""){L="1"}}else{if(I.currentStyle){var J=F.replace(/\-(\w)/g,function(N,O){return O.toUpperCase()});L=I.currentStyle[F]||I.currentStyle[J];if(!/^\d+(px)?$/i.test(L)&&/^\d/.test(L)){var H=E.left,K=I.runtimeStyle.left;I.runtimeStyle.left=I.currentStyle.left;E.left=L||0;L=E.pixelLeft+"px";E.left=H;I.runtimeStyle.left=K}}}}return L},clean:function(F,K,I){K=K||document;if(typeof K.createElement==="undefined"){K=K.ownerDocument||K[0]&&K[0].ownerDocument||document}if(!I&&F.length===1&&typeof F[0]==="string"){var H=/^<(\w+)\s*\/?>$/.exec(F[0]);if(H){return[K.createElement(H[1])]}}var G=[],E=[],L=K.createElement("div");o.each(F,function(P,S){if(typeof S==="number"){S+=""}if(!S){return}if(typeof S==="string"){S=S.replace(/(<(\w+)[^>]*?)\/>/g,function(U,V,T){return T.match(/^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i)?U:V+"></"+T+">"});var O=S.replace(/^\s+/,"").substring(0,10).toLowerCase();var Q=!O.indexOf("<opt")&&[1,"<select multiple='multiple'>","</select>"]||!O.indexOf("<leg")&&[1,"<fieldset>","</fieldset>"]||O.match(/^<(thead|tbody|tfoot|colg|cap)/)&&[1,"<table>","</table>"]||!O.indexOf("<tr")&&[2,"<table><tbody>","</tbody></table>"]||(!O.indexOf("<td")||!O.indexOf("<th"))&&[3,"<table><tbody><tr>","</tr></tbody></table>"]||!O.indexOf("<col")&&[2,"<table><tbody></tbody><colgroup>","</colgroup></table>"]||!o.support.htmlSerialize&&[1,"div<div>","</div>"]||[0,"",""];L.innerHTML=Q[1]+S+Q[2];while(Q[0]--){L=L.lastChild}if(!o.support.tbody){var R=/<tbody/i.test(S),N=!O.indexOf("<table")&&!R?L.firstChild&&L.firstChild.childNodes:Q[1]=="<table>"&&!R?L.childNodes:[];for(var M=N.length-1;M>=0;--M){if(o.nodeName(N[M],"tbody")&&!N[M].childNodes.length){N[M].parentNode.removeChild(N[M])}}}if(!o.support.leadingWhitespace&&/^\s/.test(S)){L.insertBefore(K.createTextNode(S.match(/^\s*/)[0]),L.firstChild)}S=o.makeArray(L.childNodes)}if(S.nodeType){G.push(S)}else{G=o.merge(G,S)}});if(I){for(var J=0;G[J];J++){if(o.nodeName(G[J],"script")&&(!G[J].type||G[J].type.toLowerCase()==="text/javascript")){E.push(G[J].parentNode?G[J].parentNode.removeChild(G[J]):G[J])}else{if(G[J].nodeType===1){G.splice.apply(G,[J+1,0].concat(o.makeArray(G[J].getElementsByTagName("script"))))}I.appendChild(G[J])}}return E}return G},attr:function(J,G,K){if(!J||J.nodeType==3||J.nodeType==8){return g}var H=!o.isXMLDoc(J),L=K!==g;G=H&&o.props[G]||G;if(J.tagName){var F=/href|src|style/.test(G);if(G=="selected"&&J.parentNode){J.parentNode.selectedIndex}if(G in J&&H&&!F){if(L){if(G=="type"&&o.nodeName(J,"input")&&J.parentNode){throw"type property can't be changed"}J[G]=K}if(o.nodeName(J,"form")&&J.getAttributeNode(G)){return J.getAttributeNode(G).nodeValue}if(G=="tabIndex"){var I=J.getAttributeNode("tabIndex");return I&&I.specified?I.value:J.nodeName.match(/(button|input|object|select|textarea)/i)?0:J.nodeName.match(/^(a|area)$/i)&&J.href?0:g}return J[G]}if(!o.support.style&&H&&G=="style"){return o.attr(J.style,"cssText",K)}if(L){J.setAttribute(G,""+K)}var E=!o.support.hrefNormalized&&H&&F?J.getAttribute(G,2):J.getAttribute(G);return E===null?g:E}if(!o.support.opacity&&G=="opacity"){if(L){J.zoom=1;J.filter=(J.filter||"").replace(/alpha\([^)]*\)/,"")+(parseInt(K)+""=="NaN"?"":"alpha(opacity="+K*100+")")}return J.filter&&J.filter.indexOf("opacity=")>=0?(parseFloat(J.filter.match(/opacity=([^)]*)/)[1])/100)+"":""}G=G.replace(/-([a-z])/ig,function(M,N){return N.toUpperCase()});if(L){J[G]=K}return J[G]},trim:function(E){return(E||"").replace(/^\s+|\s+$/g,"")},makeArray:function(G){var E=[];if(G!=null){var F=G.length;if(F==null||typeof G==="string"||o.isFunction(G)||G.setInterval){E[0]=G}else{while(F){E[--F]=G[F]}}}return E},inArray:function(G,H){for(var E=0,F=H.length;E<F;E++){if(H[E]===G){return E}}return -1},merge:function(H,E){var F=0,G,I=H.length;if(!o.support.getAll){while((G=E[F++])!=null){if(G.nodeType!=8){H[I++]=G}}}else{while((G=E[F++])!=null){H[I++]=G}}return H},unique:function(K){var F=[],E={};try{for(var G=0,H=K.length;G<H;G++){var J=o.data(K[G]);if(!E[J]){E[J]=true;F.push(K[G])}}}catch(I){F=K}return F},grep:function(F,J,E){var G=[];for(var H=0,I=F.length;H<I;H++){if(!E!=!J(F[H],H)){G.push(F[H])}}return G},map:function(E,J){var F=[];for(var G=0,H=E.length;G<H;G++){var I=J(E[G],G);if(I!=null){F[F.length]=I}}return F.concat.apply([],F)}});var C=navigator.userAgent.toLowerCase();o.browser={version:(C.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)||[0,"0"])[1],safari:/webkit/.test(C),opera:/opera/.test(C),msie:/msie/.test(C)&&!/opera/.test(C),mozilla:/mozilla/.test(C)&&!/(compatible|webkit)/.test(C)};o.each({parent:function(E){return E.parentNode},parents:function(E){return o.dir(E,"parentNode")},next:function(E){return o.nth(E,2,"nextSibling")},prev:function(E){return o.nth(E,2,"previousSibling")},nextAll:function(E){return o.dir(E,"nextSibling")},prevAll:function(E){return o.dir(E,"previousSibling")},siblings:function(E){return o.sibling(E.parentNode.firstChild,E)},children:function(E){return o.sibling(E.firstChild)},contents:function(E){return o.nodeName(E,"iframe")?E.contentDocument||E.contentWindow.document:o.makeArray(E.childNodes)}},function(E,F){o.fn[E]=function(G){var H=o.map(this,F);if(G&&typeof G=="string"){H=o.multiFilter(G,H)}return this.pushStack(o.unique(H),E,G)}});o.each({appendTo:"append",prependTo:"prepend",insertBefore:"before",insertAfter:"after",replaceAll:"replaceWith"},function(E,F){o.fn[E]=function(G){var J=[],L=o(G);for(var K=0,H=L.length;K<H;K++){var I=(K>0?this.clone(true):this).get();o.fn[F].apply(o(L[K]),I);J=J.concat(I)}return this.pushStack(J,E,G)}});o.each({removeAttr:function(E){o.attr(this,E,"");if(this.nodeType==1){this.removeAttribute(E)}},addClass:function(E){o.className.add(this,E)},removeClass:function(E){o.className.remove(this,E)},toggleClass:function(F,E){if(typeof E!=="boolean"){E=!o.className.has(this,F)}o.className[E?"add":"remove"](this,F)},remove:function(E){if(!E||o.filter(E,[this]).length){o("*",this).add([this]).each(function(){o.event.remove(this);o.removeData(this)});if(this.parentNode){this.parentNode.removeChild(this)}}},empty:function(){o(this).children().remove();while(this.firstChild){this.removeChild(this.firstChild)}}},function(E,F){o.fn[E]=function(){return this.each(F,arguments)}});function j(E,F){return E[0]&&parseInt(o.curCSS(E[0],F,true),10)||0}var h="jQuery"+e(),v=0,A={};o.extend({cache:{},data:function(F,E,G){F=F==l?A:F;var H=F[h];if(!H){H=F[h]=++v}if(E&&!o.cache[H]){o.cache[H]={}}if(G!==g){o.cache[H][E]=G}return E?o.cache[H][E]:H},removeData:function(F,E){F=F==l?A:F;var H=F[h];if(E){if(o.cache[H]){delete o.cache[H][E];E="";for(E in o.cache[H]){break}if(!E){o.removeData(F)}}}else{try{delete F[h]}catch(G){if(F.removeAttribute){F.removeAttribute(h)}}delete o.cache[H]}},queue:function(F,E,H){if(F){E=(E||"fx")+"queue";var G=o.data(F,E);if(!G||o.isArray(H)){G=o.data(F,E,o.makeArray(H))}else{if(H){G.push(H)}}}return G},dequeue:function(H,G){var E=o.queue(H,G),F=E.shift();if(!G||G==="fx"){F=E[0]}if(F!==g){F.call(H)}}});o.fn.extend({data:function(E,G){var H=E.split(".");H[1]=H[1]?"."+H[1]:"";if(G===g){var F=this.triggerHandler("getData"+H[1]+"!",[H[0]]);if(F===g&&this.length){F=o.data(this[0],E)}return F===g&&H[1]?this.data(H[0]):F}else{return this.trigger("setData"+H[1]+"!",[H[0],G]).each(function(){o.data(this,E,G)})}},removeData:function(E){return this.each(function(){o.removeData(this,E)})},queue:function(E,F){if(typeof E!=="string"){F=E;E="fx"}if(F===g){return o.queue(this[0],E)}return this.each(function(){var G=o.queue(this,E,F);if(E=="fx"&&G.length==1){G[0].call(this)}})},dequeue:function(E){return this.each(function(){o.dequeue(this,E)})}});
-  /*
-   * Sizzle CSS Selector Engine - v0.9.3
-   *  Copyright 2009, The Dojo Foundation
-   *  Released under the MIT, BSD, and GPL Licenses.
-   *  More information: http://sizzlejs.com/
-   */
-  (function(){var R=/((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?/g,L=0,H=Object.prototype.toString;var F=function(Y,U,ab,ac){ab=ab||[];U=U||document;if(U.nodeType!==1&&U.nodeType!==9){return[]}if(!Y||typeof Y!=="string"){return ab}var Z=[],W,af,ai,T,ad,V,X=true;R.lastIndex=0;while((W=R.exec(Y))!==null){Z.push(W[1]);if(W[2]){V=RegExp.rightContext;break}}if(Z.length>1&&M.exec(Y)){if(Z.length===2&&I.relative[Z[0]]){af=J(Z[0]+Z[1],U)}else{af=I.relative[Z[0]]?[U]:F(Z.shift(),U);while(Z.length){Y=Z.shift();if(I.relative[Y]){Y+=Z.shift()}af=J(Y,af)}}}else{var ae=ac?{expr:Z.pop(),set:E(ac)}:F.find(Z.pop(),Z.length===1&&U.parentNode?U.parentNode:U,Q(U));af=F.filter(ae.expr,ae.set);if(Z.length>0){ai=E(af)}else{X=false}while(Z.length){var ah=Z.pop(),ag=ah;if(!I.relative[ah]){ah=""}else{ag=Z.pop()}if(ag==null){ag=U}I.relative[ah](ai,ag,Q(U))}}if(!ai){ai=af}if(!ai){throw"Syntax error, unrecognized expression: "+(ah||Y)}if(H.call(ai)==="[object Array]"){if(!X){ab.push.apply(ab,ai)}else{if(U.nodeType===1){for(var aa=0;ai[aa]!=null;aa++){if(ai[aa]&&(ai[aa]===true||ai[aa].nodeType===1&&K(U,ai[aa]))){ab.push(af[aa])}}}else{for(var aa=0;ai[aa]!=null;aa++){if(ai[aa]&&ai[aa].nodeType===1){ab.push(af[aa])}}}}}else{E(ai,ab)}if(V){F(V,U,ab,ac);if(G){hasDuplicate=false;ab.sort(G);if(hasDuplicate){for(var aa=1;aa<ab.length;aa++){if(ab[aa]===ab[aa-1]){ab.splice(aa--,1)}}}}}return ab};F.matches=function(T,U){return F(T,null,null,U)};F.find=function(aa,T,ab){var Z,X;if(!aa){return[]}for(var W=0,V=I.order.length;W<V;W++){var Y=I.order[W],X;if((X=I.match[Y].exec(aa))){var U=RegExp.leftContext;if(U.substr(U.length-1)!=="\\"){X[1]=(X[1]||"").replace(/\\/g,"");Z=I.find[Y](X,T,ab);if(Z!=null){aa=aa.replace(I.match[Y],"");break}}}}if(!Z){Z=T.getElementsByTagName("*")}return{set:Z,expr:aa}};F.filter=function(ad,ac,ag,W){var V=ad,ai=[],aa=ac,Y,T,Z=ac&&ac[0]&&Q(ac[0]);while(ad&&ac.length){for(var ab in I.filter){if((Y=I.match[ab].exec(ad))!=null){var U=I.filter[ab],ah,af;T=false;if(aa==ai){ai=[]}if(I.preFilter[ab]){Y=I.preFilter[ab](Y,aa,ag,ai,W,Z);if(!Y){T=ah=true}else{if(Y===true){continue}}}if(Y){for(var X=0;(af=aa[X])!=null;X++){if(af){ah=U(af,Y,X,aa);var ae=W^!!ah;if(ag&&ah!=null){if(ae){T=true}else{aa[X]=false}}else{if(ae){ai.push(af);T=true}}}}}if(ah!==g){if(!ag){aa=ai}ad=ad.replace(I.match[ab],"");if(!T){return[]}break}}}if(ad==V){if(T==null){throw"Syntax error, unrecognized expression: "+ad}else{break}}V=ad}return aa};var I=F.selectors={order:["ID","NAME","TAG"],match:{ID:/#((?:[\w\u00c0-\uFFFF_-]|\\.)+)/,CLASS:/\.((?:[\w\u00c0-\uFFFF_-]|\\.)+)/,NAME:/\[name=['"]*((?:[\w\u00c0-\uFFFF_-]|\\.)+)['"]*\]/,ATTR:/\[\s*((?:[\w\u00c0-\uFFFF_-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/,TAG:/^((?:[\w\u00c0-\uFFFF\*_-]|\\.)+)/,CHILD:/:(only|nth|last|first)-child(?:\((even|odd|[\dn+-]*)\))?/,POS:/:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^-]|$)/,PSEUDO:/:((?:[\w\u00c0-\uFFFF_-]|\\.)+)(?:\((['"]*)((?:\([^\)]+\)|[^\2\(\)]*)+)\2\))?/},attrMap:{"class":"className","for":"htmlFor"},attrHandle:{href:function(T){return T.getAttribute("href")}},relative:{"+":function(aa,T,Z){var X=typeof T==="string",ab=X&&!/\W/.test(T),Y=X&&!ab;if(ab&&!Z){T=T.toUpperCase()}for(var W=0,V=aa.length,U;W<V;W++){if((U=aa[W])){while((U=U.previousSibling)&&U.nodeType!==1){}aa[W]=Y||U&&U.nodeName===T?U||false:U===T}}if(Y){F.filter(T,aa,true)}},">":function(Z,U,aa){var X=typeof U==="string";if(X&&!/\W/.test(U)){U=aa?U:U.toUpperCase();for(var V=0,T=Z.length;V<T;V++){var Y=Z[V];if(Y){var W=Y.parentNode;Z[V]=W.nodeName===U?W:false}}}else{for(var V=0,T=Z.length;V<T;V++){var Y=Z[V];if(Y){Z[V]=X?Y.parentNode:Y.parentNode===U}}if(X){F.filter(U,Z,true)}}},"":function(W,U,Y){var V=L++,T=S;if(!U.match(/\W/)){var X=U=Y?U:U.toUpperCase();T=P}T("parentNode",U,V,W,X,Y)},"~":function(W,U,Y){var V=L++,T=S;if(typeof U==="string"&&!U.match(/\W/)){var X=U=Y?U:U.toUpperCase();T=P}T("previousSibling",U,V,W,X,Y)}},find:{ID:function(U,V,W){if(typeof V.getElementById!=="undefined"&&!W){var T=V.getElementById(U[1]);return T?[T]:[]}},NAME:function(V,Y,Z){if(typeof Y.getElementsByName!=="undefined"){var U=[],X=Y.getElementsByName(V[1]);for(var W=0,T=X.length;W<T;W++){if(X[W].getAttribute("name")===V[1]){U.push(X[W])}}return U.length===0?null:U}},TAG:function(T,U){return U.getElementsByTagName(T[1])}},preFilter:{CLASS:function(W,U,V,T,Z,aa){W=" "+W[1].replace(/\\/g,"")+" ";if(aa){return W}for(var X=0,Y;(Y=U[X])!=null;X++){if(Y){if(Z^(Y.className&&(" "+Y.className+" ").indexOf(W)>=0)){if(!V){T.push(Y)}}else{if(V){U[X]=false}}}}return false},ID:function(T){return T[1].replace(/\\/g,"")},TAG:function(U,T){for(var V=0;T[V]===false;V++){}return T[V]&&Q(T[V])?U[1]:U[1].toUpperCase()},CHILD:function(T){if(T[1]=="nth"){var U=/(-?)(\d*)n((?:\+|-)?\d*)/.exec(T[2]=="even"&&"2n"||T[2]=="odd"&&"2n+1"||!/\D/.test(T[2])&&"0n+"+T[2]||T[2]);T[2]=(U[1]+(U[2]||1))-0;T[3]=U[3]-0}T[0]=L++;return T},ATTR:function(X,U,V,T,Y,Z){var W=X[1].replace(/\\/g,"");if(!Z&&I.attrMap[W]){X[1]=I.attrMap[W]}if(X[2]==="~="){X[4]=" "+X[4]+" "}return X},PSEUDO:function(X,U,V,T,Y){if(X[1]==="not"){if(X[3].match(R).length>1||/^\w/.test(X[3])){X[3]=F(X[3],null,null,U)}else{var W=F.filter(X[3],U,V,true^Y);if(!V){T.push.apply(T,W)}return false}}else{if(I.match.POS.test(X[0])||I.match.CHILD.test(X[0])){return true}}return X},POS:function(T){T.unshift(true);return T}},filters:{enabled:function(T){return T.disabled===false&&T.type!=="hidden"},disabled:function(T){return T.disabled===true},checked:function(T){return T.checked===true},selected:function(T){T.parentNode.selectedIndex;return T.selected===true},parent:function(T){return !!T.firstChild},empty:function(T){return !T.firstChild},has:function(V,U,T){return !!F(T[3],V).length},header:function(T){return/h\d/i.test(T.nodeName)},text:function(T){return"text"===T.type},radio:function(T){return"radio"===T.type},checkbox:function(T){return"checkbox"===T.type},file:function(T){return"file"===T.type},password:function(T){return"password"===T.type},submit:function(T){return"submit"===T.type},image:function(T){return"image"===T.type},reset:function(T){return"reset"===T.type},button:function(T){return"button"===T.type||T.nodeName.toUpperCase()==="BUTTON"},input:function(T){return/input|select|textarea|button/i.test(T.nodeName)}},setFilters:{first:function(U,T){return T===0},last:function(V,U,T,W){return U===W.length-1},even:function(U,T){return T%2===0},odd:function(U,T){return T%2===1},lt:function(V,U,T){return U<T[3]-0},gt:function(V,U,T){return U>T[3]-0},nth:function(V,U,T){return T[3]-0==U},eq:function(V,U,T){return T[3]-0==U}},filter:{PSEUDO:function(Z,V,W,aa){var U=V[1],X=I.filters[U];if(X){return X(Z,W,V,aa)}else{if(U==="contains"){return(Z.textContent||Z.innerText||"").indexOf(V[3])>=0}else{if(U==="not"){var Y=V[3];for(var W=0,T=Y.length;W<T;W++){if(Y[W]===Z){return false}}return true}}}},CHILD:function(T,W){var Z=W[1],U=T;switch(Z){case"only":case"first":while(U=U.previousSibling){if(U.nodeType===1){return false}}if(Z=="first"){return true}U=T;case"last":while(U=U.nextSibling){if(U.nodeType===1){return false}}return true;case"nth":var V=W[2],ac=W[3];if(V==1&&ac==0){return true}var Y=W[0],ab=T.parentNode;if(ab&&(ab.sizcache!==Y||!T.nodeIndex)){var X=0;for(U=ab.firstChild;U;U=U.nextSibling){if(U.nodeType===1){U.nodeIndex=++X}}ab.sizcache=Y}var aa=T.nodeIndex-ac;if(V==0){return aa==0}else{return(aa%V==0&&aa/V>=0)}}},ID:function(U,T){return U.nodeType===1&&U.getAttribute("id")===T},TAG:function(U,T){return(T==="*"&&U.nodeType===1)||U.nodeName===T},CLASS:function(U,T){return(" "+(U.className||U.getAttribute("class"))+" ").indexOf(T)>-1},ATTR:function(Y,W){var V=W[1],T=I.attrHandle[V]?I.attrHandle[V](Y):Y[V]!=null?Y[V]:Y.getAttribute(V),Z=T+"",X=W[2],U=W[4];return T==null?X==="!=":X==="="?Z===U:X==="*="?Z.indexOf(U)>=0:X==="~="?(" "+Z+" ").indexOf(U)>=0:!U?Z&&T!==false:X==="!="?Z!=U:X==="^="?Z.indexOf(U)===0:X==="$="?Z.substr(Z.length-U.length)===U:X==="|="?Z===U||Z.substr(0,U.length+1)===U+"-":false},POS:function(X,U,V,Y){var T=U[2],W=I.setFilters[T];if(W){return W(X,V,U,Y)}}}};var M=I.match.POS;for(var O in I.match){I.match[O]=RegExp(I.match[O].source+/(?![^\[]*\])(?![^\(]*\))/.source)}var E=function(U,T){U=Array.prototype.slice.call(U);if(T){T.push.apply(T,U);return T}return U};try{Array.prototype.slice.call(document.documentElement.childNodes)}catch(N){E=function(X,W){var U=W||[];if(H.call(X)==="[object Array]"){Array.prototype.push.apply(U,X)}else{if(typeof X.length==="number"){for(var V=0,T=X.length;V<T;V++){U.push(X[V])}}else{for(var V=0;X[V];V++){U.push(X[V])}}}return U}}var G;if(document.documentElement.compareDocumentPosition){G=function(U,T){var V=U.compareDocumentPosition(T)&4?-1:U===T?0:1;if(V===0){hasDuplicate=true}return V}}else{if("sourceIndex" in document.documentElement){G=function(U,T){var V=U.sourceIndex-T.sourceIndex;if(V===0){hasDuplicate=true}return V}}else{if(document.createRange){G=function(W,U){var V=W.ownerDocument.createRange(),T=U.ownerDocument.createRange();V.selectNode(W);V.collapse(true);T.selectNode(U);T.collapse(true);var X=V.compareBoundaryPoints(Range.START_TO_END,T);if(X===0){hasDuplicate=true}return X}}}}(function(){var U=document.createElement("form"),V="script"+(new Date).getTime();U.innerHTML="<input name='"+V+"'/>";var T=document.documentElement;T.insertBefore(U,T.firstChild);if(!!document.getElementById(V)){I.find.ID=function(X,Y,Z){if(typeof Y.getElementById!=="undefined"&&!Z){var W=Y.getElementById(X[1]);return W?W.id===X[1]||typeof W.getAttributeNode!=="undefined"&&W.getAttributeNode("id").nodeValue===X[1]?[W]:g:[]}};I.filter.ID=function(Y,W){var X=typeof Y.getAttributeNode!=="undefined"&&Y.getAttributeNode("id");return Y.nodeType===1&&X&&X.nodeValue===W}}T.removeChild(U)})();(function(){var T=document.createElement("div");T.appendChild(document.createComment(""));if(T.getElementsByTagName("*").length>0){I.find.TAG=function(U,Y){var X=Y.getElementsByTagName(U[1]);if(U[1]==="*"){var W=[];for(var V=0;X[V];V++){if(X[V].nodeType===1){W.push(X[V])}}X=W}return X}}T.innerHTML="<a href='#'></a>";if(T.firstChild&&typeof T.firstChild.getAttribute!=="undefined"&&T.firstChild.getAttribute("href")!=="#"){I.attrHandle.href=function(U){return U.getAttribute("href",2)}}})();if(document.querySelectorAll){(function(){var T=F,U=document.createElement("div");U.innerHTML="<p class='TEST'></p>";if(U.querySelectorAll&&U.querySelectorAll(".TEST").length===0){return}F=function(Y,X,V,W){X=X||document;if(!W&&X.nodeType===9&&!Q(X)){try{return E(X.querySelectorAll(Y),V)}catch(Z){}}return T(Y,X,V,W)};F.find=T.find;F.filter=T.filter;F.selectors=T.selectors;F.matches=T.matches})()}if(document.getElementsByClassName&&document.documentElement.getElementsByClassName){(function(){var T=document.createElement("div");T.innerHTML="<div class='test e'></div><div class='test'></div>";if(T.getElementsByClassName("e").length===0){return}T.lastChild.className="e";if(T.getElementsByClassName("e").length===1){return}I.order.splice(1,0,"CLASS");I.find.CLASS=function(U,V,W){if(typeof V.getElementsByClassName!=="undefined"&&!W){return V.getElementsByClassName(U[1])}}})()}function P(U,Z,Y,ad,aa,ac){var ab=U=="previousSibling"&&!ac;for(var W=0,V=ad.length;W<V;W++){var T=ad[W];if(T){if(ab&&T.nodeType===1){T.sizcache=Y;T.sizset=W}T=T[U];var X=false;while(T){if(T.sizcache===Y){X=ad[T.sizset];break}if(T.nodeType===1&&!ac){T.sizcache=Y;T.sizset=W}if(T.nodeName===Z){X=T;break}T=T[U]}ad[W]=X}}}function S(U,Z,Y,ad,aa,ac){var ab=U=="previousSibling"&&!ac;for(var W=0,V=ad.length;W<V;W++){var T=ad[W];if(T){if(ab&&T.nodeType===1){T.sizcache=Y;T.sizset=W}T=T[U];var X=false;while(T){if(T.sizcache===Y){X=ad[T.sizset];break}if(T.nodeType===1){if(!ac){T.sizcache=Y;T.sizset=W}if(typeof Z!=="string"){if(T===Z){X=true;break}}else{if(F.filter(Z,[T]).length>0){X=T;break}}}T=T[U]}ad[W]=X}}}var K=document.compareDocumentPosition?function(U,T){return U.compareDocumentPosition(T)&16}:function(U,T){return U!==T&&(U.contains?U.contains(T):true)};var Q=function(T){return T.nodeType===9&&T.documentElement.nodeName!=="HTML"||!!T.ownerDocument&&Q(T.ownerDocument)};var J=function(T,aa){var W=[],X="",Y,V=aa.nodeType?[aa]:aa;while((Y=I.match.PSEUDO.exec(T))){X+=Y[0];T=T.replace(I.match.PSEUDO,"")}T=I.relative[T]?T+"*":T;for(var Z=0,U=V.length;Z<U;Z++){F(T,V[Z],W)}return F.filter(X,W)};o.find=F;o.filter=F.filter;o.expr=F.selectors;o.expr[":"]=o.expr.filters;F.selectors.filters.hidden=function(T){return T.offsetWidth===0||T.offsetHeight===0};F.selectors.filters.visible=function(T){return T.offsetWidth>0||T.offsetHeight>0};F.selectors.filters.animated=function(T){return o.grep(o.timers,function(U){return T===U.elem}).length};o.multiFilter=function(V,T,U){if(U){V=":not("+V+")"}return F.matches(V,T)};o.dir=function(V,U){var T=[],W=V[U];while(W&&W!=document){if(W.nodeType==1){T.push(W)}W=W[U]}return T};o.nth=function(X,T,V,W){T=T||1;var U=0;for(;X;X=X[V]){if(X.nodeType==1&&++U==T){break}}return X};o.sibling=function(V,U){var T=[];for(;V;V=V.nextSibling){if(V.nodeType==1&&V!=U){T.push(V)}}return T};return;l.Sizzle=F})();o.event={add:function(I,F,H,K){if(I.nodeType==3||I.nodeType==8){return}if(I.setInterval&&I!=l){I=l}if(!H.guid){H.guid=this.guid++}if(K!==g){var G=H;H=this.proxy(G);H.data=K}var E=o.data(I,"events")||o.data(I,"events",{}),J=o.data(I,"handle")||o.data(I,"handle",function(){return typeof o!=="undefined"&&!o.event.triggered?o.event.handle.apply(arguments.callee.elem,arguments):g});J.elem=I;o.each(F.split(/\s+/),function(M,N){var O=N.split(".");N=O.shift();H.type=O.slice().sort().join(".");var L=E[N];if(o.event.specialAll[N]){o.event.specialAll[N].setup.call(I,K,O)}if(!L){L=E[N]={};if(!o.event.special[N]||o.event.special[N].setup.call(I,K,O)===false){if(I.addEventListener){I.addEventListener(N,J,false)}else{if(I.attachEvent){I.attachEvent("on"+N,J)}}}}L[H.guid]=H;o.event.global[N]=true});I=null},guid:1,global:{},remove:function(K,H,J){if(K.nodeType==3||K.nodeType==8){return}var G=o.data(K,"events"),F,E;if(G){if(H===g||(typeof H==="string"&&H.charAt(0)==".")){for(var I in G){this.remove(K,I+(H||""))}}else{if(H.type){J=H.handler;H=H.type}o.each(H.split(/\s+/),function(M,O){var Q=O.split(".");O=Q.shift();var N=RegExp("(^|\\.)"+Q.slice().sort().join(".*\\.")+"(\\.|$)");if(G[O]){if(J){delete G[O][J.guid]}else{for(var P in G[O]){if(N.test(G[O][P].type)){delete G[O][P]}}}if(o.event.specialAll[O]){o.event.specialAll[O].teardown.call(K,Q)}for(F in G[O]){break}if(!F){if(!o.event.special[O]||o.event.special[O].teardown.call(K,Q)===false){if(K.removeEventListener){K.removeEventListener(O,o.data(K,"handle"),false)}else{if(K.detachEvent){K.detachEvent("on"+O,o.data(K,"handle"))}}}F=null;delete G[O]}}})}for(F in G){break}if(!F){var L=o.data(K,"handle");if(L){L.elem=null}o.removeData(K,"events");o.removeData(K,"handle")}}},trigger:function(I,K,H,E){var G=I.type||I;if(!E){I=typeof I==="object"?I[h]?I:o.extend(o.Event(G),I):o.Event(G);if(G.indexOf("!")>=0){I.type=G=G.slice(0,-1);I.exclusive=true}if(!H){I.stopPropagation();if(this.global[G]){o.each(o.cache,function(){if(this.events&&this.events[G]){o.event.trigger(I,K,this.handle.elem)}})}}if(!H||H.nodeType==3||H.nodeType==8){return g}I.result=g;I.target=H;K=o.makeArray(K);K.unshift(I)}I.currentTarget=H;var J=o.data(H,"handle");if(J){J.apply(H,K)}if((!H[G]||(o.nodeName(H,"a")&&G=="click"))&&H["on"+G]&&H["on"+G].apply(H,K)===false){I.result=false}if(!E&&H[G]&&!I.isDefaultPrevented()&&!(o.nodeName(H,"a")&&G=="click")){this.triggered=true;try{H[G]()}catch(L){}}this.triggered=false;if(!I.isPropagationStopped()){var F=H.parentNode||H.ownerDocument;if(F){o.event.trigger(I,K,F,true)}}},handle:function(K){var J,E;K=arguments[0]=o.event.fix(K||l.event);K.currentTarget=this;var L=K.type.split(".");K.type=L.shift();J=!L.length&&!K.exclusive;var I=RegExp("(^|\\.)"+L.slice().sort().join(".*\\.")+"(\\.|$)");E=(o.data(this,"events")||{})[K.type];for(var G in E){var H=E[G];if(J||I.test(H.type)){K.handler=H;K.data=H.data;var F=H.apply(this,arguments);if(F!==g){K.result=F;if(F===false){K.preventDefault();K.stopPropagation()}}if(K.isImmediatePropagationStopped()){break}}}},props:"altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),fix:function(H){if(H[h]){return H}var F=H;H=o.Event(F);for(var G=this.props.length,J;G;){J=this.props[--G];H[J]=F[J]}if(!H.target){H.target=H.srcElement||document}if(H.target.nodeType==3){H.target=H.target.parentNode}if(!H.relatedTarget&&H.fromElement){H.relatedTarget=H.fromElement==H.target?H.toElement:H.fromElement}if(H.pageX==null&&H.clientX!=null){var I=document.documentElement,E=document.body;H.pageX=H.clientX+(I&&I.scrollLeft||E&&E.scrollLeft||0)-(I.clientLeft||0);H.pageY=H.clientY+(I&&I.scrollTop||E&&E.scrollTop||0)-(I.clientTop||0)}if(!H.which&&((H.charCode||H.charCode===0)?H.charCode:H.keyCode)){H.which=H.charCode||H.keyCode}if(!H.metaKey&&H.ctrlKey){H.metaKey=H.ctrlKey}if(!H.which&&H.button){H.which=(H.button&1?1:(H.button&2?3:(H.button&4?2:0)))}return H},proxy:function(F,E){E=E||function(){return F.apply(this,arguments)};E.guid=F.guid=F.guid||E.guid||this.guid++;return E},special:{ready:{setup:B,teardown:function(){}}},specialAll:{live:{setup:function(E,F){o.event.add(this,F[0],c)},teardown:function(G){if(G.length){var E=0,F=RegExp("(^|\\.)"+G[0]+"(\\.|$)");o.each((o.data(this,"events").live||{}),function(){if(F.test(this.type)){E++}});if(E<1){o.event.remove(this,G[0],c)}}}}}};o.Event=function(E){if(!this.preventDefault){return new o.Event(E)}if(E&&E.type){this.originalEvent=E;this.type=E.type}else{this.type=E}this.timeStamp=e();this[h]=true};function k(){return false}function u(){return true}o.Event.prototype={preventDefault:function(){this.isDefaultPrevented=u;var E=this.originalEvent;if(!E){return}if(E.preventDefault){E.preventDefault()}E.returnValue=false},stopPropagation:function(){this.isPropagationStopped=u;var E=this.originalEvent;if(!E){return}if(E.stopPropagation){E.stopPropagation()}E.cancelBubble=true},stopImmediatePropagation:function(){this.isImmediatePropagationStopped=u;this.stopPropagation()},isDefaultPrevented:k,isPropagationStopped:k,isImmediatePropagationStopped:k};var a=function(F){var E=F.relatedTarget;while(E&&E!=this){try{E=E.parentNode}catch(G){E=this}}if(E!=this){F.type=F.data;o.event.handle.apply(this,arguments)}};o.each({mouseover:"mouseenter",mouseout:"mouseleave"},function(F,E){o.event.special[E]={setup:function(){o.event.add(this,F,a,E)},teardown:function(){o.event.remove(this,F,a)}}});o.fn.extend({bind:function(F,G,E){return F=="unload"?this.one(F,G,E):this.each(function(){o.event.add(this,F,E||G,E&&G)})},one:function(G,H,F){var E=o.event.proxy(F||H,function(I){o(this).unbind(I,E);return(F||H).apply(this,arguments)});return this.each(function(){o.event.add(this,G,E,F&&H)})},unbind:function(F,E){return this.each(function(){o.event.remove(this,F,E)})},trigger:function(E,F){return this.each(function(){o.event.trigger(E,F,this)})},triggerHandler:function(E,G){if(this[0]){var F=o.Event(E);F.preventDefault();F.stopPropagation();o.event.trigger(F,G,this[0]);return F.result}},toggle:function(G){var E=arguments,F=1;while(F<E.length){o.event.proxy(G,E[F++])}return this.click(o.event.proxy(G,function(H){this.lastToggle=(this.lastToggle||0)%F;H.preventDefault();return E[this.lastToggle++].apply(this,arguments)||false}))},hover:function(E,F){return this.mouseenter(E).mouseleave(F)},ready:function(E){B();if(o.isReady){E.call(document,o)}else{o.readyList.push(E)}return this},live:function(G,F){var E=o.event.proxy(F);E.guid+=this.selector+G;o(document).bind(i(G,this.selector),this.selector,E);return this},die:function(F,E){o(document).unbind(i(F,this.selector),E?{guid:E.guid+this.selector+F}:null);return this}});function c(H){var E=RegExp("(^|\\.)"+H.type+"(\\.|$)"),G=true,F=[];o.each(o.data(this,"events").live||[],function(I,J){if(E.test(J.type)){var K=o(H.target).closest(J.data)[0];if(K){F.push({elem:K,fn:J})}}});F.sort(function(J,I){return o.data(J.elem,"closest")-o.data(I.elem,"closest")});o.each(F,function(){if(this.fn.call(this.elem,H,this.fn.data)===false){return(G=false)}});return G}function i(F,E){return["live",F,E.replace(/\./g,"`").replace(/ /g,"|")].join(".")}o.extend({isReady:false,readyList:[],ready:function(){if(!o.isReady){o.isReady=true;if(o.readyList){o.each(o.readyList,function(){this.call(document,o)});o.readyList=null}o(document).triggerHandler("ready")}}});var x=false;function B(){if(x){return}x=true;if(document.addEventListener){document.addEventListener("DOMContentLoaded",function(){document.removeEventListener("DOMContentLoaded",arguments.callee,false);o.ready()},false)}else{if(document.attachEvent){document.attachEvent("onreadystatechange",function(){if(document.readyState==="complete"){document.detachEvent("onreadystatechange",arguments.callee);o.ready()}});if(document.documentElement.doScroll&&l==l.top){(function(){if(o.isReady){return}try{document.documentElement.doScroll("left")}catch(E){setTimeout(arguments.callee,0);return}o.ready()})()}}}o.event.add(l,"load",o.ready)}o.each(("blur,focus,load,resize,scroll,unload,click,dblclick,mousedown,mouseup,mousemove,mouseover,mouseout,mouseenter,mouseleave,change,select,submit,keydown,keypress,keyup,error").split(","),function(F,E){o.fn[E]=function(G){return G?this.bind(E,G):this.trigger(E)}});o(l).bind("unload",function(){for(var E in o.cache){if(E!=1&&o.cache[E].handle){o.event.remove(o.cache[E].handle.elem)}}});(function(){o.support={};var F=document.documentElement,G=document.createElement("script"),K=document.createElement("div"),J="script"+(new Date).getTime();K.style.display="none";K.innerHTML='   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.5;">a</a><select><option>text</option></select><object><param/></object>';var H=K.getElementsByTagName("*"),E=K.getElementsByTagName("a")[0];if(!H||!H.length||!E){return}o.support={leadingWhitespace:K.firstChild.nodeType==3,tbody:!K.getElementsByTagName("tbody").length,objectAll:!!K.getElementsByTagName("object")[0].getElementsByTagName("*").length,htmlSerialize:!!K.getElementsByTagName("link").length,style:/red/.test(E.getAttribute("style")),hrefNormalized:E.getAttribute("href")==="/a",opacity:E.style.opacity==="0.5",cssFloat:!!E.style.cssFloat,scriptEval:false,noCloneEvent:true,boxModel:null};G.type="text/javascript";try{G.appendChild(document.createTextNode("window."+J+"=1;"))}catch(I){}F.insertBefore(G,F.firstChild);if(l[J]){o.support.scriptEval=true;delete l[J]}F.removeChild(G);if(K.attachEvent&&K.fireEvent){K.attachEvent("onclick",function(){o.support.noCloneEvent=false;K.detachEvent("onclick",arguments.callee)});K.cloneNode(true).fireEvent("onclick")}o(function(){var L=document.createElement("div");L.style.width=L.style.paddingLeft="1px";document.body.appendChild(L);o.boxModel=o.support.boxModel=L.offsetWidth===2;document.body.removeChild(L).style.display="none"})})();var w=o.support.cssFloat?"cssFloat":"styleFloat";o.props={"for":"htmlFor","class":"className","float":w,cssFloat:w,styleFloat:w,readonly:"readOnly",maxlength:"maxLength",cellspacing:"cellSpacing",rowspan:"rowSpan",tabindex:"tabIndex"};o.fn.extend({_load:o.fn.load,load:function(G,J,K){if(typeof G!=="string"){return this._load(G)}var I=G.indexOf(" ");if(I>=0){var E=G.slice(I,G.length);G=G.slice(0,I)}var H="GET";if(J){if(o.isFunction(J)){K=J;J=null}else{if(typeof J==="object"){J=o.param(J);H="POST"}}}var F=this;o.ajax({url:G,type:H,dataType:"html",data:J,complete:function(M,L){if(L=="success"||L=="notmodified"){F.html(E?o("<div/>").append(M.responseText.replace(/<script(.|\s)*?\/script>/g,"")).find(E):M.responseText)}if(K){F.each(K,[M.responseText,L,M])}}});return this},serialize:function(){return o.param(this.serializeArray())},serializeArray:function(){return this.map(function(){return this.elements?o.makeArray(this.elements):this}).filter(function(){return this.name&&!this.disabled&&(this.checked||/select|textarea/i.test(this.nodeName)||/text|hidden|password|search/i.test(this.type))}).map(function(E,F){var G=o(this).val();return G==null?null:o.isArray(G)?o.map(G,function(I,H){return{name:F.name,value:I}}):{name:F.name,value:G}}).get()}});o.each("ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(","),function(E,F){o.fn[F]=function(G){return this.bind(F,G)}});var r=e();o.extend({get:function(E,G,H,F){if(o.isFunction(G)){H=G;G=null}return o.ajax({type:"GET",url:E,data:G,success:H,dataType:F})},getScript:function(E,F){return o.get(E,null,F,"script")},getJSON:function(E,F,G){return o.get(E,F,G,"json")},post:function(E,G,H,F){if(o.isFunction(G)){H=G;G={}}return o.ajax({type:"POST",url:E,data:G,success:H,dataType:F})},ajaxSetup:function(E){o.extend(o.ajaxSettings,E)},ajaxSettings:{url:location.href,global:true,type:"GET",contentType:"application/x-www-form-urlencoded",processData:true,async:true,xhr:function(){return l.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):new XMLHttpRequest()},accepts:{xml:"application/xml, text/xml",html:"text/html",script:"text/javascript, application/javascript",json:"application/json, text/javascript",text:"text/plain",_default:"*/*"}},lastModified:{},ajax:function(M){M=o.extend(true,M,o.extend(true,{},o.ajaxSettings,M));var W,F=/=\?(&|$)/g,R,V,G=M.type.toUpperCase();if(M.data&&M.processData&&typeof M.data!=="string"){M.data=o.param(M.data)}if(M.dataType=="jsonp"){if(G=="GET"){if(!M.url.match(F)){M.url+=(M.url.match(/\?/)?"&":"?")+(M.jsonp||"callback")+"=?"}}else{if(!M.data||!M.data.match(F)){M.data=(M.data?M.data+"&":"")+(M.jsonp||"callback")+"=?"}}M.dataType="json"}if(M.dataType=="json"&&(M.data&&M.data.match(F)||M.url.match(F))){W="jsonp"+r++;if(M.data){M.data=(M.data+"").replace(F,"="+W+"$1")}M.url=M.url.replace(F,"="+W+"$1");M.dataType="script";l[W]=function(X){V=X;I();L();l[W]=g;try{delete l[W]}catch(Y){}if(H){H.removeChild(T)}}}if(M.dataType=="script"&&M.cache==null){M.cache=false}if(M.cache===false&&G=="GET"){var E=e();var U=M.url.replace(/(\?|&)_=.*?(&|$)/,"$1_="+E+"$2");M.url=U+((U==M.url)?(M.url.match(/\?/)?"&":"?")+"_="+E:"")}if(M.data&&G=="GET"){M.url+=(M.url.match(/\?/)?"&":"?")+M.data;M.data=null}if(M.global&&!o.active++){o.event.trigger("ajaxStart")}var Q=/^(\w+:)?\/\/([^\/?#]+)/.exec(M.url);if(M.dataType=="script"&&G=="GET"&&Q&&(Q[1]&&Q[1]!=location.protocol||Q[2]!=location.host)){var H=document.getElementsByTagName("head")[0];var T=document.createElement("script");T.src=M.url;if(M.scriptCharset){T.charset=M.scriptCharset}if(!W){var O=false;T.onload=T.onreadystatechange=function(){if(!O&&(!this.readyState||this.readyState=="loaded"||this.readyState=="complete")){O=true;I();L();T.onload=T.onreadystatechange=null;H.removeChild(T)}}}H.appendChild(T);return g}var K=false;var J=M.xhr();if(M.username){J.open(G,M.url,M.async,M.username,M.password)}else{J.open(G,M.url,M.async)}try{if(M.data){J.setRequestHeader("Content-Type",M.contentType)}if(M.ifModified){J.setRequestHeader("If-Modified-Since",o.lastModified[M.url]||"Thu, 01 Jan 1970 00:00:00 GMT")}J.setRequestHeader("X-Requested-With","XMLHttpRequest");J.setRequestHeader("Accept",M.dataType&&M.accepts[M.dataType]?M.accepts[M.dataType]+", */*":M.accepts._default)}catch(S){}if(M.beforeSend&&M.beforeSend(J,M)===false){if(M.global&&!--o.active){o.event.trigger("ajaxStop")}J.abort();return false}if(M.global){o.event.trigger("ajaxSend",[J,M])}var N=function(X){if(J.readyState==0){if(P){clearInterval(P);P=null;if(M.global&&!--o.active){o.event.trigger("ajaxStop")}}}else{if(!K&&J&&(J.readyState==4||X=="timeout")){K=true;if(P){clearInterval(P);P=null}R=X=="timeout"?"timeout":!o.httpSuccess(J)?"error":M.ifModified&&o.httpNotModified(J,M.url)?"notmodified":"success";if(R=="success"){try{V=o.httpData(J,M.dataType,M)}catch(Z){R="parsererror"}}if(R=="success"){var Y;try{Y=J.getResponseHeader("Last-Modified")}catch(Z){}if(M.ifModified&&Y){o.lastModified[M.url]=Y}if(!W){I()}}else{o.handleError(M,J,R)}L();if(X){J.abort()}if(M.async){J=null}}}};if(M.async){var P=setInterval(N,13);if(M.timeout>0){setTimeout(function(){if(J&&!K){N("timeout")}},M.timeout)}}try{J.send(M.data)}catch(S){o.handleError(M,J,null,S)}if(!M.async){N()}function I(){if(M.success){M.success(V,R)}if(M.global){o.event.trigger("ajaxSuccess",[J,M])}}function L(){if(M.complete){M.complete(J,R)}if(M.global){o.event.trigger("ajaxComplete",[J,M])}if(M.global&&!--o.active){o.event.trigger("ajaxStop")}}return J},handleError:function(F,H,E,G){if(F.error){F.error(H,E,G)}if(F.global){o.event.trigger("ajaxError",[H,F,G])}},active:0,httpSuccess:function(F){try{return !F.status&&location.protocol=="file:"||(F.status>=200&&F.status<300)||F.status==304||F.status==1223}catch(E){}return false},httpNotModified:function(G,E){try{var H=G.getResponseHeader("Last-Modified");return G.status==304||H==o.lastModified[E]}catch(F){}return false},httpData:function(J,H,G){var F=J.getResponseHeader("content-type"),E=H=="xml"||!H&&F&&F.indexOf("xml")>=0,I=E?J.responseXML:J.responseText;if(E&&I.documentElement.tagName=="parsererror"){throw"parsererror"}if(G&&G.dataFilter){I=G.dataFilter(I,H)}if(typeof I==="string"){if(H=="script"){o.globalEval(I)}if(H=="json"){I=l["eval"]("("+I+")")}}return I},param:function(E){var G=[];function H(I,J){G[G.length]=encodeURIComponent(I)+"="+encodeURIComponent(J)}if(o.isArray(E)||E.jquery){o.each(E,function(){H(this.name,this.value)})}else{for(var F in E){if(o.isArray(E[F])){o.each(E[F],function(){H(F,this)})}else{H(F,o.isFunction(E[F])?E[F]():E[F])}}}return G.join("&").replace(/%20/g,"+")}});var m={},n,d=[["height","marginTop","marginBottom","paddingTop","paddingBottom"],["width","marginLeft","marginRight","paddingLeft","paddingRight"],["opacity"]];function t(F,E){var G={};o.each(d.concat.apply([],d.slice(0,E)),function(){G[this]=F});return G}o.fn.extend({show:function(J,L){if(J){return this.animate(t("show",3),J,L)}else{for(var H=0,F=this.length;H<F;H++){var E=o.data(this[H],"olddisplay");this[H].style.display=E||"";if(o.css(this[H],"display")==="none"){var G=this[H].tagName,K;if(m[G]){K=m[G]}else{var I=o("<"+G+" />").appendTo("body");K=I.css("display");if(K==="none"){K="block"}I.remove();m[G]=K}o.data(this[H],"olddisplay",K)}}for(var H=0,F=this.length;H<F;H++){this[H].style.display=o.data(this[H],"olddisplay")||""}return this}},hide:function(H,I){if(H){return this.animate(t("hide",3),H,I)}else{for(var G=0,F=this.length;G<F;G++){var E=o.data(this[G],"olddisplay");if(!E&&E!=="none"){o.data(this[G],"olddisplay",o.css(this[G],"display"))}}for(var G=0,F=this.length;G<F;G++){this[G].style.display="none"}return this}},_toggle:o.fn.toggle,toggle:function(G,F){var E=typeof G==="boolean";return o.isFunction(G)&&o.isFunction(F)?this._toggle.apply(this,arguments):G==null||E?this.each(function(){var H=E?G:o(this).is(":hidden");o(this)[H?"show":"hide"]()}):this.animate(t("toggle",3),G,F)},fadeTo:function(E,G,F){return this.animate({opacity:G},E,F)},animate:function(I,F,H,G){var E=o.speed(F,H,G);return this[E.queue===false?"each":"queue"](function(){var K=o.extend({},E),M,L=this.nodeType==1&&o(this).is(":hidden"),J=this;for(M in I){if(I[M]=="hide"&&L||I[M]=="show"&&!L){return K.complete.call(this)}if((M=="height"||M=="width")&&this.style){K.display=o.css(this,"display");K.overflow=this.style.overflow}}if(K.overflow!=null){this.style.overflow="hidden"}K.curAnim=o.extend({},I);o.each(I,function(O,S){var R=new o.fx(J,K,O);if(/toggle|show|hide/.test(S)){R[S=="toggle"?L?"show":"hide":S](I)}else{var Q=S.toString().match(/^([+-]=)?([\d+-.]+)(.*)$/),T=R.cur(true)||0;if(Q){var N=parseFloat(Q[2]),P=Q[3]||"px";if(P!="px"){J.style[O]=(N||1)+P;T=((N||1)/R.cur(true))*T;J.style[O]=T+P}if(Q[1]){N=((Q[1]=="-="?-1:1)*N)+T}R.custom(T,N,P)}else{R.custom(T,S,"")}}});return true})},stop:function(F,E){var G=o.timers;if(F){this.queue([])}this.each(function(){for(var H=G.length-1;H>=0;H--){if(G[H].elem==this){if(E){G[H](true)}G.splice(H,1)}}});if(!E){this.dequeue()}return this}});o.each({slideDown:t("show",1),slideUp:t("hide",1),slideToggle:t("toggle",1),fadeIn:{opacity:"show"},fadeOut:{opacity:"hide"}},function(E,F){o.fn[E]=function(G,H){return this.animate(F,G,H)}});o.extend({speed:function(G,H,F){var E=typeof G==="object"?G:{complete:F||!F&&H||o.isFunction(G)&&G,duration:G,easing:F&&H||H&&!o.isFunction(H)&&H};E.duration=o.fx.off?0:typeof E.duration==="number"?E.duration:o.fx.speeds[E.duration]||o.fx.speeds._default;E.old=E.complete;E.complete=function(){if(E.queue!==false){o(this).dequeue()}if(o.isFunction(E.old)){E.old.call(this)}};return E},easing:{linear:function(G,H,E,F){return E+F*G},swing:function(G,H,E,F){return((-Math.cos(G*Math.PI)/2)+0.5)*F+E}},timers:[],fx:function(F,E,G){this.options=E;this.elem=F;this.prop=G;if(!E.orig){E.orig={}}}});o.fx.prototype={update:function(){if(this.options.step){this.options.step.call(this.elem,this.now,this)}(o.fx.step[this.prop]||o.fx.step._default)(this);if((this.prop=="height"||this.prop=="width")&&this.elem.style){this.elem.style.display="block"}},cur:function(F){if(this.elem[this.prop]!=null&&(!this.elem.style||this.elem.style[this.prop]==null)){return this.elem[this.prop]}var E=parseFloat(o.css(this.elem,this.prop,F));return E&&E>-10000?E:parseFloat(o.curCSS(this.elem,this.prop))||0},custom:function(I,H,G){this.startTime=e();this.start=I;this.end=H;this.unit=G||this.unit||"px";this.now=this.start;this.pos=this.state=0;var E=this;function F(J){return E.step(J)}F.elem=this.elem;if(F()&&o.timers.push(F)&&!n){n=setInterval(function(){var K=o.timers;for(var J=0;J<K.length;J++){if(!K[J]()){K.splice(J--,1)}}if(!K.length){clearInterval(n);n=g}},13)}},show:function(){this.options.orig[this.prop]=o.attr(this.elem.style,this.prop);this.options.show=true;this.custom(this.prop=="width"||this.prop=="height"?1:0,this.cur());o(this.elem).show()},hide:function(){this.options.orig[this.prop]=o.attr(this.elem.style,this.prop);this.options.hide=true;this.custom(this.cur(),0)},step:function(H){var G=e();if(H||G>=this.options.duration+this.startTime){this.now=this.end;this.pos=this.state=1;this.update();this.options.curAnim[this.prop]=true;var E=true;for(var F in this.options.curAnim){if(this.options.curAnim[F]!==true){E=false}}if(E){if(this.options.display!=null){this.elem.style.overflow=this.options.overflow;this.elem.style.display=this.options.display;if(o.css(this.elem,"display")=="none"){this.elem.style.display="block"}}if(this.options.hide){o(this.elem).hide()}if(this.options.hide||this.options.show){for(var I in this.options.curAnim){o.attr(this.elem.style,I,this.options.orig[I])}}this.options.complete.call(this.elem)}return false}else{var J=G-this.startTime;this.state=J/this.options.duration;this.pos=o.easing[this.options.easing||(o.easing.swing?"swing":"linear")](this.state,J,0,1,this.options.duration);this.now=this.start+((this.end-this.start)*this.pos);this.update()}return true}};o.extend(o.fx,{speeds:{slow:600,fast:200,_default:400},step:{opacity:function(E){o.attr(E.elem.style,"opacity",E.now)},_default:function(E){if(E.elem.style&&E.elem.style[E.prop]!=null){E.elem.style[E.prop]=E.now+E.unit}else{E.elem[E.prop]=E.now}}}});if(document.documentElement.getBoundingClientRect){o.fn.offset=function(){if(!this[0]){return{top:0,left:0}}if(this[0]===this[0].ownerDocument.body){return o.offset.bodyOffset(this[0])}var G=this[0].getBoundingClientRect(),J=this[0].ownerDocument,F=J.body,E=J.documentElement,L=E.clientTop||F.clientTop||0,K=E.clientLeft||F.clientLeft||0,I=G.top+(self.pageYOffset||o.boxModel&&E.scrollTop||F.scrollTop)-L,H=G.left+(self.pageXOffset||o.boxModel&&E.scrollLeft||F.scrollLeft)-K;return{top:I,left:H}}}else{o.fn.offset=function(){if(!this[0]){return{top:0,left:0}}if(this[0]===this[0].ownerDocument.body){return o.offset.bodyOffset(this[0])}o.offset.initialized||o.offset.initialize();var J=this[0],G=J.offsetParent,F=J,O=J.ownerDocument,M,H=O.documentElement,K=O.body,L=O.defaultView,E=L.getComputedStyle(J,null),N=J.offsetTop,I=J.offsetLeft;while((J=J.parentNode)&&J!==K&&J!==H){M=L.getComputedStyle(J,null);N-=J.scrollTop,I-=J.scrollLeft;if(J===G){N+=J.offsetTop,I+=J.offsetLeft;if(o.offset.doesNotAddBorder&&!(o.offset.doesAddBorderForTableAndCells&&/^t(able|d|h)$/i.test(J.tagName))){N+=parseInt(M.borderTopWidth,10)||0,I+=parseInt(M.borderLeftWidth,10)||0}F=G,G=J.offsetParent}if(o.offset.subtractsBorderForOverflowNotVisible&&M.overflow!=="visible"){N+=parseInt(M.borderTopWidth,10)||0,I+=parseInt(M.borderLeftWidth,10)||0}E=M}if(E.position==="relative"||E.position==="static"){N+=K.offsetTop,I+=K.offsetLeft}if(E.position==="fixed"){N+=Math.max(H.scrollTop,K.scrollTop),I+=Math.max(H.scrollLeft,K.scrollLeft)}return{top:N,left:I}}}o.offset={initialize:function(){if(this.initialized){return}var L=document.body,F=document.createElement("div"),H,G,N,I,M,E,J=L.style.marginTop,K='<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';M={position:"absolute",top:0,left:0,margin:0,border:0,width:"1px",height:"1px",visibility:"hidden"};for(E in M){F.style[E]=M[E]}F.innerHTML=K;L.insertBefore(F,L.firstChild);H=F.firstChild,G=H.firstChild,I=H.nextSibling.firstChild.firstChild;this.doesNotAddBorder=(G.offsetTop!==5);this.doesAddBorderForTableAndCells=(I.offsetTop===5);H.style.overflow="hidden",H.style.position="relative";this.subtractsBorderForOverflowNotVisible=(G.offsetTop===-5);L.style.marginTop="1px";this.doesNotIncludeMarginInBodyOffset=(L.offsetTop===0);L.style.marginTop=J;L.removeChild(F);this.initialized=true},bodyOffset:function(E){o.offset.initialized||o.offset.initialize();var G=E.offsetTop,F=E.offsetLeft;if(o.offset.doesNotIncludeMarginInBodyOffset){G+=parseInt(o.curCSS(E,"marginTop",true),10)||0,F+=parseInt(o.curCSS(E,"marginLeft",true),10)||0}return{top:G,left:F}}};o.fn.extend({position:function(){var I=0,H=0,F;if(this[0]){var G=this.offsetParent(),J=this.offset(),E=/^body|html$/i.test(G[0].tagName)?{top:0,left:0}:G.offset();J.top-=j(this,"marginTop");J.left-=j(this,"marginLeft");E.top+=j(G,"borderTopWidth");E.left+=j(G,"borderLeftWidth");F={top:J.top-E.top,left:J.left-E.left}}return F},offsetParent:function(){var E=this[0].offsetParent||document.body;while(E&&(!/^body|html$/i.test(E.tagName)&&o.css(E,"position")=="static")){E=E.offsetParent}return o(E)}});o.each(["Left","Top"],function(F,E){var G="scroll"+E;o.fn[G]=function(H){if(!this[0]){return null}return H!==g?this.each(function(){this==l||this==document?l.scrollTo(!F?H:o(l).scrollLeft(),F?H:o(l).scrollTop()):this[G]=H}):this[0]==l||this[0]==document?self[F?"pageYOffset":"pageXOffset"]||o.boxModel&&document.documentElement[G]||document.body[G]:this[0][G]}});o.each(["Height","Width"],function(I,G){var E=I?"Left":"Top",H=I?"Right":"Bottom",F=G.toLowerCase();o.fn["inner"+G]=function(){return this[0]?o.css(this[0],F,false,"padding"):null};o.fn["outer"+G]=function(K){return this[0]?o.css(this[0],F,false,K?"margin":"border"):null};var J=G.toLowerCase();o.fn[J]=function(K){return this[0]==l?document.compatMode=="CSS1Compat"&&document.documentElement["client"+G]||document.body["client"+G]:this[0]==document?Math.max(document.documentElement["client"+G],document.body["scroll"+G],document.documentElement["scroll"+G],document.body["offset"+G],document.documentElement["offset"+G]):K===g?(this.length?o.css(this[0],J):null):this.css(J,typeof K==="string"?K:K+"px")}})})();
+/*
+ * Sizzle CSS Selector Engine - v0.9.3
+ *  Copyright 2009, The Dojo Foundation
+ *  Released under the MIT, BSD, and GPL Licenses.
+ *  More information: http://sizzlejs.com/
+ */
+(function(){var R=/((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?/g,L=0,H=Object.prototype.toString;var F=function(Y,U,ab,ac){ab=ab||[];U=U||document;if(U.nodeType!==1&&U.nodeType!==9){return[]}if(!Y||typeof Y!=="string"){return ab}var Z=[],W,af,ai,T,ad,V,X=true;R.lastIndex=0;while((W=R.exec(Y))!==null){Z.push(W[1]);if(W[2]){V=RegExp.rightContext;break}}if(Z.length>1&&M.exec(Y)){if(Z.length===2&&I.relative[Z[0]]){af=J(Z[0]+Z[1],U)}else{af=I.relative[Z[0]]?[U]:F(Z.shift(),U);while(Z.length){Y=Z.shift();if(I.relative[Y]){Y+=Z.shift()}af=J(Y,af)}}}else{var ae=ac?{expr:Z.pop(),set:E(ac)}:F.find(Z.pop(),Z.length===1&&U.parentNode?U.parentNode:U,Q(U));af=F.filter(ae.expr,ae.set);if(Z.length>0){ai=E(af)}else{X=false}while(Z.length){var ah=Z.pop(),ag=ah;if(!I.relative[ah]){ah=""}else{ag=Z.pop()}if(ag==null){ag=U}I.relative[ah](ai,ag,Q(U))}}if(!ai){ai=af}if(!ai){throw"Syntax error, unrecognized expression: "+(ah||Y)}if(H.call(ai)==="[object Array]"){if(!X){ab.push.apply(ab,ai)}else{if(U.nodeType===1){for(var aa=0;ai[aa]!=null;aa++){if(ai[aa]&&(ai[aa]===true||ai[aa].nodeType===1&&K(U,ai[aa]))){ab.push(af[aa])}}}else{for(var aa=0;ai[aa]!=null;aa++){if(ai[aa]&&ai[aa].nodeType===1){ab.push(af[aa])}}}}}else{E(ai,ab)}if(V){F(V,U,ab,ac);if(G){hasDuplicate=false;ab.sort(G);if(hasDuplicate){for(var aa=1;aa<ab.length;aa++){if(ab[aa]===ab[aa-1]){ab.splice(aa--,1)}}}}}return ab};F.matches=function(T,U){return F(T,null,null,U)};F.find=function(aa,T,ab){var Z,X;if(!aa){return[]}for(var W=0,V=I.order.length;W<V;W++){var Y=I.order[W],X;if((X=I.match[Y].exec(aa))){var U=RegExp.leftContext;if(U.substr(U.length-1)!=="\\"){X[1]=(X[1]||"").replace(/\\/g,"");Z=I.find[Y](X,T,ab);if(Z!=null){aa=aa.replace(I.match[Y],"");break}}}}if(!Z){Z=T.getElementsByTagName("*")}return{set:Z,expr:aa}};F.filter=function(ad,ac,ag,W){var V=ad,ai=[],aa=ac,Y,T,Z=ac&&ac[0]&&Q(ac[0]);while(ad&&ac.length){for(var ab in I.filter){if((Y=I.match[ab].exec(ad))!=null){var U=I.filter[ab],ah,af;T=false;if(aa==ai){ai=[]}if(I.preFilter[ab]){Y=I.preFilter[ab](Y,aa,ag,ai,W,Z);if(!Y){T=ah=true}else{if(Y===true){continue}}}if(Y){for(var X=0;(af=aa[X])!=null;X++){if(af){ah=U(af,Y,X,aa);var ae=W^!!ah;if(ag&&ah!=null){if(ae){T=true}else{aa[X]=false}}else{if(ae){ai.push(af);T=true}}}}}if(ah!==g){if(!ag){aa=ai}ad=ad.replace(I.match[ab],"");if(!T){return[]}break}}}if(ad==V){if(T==null){throw"Syntax error, unrecognized expression: "+ad}else{break}}V=ad}return aa};var I=F.selectors={order:["ID","NAME","TAG"],match:{ID:/#((?:[\w\u00c0-\uFFFF_-]|\\.)+)/,CLASS:/\.((?:[\w\u00c0-\uFFFF_-]|\\.)+)/,NAME:/\[name=['"]*((?:[\w\u00c0-\uFFFF_-]|\\.)+)['"]*\]/,ATTR:/\[\s*((?:[\w\u00c0-\uFFFF_-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\]/,TAG:/^((?:[\w\u00c0-\uFFFF\*_-]|\\.)+)/,CHILD:/:(only|nth|last|first)-child(?:\((even|odd|[\dn+-]*)\))?/,POS:/:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^-]|$)/,PSEUDO:/:((?:[\w\u00c0-\uFFFF_-]|\\.)+)(?:\((['"]*)((?:\([^\)]+\)|[^\2\(\)]*)+)\2\))?/},attrMap:{"class":"className","for":"htmlFor"},attrHandle:{href:function(T){return T.getAttribute("href")}},relative:{"+":function(aa,T,Z){var X=typeof T==="string",ab=X&&!/\W/.test(T),Y=X&&!ab;if(ab&&!Z){T=T.toUpperCase()}for(var W=0,V=aa.length,U;W<V;W++){if((U=aa[W])){while((U=U.previousSibling)&&U.nodeType!==1){}aa[W]=Y||U&&U.nodeName===T?U||false:U===T}}if(Y){F.filter(T,aa,true)}},">":function(Z,U,aa){var X=typeof U==="string";if(X&&!/\W/.test(U)){U=aa?U:U.toUpperCase();for(var V=0,T=Z.length;V<T;V++){var Y=Z[V];if(Y){var W=Y.parentNode;Z[V]=W.nodeName===U?W:false}}}else{for(var V=0,T=Z.length;V<T;V++){var Y=Z[V];if(Y){Z[V]=X?Y.parentNode:Y.parentNode===U}}if(X){F.filter(U,Z,true)}}},"":function(W,U,Y){var V=L++,T=S;if(!U.match(/\W/)){var X=U=Y?U:U.toUpperCase();T=P}T("parentNode",U,V,W,X,Y)},"~":function(W,U,Y){var V=L++,T=S;if(typeof U==="string"&&!U.match(/\W/)){var X=U=Y?U:U.toUpperCase();T=P}T("previousSibling",U,V,W,X,Y)}},find:{ID:function(U,V,W){if(typeof V.getElementById!=="undefined"&&!W){var T=V.getElementById(U[1]);return T?[T]:[]}},NAME:function(V,Y,Z){if(typeof Y.getElementsByName!=="undefined"){var U=[],X=Y.getElementsByName(V[1]);for(var W=0,T=X.length;W<T;W++){if(X[W].getAttribute("name")===V[1]){U.push(X[W])}}return U.length===0?null:U}},TAG:function(T,U){return U.getElementsByTagName(T[1])}},preFilter:{CLASS:function(W,U,V,T,Z,aa){W=" "+W[1].replace(/\\/g,"")+" ";if(aa){return W}for(var X=0,Y;(Y=U[X])!=null;X++){if(Y){if(Z^(Y.className&&(" "+Y.className+" ").indexOf(W)>=0)){if(!V){T.push(Y)}}else{if(V){U[X]=false}}}}return false},ID:function(T){return T[1].replace(/\\/g,"")},TAG:function(U,T){for(var V=0;T[V]===false;V++){}return T[V]&&Q(T[V])?U[1]:U[1].toUpperCase()},CHILD:function(T){if(T[1]=="nth"){var U=/(-?)(\d*)n((?:\+|-)?\d*)/.exec(T[2]=="even"&&"2n"||T[2]=="odd"&&"2n+1"||!/\D/.test(T[2])&&"0n+"+T[2]||T[2]);T[2]=(U[1]+(U[2]||1))-0;T[3]=U[3]-0}T[0]=L++;return T},ATTR:function(X,U,V,T,Y,Z){var W=X[1].replace(/\\/g,"");if(!Z&&I.attrMap[W]){X[1]=I.attrMap[W]}if(X[2]==="~="){X[4]=" "+X[4]+" "}return X},PSEUDO:function(X,U,V,T,Y){if(X[1]==="not"){if(X[3].match(R).length>1||/^\w/.test(X[3])){X[3]=F(X[3],null,null,U)}else{var W=F.filter(X[3],U,V,true^Y);if(!V){T.push.apply(T,W)}return false}}else{if(I.match.POS.test(X[0])||I.match.CHILD.test(X[0])){return true}}return X},POS:function(T){T.unshift(true);return T}},filters:{enabled:function(T){return T.disabled===false&&T.type!=="hidden"},disabled:function(T){return T.disabled===true},checked:function(T){return T.checked===true},selected:function(T){T.parentNode.selectedIndex;return T.selected===true},parent:function(T){return !!T.firstChild},empty:function(T){return !T.firstChild},has:function(V,U,T){return !!F(T[3],V).length},header:function(T){return/h\d/i.test(T.nodeName)},text:function(T){return"text"===T.type},radio:function(T){return"radio"===T.type},checkbox:function(T){return"checkbox"===T.type},file:function(T){return"file"===T.type},password:function(T){return"password"===T.type},submit:function(T){return"submit"===T.type},image:function(T){return"image"===T.type},reset:function(T){return"reset"===T.type},button:function(T){return"button"===T.type||T.nodeName.toUpperCase()==="BUTTON"},input:function(T){return/input|select|textarea|button/i.test(T.nodeName)}},setFilters:{first:function(U,T){return T===0},last:function(V,U,T,W){return U===W.length-1},even:function(U,T){return T%2===0},odd:function(U,T){return T%2===1},lt:function(V,U,T){return U<T[3]-0},gt:function(V,U,T){return U>T[3]-0},nth:function(V,U,T){return T[3]-0==U},eq:function(V,U,T){return T[3]-0==U}},filter:{PSEUDO:function(Z,V,W,aa){var U=V[1],X=I.filters[U];if(X){return X(Z,W,V,aa)}else{if(U==="contains"){return(Z.textContent||Z.innerText||"").indexOf(V[3])>=0}else{if(U==="not"){var Y=V[3];for(var W=0,T=Y.length;W<T;W++){if(Y[W]===Z){return false}}return true}}}},CHILD:function(T,W){var Z=W[1],U=T;switch(Z){case"only":case"first":while(U=U.previousSibling){if(U.nodeType===1){return false}}if(Z=="first"){return true}U=T;case"last":while(U=U.nextSibling){if(U.nodeType===1){return false}}return true;case"nth":var V=W[2],ac=W[3];if(V==1&&ac==0){return true}var Y=W[0],ab=T.parentNode;if(ab&&(ab.sizcache!==Y||!T.nodeIndex)){var X=0;for(U=ab.firstChild;U;U=U.nextSibling){if(U.nodeType===1){U.nodeIndex=++X}}ab.sizcache=Y}var aa=T.nodeIndex-ac;if(V==0){return aa==0}else{return(aa%V==0&&aa/V>=0)}}},ID:function(U,T){return U.nodeType===1&&U.getAttribute("id")===T},TAG:function(U,T){return(T==="*"&&U.nodeType===1)||U.nodeName===T},CLASS:function(U,T){return(" "+(U.className||U.getAttribute("class"))+" ").indexOf(T)>-1},ATTR:function(Y,W){var V=W[1],T=I.attrHandle[V]?I.attrHandle[V](Y):Y[V]!=null?Y[V]:Y.getAttribute(V),Z=T+"",X=W[2],U=W[4];return T==null?X==="!=":X==="="?Z===U:X==="*="?Z.indexOf(U)>=0:X==="~="?(" "+Z+" ").indexOf(U)>=0:!U?Z&&T!==false:X==="!="?Z!=U:X==="^="?Z.indexOf(U)===0:X==="$="?Z.substr(Z.length-U.length)===U:X==="|="?Z===U||Z.substr(0,U.length+1)===U+"-":false},POS:function(X,U,V,Y){var T=U[2],W=I.setFilters[T];if(W){return W(X,V,U,Y)}}}};var M=I.match.POS;for(var O in I.match){I.match[O]=RegExp(I.match[O].source+/(?![^\[]*\])(?![^\(]*\))/.source)}var E=function(U,T){U=Array.prototype.slice.call(U);if(T){T.push.apply(T,U);return T}return U};try{Array.prototype.slice.call(document.documentElement.childNodes)}catch(N){E=function(X,W){var U=W||[];if(H.call(X)==="[object Array]"){Array.prototype.push.apply(U,X)}else{if(typeof X.length==="number"){for(var V=0,T=X.length;V<T;V++){U.push(X[V])}}else{for(var V=0;X[V];V++){U.push(X[V])}}}return U}}var G;if(document.documentElement.compareDocumentPosition){G=function(U,T){var V=U.compareDocumentPosition(T)&4?-1:U===T?0:1;if(V===0){hasDuplicate=true}return V}}else{if("sourceIndex" in document.documentElement){G=function(U,T){var V=U.sourceIndex-T.sourceIndex;if(V===0){hasDuplicate=true}return V}}else{if(document.createRange){G=function(W,U){var V=W.ownerDocument.createRange(),T=U.ownerDocument.createRange();V.selectNode(W);V.collapse(true);T.selectNode(U);T.collapse(true);var X=V.compareBoundaryPoints(Range.START_TO_END,T);if(X===0){hasDuplicate=true}return X}}}}(function(){var U=document.createElement("form"),V="script"+(new Date).getTime();U.innerHTML="<input name='"+V+"'/>";var T=document.documentElement;T.insertBefore(U,T.firstChild);if(!!document.getElementById(V)){I.find.ID=function(X,Y,Z){if(typeof Y.getElementById!=="undefined"&&!Z){var W=Y.getElementById(X[1]);return W?W.id===X[1]||typeof W.getAttributeNode!=="undefined"&&W.getAttributeNode("id").nodeValue===X[1]?[W]:g:[]}};I.filter.ID=function(Y,W){var X=typeof Y.getAttributeNode!=="undefined"&&Y.getAttributeNode("id");return Y.nodeType===1&&X&&X.nodeValue===W}}T.removeChild(U)})();(function(){var T=document.createElement("div");T.appendChild(document.createComment(""));if(T.getElementsByTagName("*").length>0){I.find.TAG=function(U,Y){var X=Y.getElementsByTagName(U[1]);if(U[1]==="*"){var W=[];for(var V=0;X[V];V++){if(X[V].nodeType===1){W.push(X[V])}}X=W}return X}}T.innerHTML="<a href='#'></a>";if(T.firstChild&&typeof T.firstChild.getAttribute!=="undefined"&&T.firstChild.getAttribute("href")!=="#"){I.attrHandle.href=function(U){return U.getAttribute("href",2)}}})();if(document.querySelectorAll){(function(){var T=F,U=document.createElement("div");U.innerHTML="<p class='TEST'></p>";if(U.querySelectorAll&&U.querySelectorAll(".TEST").length===0){return}F=function(Y,X,V,W){X=X||document;if(!W&&X.nodeType===9&&!Q(X)){try{return E(X.querySelectorAll(Y),V)}catch(Z){}}return T(Y,X,V,W)};F.find=T.find;F.filter=T.filter;F.selectors=T.selectors;F.matches=T.matches})()}if(document.getElementsByClassName&&document.documentElement.getElementsByClassName){(function(){var T=document.createElement("div");T.innerHTML="<div class='test e'></div><div class='test'></div>";if(T.getElementsByClassName("e").length===0){return}T.lastChild.className="e";if(T.getElementsByClassName("e").length===1){return}I.order.splice(1,0,"CLASS");I.find.CLASS=function(U,V,W){if(typeof V.getElementsByClassName!=="undefined"&&!W){return V.getElementsByClassName(U[1])}}})()}function P(U,Z,Y,ad,aa,ac){var ab=U=="previousSibling"&&!ac;for(var W=0,V=ad.length;W<V;W++){var T=ad[W];if(T){if(ab&&T.nodeType===1){T.sizcache=Y;T.sizset=W}T=T[U];var X=false;while(T){if(T.sizcache===Y){X=ad[T.sizset];break}if(T.nodeType===1&&!ac){T.sizcache=Y;T.sizset=W}if(T.nodeName===Z){X=T;break}T=T[U]}ad[W]=X}}}function S(U,Z,Y,ad,aa,ac){var ab=U=="previousSibling"&&!ac;for(var W=0,V=ad.length;W<V;W++){var T=ad[W];if(T){if(ab&&T.nodeType===1){T.sizcache=Y;T.sizset=W}T=T[U];var X=false;while(T){if(T.sizcache===Y){X=ad[T.sizset];break}if(T.nodeType===1){if(!ac){T.sizcache=Y;T.sizset=W}if(typeof Z!=="string"){if(T===Z){X=true;break}}else{if(F.filter(Z,[T]).length>0){X=T;break}}}T=T[U]}ad[W]=X}}}var K=document.compareDocumentPosition?function(U,T){return U.compareDocumentPosition(T)&16}:function(U,T){return U!==T&&(U.contains?U.contains(T):true)};var Q=function(T){return T.nodeType===9&&T.documentElement.nodeName!=="HTML"||!!T.ownerDocument&&Q(T.ownerDocument)};var J=function(T,aa){var W=[],X="",Y,V=aa.nodeType?[aa]:aa;while((Y=I.match.PSEUDO.exec(T))){X+=Y[0];T=T.replace(I.match.PSEUDO,"")}T=I.relative[T]?T+"*":T;for(var Z=0,U=V.length;Z<U;Z++){F(T,V[Z],W)}return F.filter(X,W)};o.find=F;o.filter=F.filter;o.expr=F.selectors;o.expr[":"]=o.expr.filters;F.selectors.filters.hidden=function(T){return T.offsetWidth===0||T.offsetHeight===0};F.selectors.filters.visible=function(T){return T.offsetWidth>0||T.offsetHeight>0};F.selectors.filters.animated=function(T){return o.grep(o.timers,function(U){return T===U.elem}).length};o.multiFilter=function(V,T,U){if(U){V=":not("+V+")"}return F.matches(V,T)};o.dir=function(V,U){var T=[],W=V[U];while(W&&W!=document){if(W.nodeType==1){T.push(W)}W=W[U]}return T};o.nth=function(X,T,V,W){T=T||1;var U=0;for(;X;X=X[V]){if(X.nodeType==1&&++U==T){break}}return X};o.sibling=function(V,U){var T=[];for(;V;V=V.nextSibling){if(V.nodeType==1&&V!=U){T.push(V)}}return T};return;l.Sizzle=F})();o.event={add:function(I,F,H,K){if(I.nodeType==3||I.nodeType==8){return}if(I.setInterval&&I!=l){I=l}if(!H.guid){H.guid=this.guid++}if(K!==g){var G=H;H=this.proxy(G);H.data=K}var E=o.data(I,"events")||o.data(I,"events",{}),J=o.data(I,"handle")||o.data(I,"handle",function(){return typeof o!=="undefined"&&!o.event.triggered?o.event.handle.apply(arguments.callee.elem,arguments):g});J.elem=I;o.each(F.split(/\s+/),function(M,N){var O=N.split(".");N=O.shift();H.type=O.slice().sort().join(".");var L=E[N];if(o.event.specialAll[N]){o.event.specialAll[N].setup.call(I,K,O)}if(!L){L=E[N]={};if(!o.event.special[N]||o.event.special[N].setup.call(I,K,O)===false){if(I.addEventListener){I.addEventListener(N,J,false)}else{if(I.attachEvent){I.attachEvent("on"+N,J)}}}}L[H.guid]=H;o.event.global[N]=true});I=null},guid:1,global:{},remove:function(K,H,J){if(K.nodeType==3||K.nodeType==8){return}var G=o.data(K,"events"),F,E;if(G){if(H===g||(typeof H==="string"&&H.charAt(0)==".")){for(var I in G){this.remove(K,I+(H||""))}}else{if(H.type){J=H.handler;H=H.type}o.each(H.split(/\s+/),function(M,O){var Q=O.split(".");O=Q.shift();var N=RegExp("(^|\\.)"+Q.slice().sort().join(".*\\.")+"(\\.|$)");if(G[O]){if(J){delete G[O][J.guid]}else{for(var P in G[O]){if(N.test(G[O][P].type)){delete G[O][P]}}}if(o.event.specialAll[O]){o.event.specialAll[O].teardown.call(K,Q)}for(F in G[O]){break}if(!F){if(!o.event.special[O]||o.event.special[O].teardown.call(K,Q)===false){if(K.removeEventListener){K.removeEventListener(O,o.data(K,"handle"),false)}else{if(K.detachEvent){K.detachEvent("on"+O,o.data(K,"handle"))}}}F=null;delete G[O]}}})}for(F in G){break}if(!F){var L=o.data(K,"handle");if(L){L.elem=null}o.removeData(K,"events");o.removeData(K,"handle")}}},trigger:function(I,K,H,E){var G=I.type||I;if(!E){I=typeof I==="object"?I[h]?I:o.extend(o.Event(G),I):o.Event(G);if(G.indexOf("!")>=0){I.type=G=G.slice(0,-1);I.exclusive=true}if(!H){I.stopPropagation();if(this.global[G]){o.each(o.cache,function(){if(this.events&&this.events[G]){o.event.trigger(I,K,this.handle.elem)}})}}if(!H||H.nodeType==3||H.nodeType==8){return g}I.result=g;I.target=H;K=o.makeArray(K);K.unshift(I)}I.currentTarget=H;var J=o.data(H,"handle");if(J){J.apply(H,K)}if((!H[G]||(o.nodeName(H,"a")&&G=="click"))&&H["on"+G]&&H["on"+G].apply(H,K)===false){I.result=false}if(!E&&H[G]&&!I.isDefaultPrevented()&&!(o.nodeName(H,"a")&&G=="click")){this.triggered=true;try{H[G]()}catch(L){}}this.triggered=false;if(!I.isPropagationStopped()){var F=H.parentNode||H.ownerDocument;if(F){o.event.trigger(I,K,F,true)}}},handle:function(K){var J,E;K=arguments[0]=o.event.fix(K||l.event);K.currentTarget=this;var L=K.type.split(".");K.type=L.shift();J=!L.length&&!K.exclusive;var I=RegExp("(^|\\.)"+L.slice().sort().join(".*\\.")+"(\\.|$)");E=(o.data(this,"events")||{})[K.type];for(var G in E){var H=E[G];if(J||I.test(H.type)){K.handler=H;K.data=H.data;var F=H.apply(this,arguments);if(F!==g){K.result=F;if(F===false){K.preventDefault();K.stopPropagation()}}if(K.isImmediatePropagationStopped()){break}}}},props:"altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),fix:function(H){if(H[h]){return H}var F=H;H=o.Event(F);for(var G=this.props.length,J;G;){J=this.props[--G];H[J]=F[J]}if(!H.target){H.target=H.srcElement||document}if(H.target.nodeType==3){H.target=H.target.parentNode}if(!H.relatedTarget&&H.fromElement){H.relatedTarget=H.fromElement==H.target?H.toElement:H.fromElement}if(H.pageX==null&&H.clientX!=null){var I=document.documentElement,E=document.body;H.pageX=H.clientX+(I&&I.scrollLeft||E&&E.scrollLeft||0)-(I.clientLeft||0);H.pageY=H.clientY+(I&&I.scrollTop||E&&E.scrollTop||0)-(I.clientTop||0)}if(!H.which&&((H.charCode||H.charCode===0)?H.charCode:H.keyCode)){H.which=H.charCode||H.keyCode}if(!H.metaKey&&H.ctrlKey){H.metaKey=H.ctrlKey}if(!H.which&&H.button){H.which=(H.button&1?1:(H.button&2?3:(H.button&4?2:0)))}return H},proxy:function(F,E){E=E||function(){return F.apply(this,arguments)};E.guid=F.guid=F.guid||E.guid||this.guid++;return E},special:{ready:{setup:B,teardown:function(){}}},specialAll:{live:{setup:function(E,F){o.event.add(this,F[0],c)},teardown:function(G){if(G.length){var E=0,F=RegExp("(^|\\.)"+G[0]+"(\\.|$)");o.each((o.data(this,"events").live||{}),function(){if(F.test(this.type)){E++}});if(E<1){o.event.remove(this,G[0],c)}}}}}};o.Event=function(E){if(!this.preventDefault){return new o.Event(E)}if(E&&E.type){this.originalEvent=E;this.type=E.type}else{this.type=E}this.timeStamp=e();this[h]=true};function k(){return false}function u(){return true}o.Event.prototype={preventDefault:function(){this.isDefaultPrevented=u;var E=this.originalEvent;if(!E){return}if(E.preventDefault){E.preventDefault()}E.returnValue=false},stopPropagation:function(){this.isPropagationStopped=u;var E=this.originalEvent;if(!E){return}if(E.stopPropagation){E.stopPropagation()}E.cancelBubble=true},stopImmediatePropagation:function(){this.isImmediatePropagationStopped=u;this.stopPropagation()},isDefaultPrevented:k,isPropagationStopped:k,isImmediatePropagationStopped:k};var a=function(F){var E=F.relatedTarget;while(E&&E!=this){try{E=E.parentNode}catch(G){E=this}}if(E!=this){F.type=F.data;o.event.handle.apply(this,arguments)}};o.each({mouseover:"mouseenter",mouseout:"mouseleave"},function(F,E){o.event.special[E]={setup:function(){o.event.add(this,F,a,E)},teardown:function(){o.event.remove(this,F,a)}}});o.fn.extend({bind:function(F,G,E){return F=="unload"?this.one(F,G,E):this.each(function(){o.event.add(this,F,E||G,E&&G)})},one:function(G,H,F){var E=o.event.proxy(F||H,function(I){o(this).unbind(I,E);return(F||H).apply(this,arguments)});return this.each(function(){o.event.add(this,G,E,F&&H)})},unbind:function(F,E){return this.each(function(){o.event.remove(this,F,E)})},trigger:function(E,F){return this.each(function(){o.event.trigger(E,F,this)})},triggerHandler:function(E,G){if(this[0]){var F=o.Event(E);F.preventDefault();F.stopPropagation();o.event.trigger(F,G,this[0]);return F.result}},toggle:function(G){var E=arguments,F=1;while(F<E.length){o.event.proxy(G,E[F++])}return this.click(o.event.proxy(G,function(H){this.lastToggle=(this.lastToggle||0)%F;H.preventDefault();return E[this.lastToggle++].apply(this,arguments)||false}))},hover:function(E,F){return this.mouseenter(E).mouseleave(F)},ready:function(E){B();if(o.isReady){E.call(document,o)}else{o.readyList.push(E)}return this},live:function(G,F){var E=o.event.proxy(F);E.guid+=this.selector+G;o(document).bind(i(G,this.selector),this.selector,E);return this},die:function(F,E){o(document).unbind(i(F,this.selector),E?{guid:E.guid+this.selector+F}:null);return this}});function c(H){var E=RegExp("(^|\\.)"+H.type+"(\\.|$)"),G=true,F=[];o.each(o.data(this,"events").live||[],function(I,J){if(E.test(J.type)){var K=o(H.target).closest(J.data)[0];if(K){F.push({elem:K,fn:J})}}});F.sort(function(J,I){return o.data(J.elem,"closest")-o.data(I.elem,"closest")});o.each(F,function(){if(this.fn.call(this.elem,H,this.fn.data)===false){return(G=false)}});return G}function i(F,E){return["live",F,E.replace(/\./g,"`").replace(/ /g,"|")].join(".")}o.extend({isReady:false,readyList:[],ready:function(){if(!o.isReady){o.isReady=true;if(o.readyList){o.each(o.readyList,function(){this.call(document,o)});o.readyList=null}o(document).triggerHandler("ready")}}});var x=false;function B(){if(x){return}x=true;if(document.addEventListener){document.addEventListener("DOMContentLoaded",function(){document.removeEventListener("DOMContentLoaded",arguments.callee,false);o.ready()},false)}else{if(document.attachEvent){document.attachEvent("onreadystatechange",function(){if(document.readyState==="complete"){document.detachEvent("onreadystatechange",arguments.callee);o.ready()}});if(document.documentElement.doScroll&&l==l.top){(function(){if(o.isReady){return}try{document.documentElement.doScroll("left")}catch(E){setTimeout(arguments.callee,0);return}o.ready()})()}}}o.event.add(l,"load",o.ready)}o.each(("blur,focus,load,resize,scroll,unload,click,dblclick,mousedown,mouseup,mousemove,mouseover,mouseout,mouseenter,mouseleave,change,select,submit,keydown,keypress,keyup,error").split(","),function(F,E){o.fn[E]=function(G){return G?this.bind(E,G):this.trigger(E)}});o(l).bind("unload",function(){for(var E in o.cache){if(E!=1&&o.cache[E].handle){o.event.remove(o.cache[E].handle.elem)}}});(function(){o.support={};var F=document.documentElement,G=document.createElement("script"),K=document.createElement("div"),J="script"+(new Date).getTime();K.style.display="none";K.innerHTML='   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.5;">a</a><select><option>text</option></select><object><param/></object>';var H=K.getElementsByTagName("*"),E=K.getElementsByTagName("a")[0];if(!H||!H.length||!E){return}o.support={leadingWhitespace:K.firstChild.nodeType==3,tbody:!K.getElementsByTagName("tbody").length,objectAll:!!K.getElementsByTagName("object")[0].getElementsByTagName("*").length,htmlSerialize:!!K.getElementsByTagName("link").length,style:/red/.test(E.getAttribute("style")),hrefNormalized:E.getAttribute("href")==="/a",opacity:E.style.opacity==="0.5",cssFloat:!!E.style.cssFloat,scriptEval:false,noCloneEvent:true,boxModel:null};G.type="text/javascript";try{G.appendChild(document.createTextNode("window."+J+"=1;"))}catch(I){}F.insertBefore(G,F.firstChild);if(l[J]){o.support.scriptEval=true;delete l[J]}F.removeChild(G);if(K.attachEvent&&K.fireEvent){K.attachEvent("onclick",function(){o.support.noCloneEvent=false;K.detachEvent("onclick",arguments.callee)});K.cloneNode(true).fireEvent("onclick")}o(function(){var L=document.createElement("div");L.style.width=L.style.paddingLeft="1px";document.body.appendChild(L);o.boxModel=o.support.boxModel=L.offsetWidth===2;document.body.removeChild(L).style.display="none"})})();var w=o.support.cssFloat?"cssFloat":"styleFloat";o.props={"for":"htmlFor","class":"className","float":w,cssFloat:w,styleFloat:w,readonly:"readOnly",maxlength:"maxLength",cellspacing:"cellSpacing",rowspan:"rowSpan",tabindex:"tabIndex"};o.fn.extend({_load:o.fn.load,load:function(G,J,K){if(typeof G!=="string"){return this._load(G)}var I=G.indexOf(" ");if(I>=0){var E=G.slice(I,G.length);G=G.slice(0,I)}var H="GET";if(J){if(o.isFunction(J)){K=J;J=null}else{if(typeof J==="object"){J=o.param(J);H="POST"}}}var F=this;o.ajax({url:G,type:H,dataType:"html",data:J,complete:function(M,L){if(L=="success"||L=="notmodified"){F.html(E?o("<div/>").append(M.responseText.replace(/<script(.|\s)*?\/script>/g,"")).find(E):M.responseText)}if(K){F.each(K,[M.responseText,L,M])}}});return this},serialize:function(){return o.param(this.serializeArray())},serializeArray:function(){return this.map(function(){return this.elements?o.makeArray(this.elements):this}).filter(function(){return this.name&&!this.disabled&&(this.checked||/select|textarea/i.test(this.nodeName)||/text|hidden|password|search/i.test(this.type))}).map(function(E,F){var G=o(this).val();return G==null?null:o.isArray(G)?o.map(G,function(I,H){return{name:F.name,value:I}}):{name:F.name,value:G}}).get()}});o.each("ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(","),function(E,F){o.fn[F]=function(G){return this.bind(F,G)}});var r=e();o.extend({get:function(E,G,H,F){if(o.isFunction(G)){H=G;G=null}return o.ajax({type:"GET",url:E,data:G,success:H,dataType:F})},getScript:function(E,F){return o.get(E,null,F,"script")},getJSON:function(E,F,G){return o.get(E,F,G,"json")},post:function(E,G,H,F){if(o.isFunction(G)){H=G;G={}}return o.ajax({type:"POST",url:E,data:G,success:H,dataType:F})},ajaxSetup:function(E){o.extend(o.ajaxSettings,E)},ajaxSettings:{url:location.href,global:true,type:"GET",contentType:"application/x-www-form-urlencoded",processData:true,async:true,xhr:function(){return l.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):new XMLHttpRequest()},accepts:{xml:"application/xml, text/xml",html:"text/html",script:"text/javascript, application/javascript",json:"application/json, text/javascript",text:"text/plain",_default:"*/*"}},lastModified:{},ajax:function(M){M=o.extend(true,M,o.extend(true,{},o.ajaxSettings,M));var W,F=/=\?(&|$)/g,R,V,G=M.type.toUpperCase();if(M.data&&M.processData&&typeof M.data!=="string"){M.data=o.param(M.data)}if(M.dataType=="jsonp"){if(G=="GET"){if(!M.url.match(F)){M.url+=(M.url.match(/\?/)?"&":"?")+(M.jsonp||"callback")+"=?"}}else{if(!M.data||!M.data.match(F)){M.data=(M.data?M.data+"&":"")+(M.jsonp||"callback")+"=?"}}M.dataType="json"}if(M.dataType=="json"&&(M.data&&M.data.match(F)||M.url.match(F))){W="jsonp"+r++;if(M.data){M.data=(M.data+"").replace(F,"="+W+"$1")}M.url=M.url.replace(F,"="+W+"$1");M.dataType="script";l[W]=function(X){V=X;I();L();l[W]=g;try{delete l[W]}catch(Y){}if(H){H.removeChild(T)}}}if(M.dataType=="script"&&M.cache==null){M.cache=false}if(M.cache===false&&G=="GET"){var E=e();var U=M.url.replace(/(\?|&)_=.*?(&|$)/,"$1_="+E+"$2");M.url=U+((U==M.url)?(M.url.match(/\?/)?"&":"?")+"_="+E:"")}if(M.data&&G=="GET"){M.url+=(M.url.match(/\?/)?"&":"?")+M.data;M.data=null}if(M.global&&!o.active++){o.event.trigger("ajaxStart")}var Q=/^(\w+:)?\/\/([^\/?#]+)/.exec(M.url);if(M.dataType=="script"&&G=="GET"&&Q&&(Q[1]&&Q[1]!=location.protocol||Q[2]!=location.host)){var H=document.getElementsByTagName("head")[0];var T=document.createElement("script");T.src=M.url;if(M.scriptCharset){T.charset=M.scriptCharset}if(!W){var O=false;T.onload=T.onreadystatechange=function(){if(!O&&(!this.readyState||this.readyState=="loaded"||this.readyState=="complete")){O=true;I();L();T.onload=T.onreadystatechange=null;H.removeChild(T)}}}H.appendChild(T);return g}var K=false;var J=M.xhr();if(M.username){J.open(G,M.url,M.async,M.username,M.password)}else{J.open(G,M.url,M.async)}try{if(M.data){J.setRequestHeader("Content-Type",M.contentType)}if(M.ifModified){J.setRequestHeader("If-Modified-Since",o.lastModified[M.url]||"Thu, 01 Jan 1970 00:00:00 GMT")}J.setRequestHeader("X-Requested-With","XMLHttpRequest");J.setRequestHeader("Accept",M.dataType&&M.accepts[M.dataType]?M.accepts[M.dataType]+", */*":M.accepts._default)}catch(S){}if(M.beforeSend&&M.beforeSend(J,M)===false){if(M.global&&!--o.active){o.event.trigger("ajaxStop")}J.abort();return false}if(M.global){o.event.trigger("ajaxSend",[J,M])}var N=function(X){if(J.readyState==0){if(P){clearInterval(P);P=null;if(M.global&&!--o.active){o.event.trigger("ajaxStop")}}}else{if(!K&&J&&(J.readyState==4||X=="timeout")){K=true;if(P){clearInterval(P);P=null}R=X=="timeout"?"timeout":!o.httpSuccess(J)?"error":M.ifModified&&o.httpNotModified(J,M.url)?"notmodified":"success";if(R=="success"){try{V=o.httpData(J,M.dataType,M)}catch(Z){R="parsererror"}}if(R=="success"){var Y;try{Y=J.getResponseHeader("Last-Modified")}catch(Z){}if(M.ifModified&&Y){o.lastModified[M.url]=Y}if(!W){I()}}else{o.handleError(M,J,R)}L();if(X){J.abort()}if(M.async){J=null}}}};if(M.async){var P=setInterval(N,13);if(M.timeout>0){setTimeout(function(){if(J&&!K){N("timeout")}},M.timeout)}}try{J.send(M.data)}catch(S){o.handleError(M,J,null,S)}if(!M.async){N()}function I(){if(M.success){M.success(V,R)}if(M.global){o.event.trigger("ajaxSuccess",[J,M])}}function L(){if(M.complete){M.complete(J,R)}if(M.global){o.event.trigger("ajaxComplete",[J,M])}if(M.global&&!--o.active){o.event.trigger("ajaxStop")}}return J},handleError:function(F,H,E,G){if(F.error){F.error(H,E,G)}if(F.global){o.event.trigger("ajaxError",[H,F,G])}},active:0,httpSuccess:function(F){try{return !F.status&&location.protocol=="file:"||(F.status>=200&&F.status<300)||F.status==304||F.status==1223}catch(E){}return false},httpNotModified:function(G,E){try{var H=G.getResponseHeader("Last-Modified");return G.status==304||H==o.lastModified[E]}catch(F){}return false},httpData:function(J,H,G){var F=J.getResponseHeader("content-type"),E=H=="xml"||!H&&F&&F.indexOf("xml")>=0,I=E?J.responseXML:J.responseText;if(E&&I.documentElement.tagName=="parsererror"){throw"parsererror"}if(G&&G.dataFilter){I=G.dataFilter(I,H)}if(typeof I==="string"){if(H=="script"){o.globalEval(I)}if(H=="json"){I=l["eval"]("("+I+")")}}return I},param:function(E){var G=[];function H(I,J){G[G.length]=encodeURIComponent(I)+"="+encodeURIComponent(J)}if(o.isArray(E)||E.jquery){o.each(E,function(){H(this.name,this.value)})}else{for(var F in E){if(o.isArray(E[F])){o.each(E[F],function(){H(F,this)})}else{H(F,o.isFunction(E[F])?E[F]():E[F])}}}return G.join("&").replace(/%20/g,"+")}});var m={},n,d=[["height","marginTop","marginBottom","paddingTop","paddingBottom"],["width","marginLeft","marginRight","paddingLeft","paddingRight"],["opacity"]];function t(F,E){var G={};o.each(d.concat.apply([],d.slice(0,E)),function(){G[this]=F});return G}o.fn.extend({show:function(J,L){if(J){return this.animate(t("show",3),J,L)}else{for(var H=0,F=this.length;H<F;H++){var E=o.data(this[H],"olddisplay");this[H].style.display=E||"";if(o.css(this[H],"display")==="none"){var G=this[H].tagName,K;if(m[G]){K=m[G]}else{var I=o("<"+G+" />").appendTo("body");K=I.css("display");if(K==="none"){K="block"}I.remove();m[G]=K}o.data(this[H],"olddisplay",K)}}for(var H=0,F=this.length;H<F;H++){this[H].style.display=o.data(this[H],"olddisplay")||""}return this}},hide:function(H,I){if(H){return this.animate(t("hide",3),H,I)}else{for(var G=0,F=this.length;G<F;G++){var E=o.data(this[G],"olddisplay");if(!E&&E!=="none"){o.data(this[G],"olddisplay",o.css(this[G],"display"))}}for(var G=0,F=this.length;G<F;G++){this[G].style.display="none"}return this}},_toggle:o.fn.toggle,toggle:function(G,F){var E=typeof G==="boolean";return o.isFunction(G)&&o.isFunction(F)?this._toggle.apply(this,arguments):G==null||E?this.each(function(){var H=E?G:o(this).is(":hidden");o(this)[H?"show":"hide"]()}):this.animate(t("toggle",3),G,F)},fadeTo:function(E,G,F){return this.animate({opacity:G},E,F)},animate:function(I,F,H,G){var E=o.speed(F,H,G);return this[E.queue===false?"each":"queue"](function(){var K=o.extend({},E),M,L=this.nodeType==1&&o(this).is(":hidden"),J=this;for(M in I){if(I[M]=="hide"&&L||I[M]=="show"&&!L){return K.complete.call(this)}if((M=="height"||M=="width")&&this.style){K.display=o.css(this,"display");K.overflow=this.style.overflow}}if(K.overflow!=null){this.style.overflow="hidden"}K.curAnim=o.extend({},I);o.each(I,function(O,S){var R=new o.fx(J,K,O);if(/toggle|show|hide/.test(S)){R[S=="toggle"?L?"show":"hide":S](I)}else{var Q=S.toString().match(/^([+-]=)?([\d+-.]+)(.*)$/),T=R.cur(true)||0;if(Q){var N=parseFloat(Q[2]),P=Q[3]||"px";if(P!="px"){J.style[O]=(N||1)+P;T=((N||1)/R.cur(true))*T;J.style[O]=T+P}if(Q[1]){N=((Q[1]=="-="?-1:1)*N)+T}R.custom(T,N,P)}else{R.custom(T,S,"")}}});return true})},stop:function(F,E){var G=o.timers;if(F){this.queue([])}this.each(function(){for(var H=G.length-1;H>=0;H--){if(G[H].elem==this){if(E){G[H](true)}G.splice(H,1)}}});if(!E){this.dequeue()}return this}});o.each({slideDown:t("show",1),slideUp:t("hide",1),slideToggle:t("toggle",1),fadeIn:{opacity:"show"},fadeOut:{opacity:"hide"}},function(E,F){o.fn[E]=function(G,H){return this.animate(F,G,H)}});o.extend({speed:function(G,H,F){var E=typeof G==="object"?G:{complete:F||!F&&H||o.isFunction(G)&&G,duration:G,easing:F&&H||H&&!o.isFunction(H)&&H};E.duration=o.fx.off?0:typeof E.duration==="number"?E.duration:o.fx.speeds[E.duration]||o.fx.speeds._default;E.old=E.complete;E.complete=function(){if(E.queue!==false){o(this).dequeue()}if(o.isFunction(E.old)){E.old.call(this)}};return E},easing:{linear:function(G,H,E,F){return E+F*G},swing:function(G,H,E,F){return((-Math.cos(G*Math.PI)/2)+0.5)*F+E}},timers:[],fx:function(F,E,G){this.options=E;this.elem=F;this.prop=G;if(!E.orig){E.orig={}}}});o.fx.prototype={update:function(){if(this.options.step){this.options.step.call(this.elem,this.now,this)}(o.fx.step[this.prop]||o.fx.step._default)(this);if((this.prop=="height"||this.prop=="width")&&this.elem.style){this.elem.style.display="block"}},cur:function(F){if(this.elem[this.prop]!=null&&(!this.elem.style||this.elem.style[this.prop]==null)){return this.elem[this.prop]}var E=parseFloat(o.css(this.elem,this.prop,F));return E&&E>-10000?E:parseFloat(o.curCSS(this.elem,this.prop))||0},custom:function(I,H,G){this.startTime=e();this.start=I;this.end=H;this.unit=G||this.unit||"px";this.now=this.start;this.pos=this.state=0;var E=this;function F(J){return E.step(J)}F.elem=this.elem;if(F()&&o.timers.push(F)&&!n){n=setInterval(function(){var K=o.timers;for(var J=0;J<K.length;J++){if(!K[J]()){K.splice(J--,1)}}if(!K.length){clearInterval(n);n=g}},13)}},show:function(){this.options.orig[this.prop]=o.attr(this.elem.style,this.prop);this.options.show=true;this.custom(this.prop=="width"||this.prop=="height"?1:0,this.cur());o(this.elem).show()},hide:function(){this.options.orig[this.prop]=o.attr(this.elem.style,this.prop);this.options.hide=true;this.custom(this.cur(),0)},step:function(H){var G=e();if(H||G>=this.options.duration+this.startTime){this.now=this.end;this.pos=this.state=1;this.update();this.options.curAnim[this.prop]=true;var E=true;for(var F in this.options.curAnim){if(this.options.curAnim[F]!==true){E=false}}if(E){if(this.options.display!=null){this.elem.style.overflow=this.options.overflow;this.elem.style.display=this.options.display;if(o.css(this.elem,"display")=="none"){this.elem.style.display="block"}}if(this.options.hide){o(this.elem).hide()}if(this.options.hide||this.options.show){for(var I in this.options.curAnim){o.attr(this.elem.style,I,this.options.orig[I])}}this.options.complete.call(this.elem)}return false}else{var J=G-this.startTime;this.state=J/this.options.duration;this.pos=o.easing[this.options.easing||(o.easing.swing?"swing":"linear")](this.state,J,0,1,this.options.duration);this.now=this.start+((this.end-this.start)*this.pos);this.update()}return true}};o.extend(o.fx,{speeds:{slow:600,fast:200,_default:400},step:{opacity:function(E){o.attr(E.elem.style,"opacity",E.now)},_default:function(E){if(E.elem.style&&E.elem.style[E.prop]!=null){E.elem.style[E.prop]=E.now+E.unit}else{E.elem[E.prop]=E.now}}}});if(document.documentElement.getBoundingClientRect){o.fn.offset=function(){if(!this[0]){return{top:0,left:0}}if(this[0]===this[0].ownerDocument.body){return o.offset.bodyOffset(this[0])}var G=this[0].getBoundingClientRect(),J=this[0].ownerDocument,F=J.body,E=J.documentElement,L=E.clientTop||F.clientTop||0,K=E.clientLeft||F.clientLeft||0,I=G.top+(self.pageYOffset||o.boxModel&&E.scrollTop||F.scrollTop)-L,H=G.left+(self.pageXOffset||o.boxModel&&E.scrollLeft||F.scrollLeft)-K;return{top:I,left:H}}}else{o.fn.offset=function(){if(!this[0]){return{top:0,left:0}}if(this[0]===this[0].ownerDocument.body){return o.offset.bodyOffset(this[0])}o.offset.initialized||o.offset.initialize();var J=this[0],G=J.offsetParent,F=J,O=J.ownerDocument,M,H=O.documentElement,K=O.body,L=O.defaultView,E=L.getComputedStyle(J,null),N=J.offsetTop,I=J.offsetLeft;while((J=J.parentNode)&&J!==K&&J!==H){M=L.getComputedStyle(J,null);N-=J.scrollTop,I-=J.scrollLeft;if(J===G){N+=J.offsetTop,I+=J.offsetLeft;if(o.offset.doesNotAddBorder&&!(o.offset.doesAddBorderForTableAndCells&&/^t(able|d|h)$/i.test(J.tagName))){N+=parseInt(M.borderTopWidth,10)||0,I+=parseInt(M.borderLeftWidth,10)||0}F=G,G=J.offsetParent}if(o.offset.subtractsBorderForOverflowNotVisible&&M.overflow!=="visible"){N+=parseInt(M.borderTopWidth,10)||0,I+=parseInt(M.borderLeftWidth,10)||0}E=M}if(E.position==="relative"||E.position==="static"){N+=K.offsetTop,I+=K.offsetLeft}if(E.position==="fixed"){N+=Math.max(H.scrollTop,K.scrollTop),I+=Math.max(H.scrollLeft,K.scrollLeft)}return{top:N,left:I}}}o.offset={initialize:function(){if(this.initialized){return}var L=document.body,F=document.createElement("div"),H,G,N,I,M,E,J=L.style.marginTop,K='<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';M={position:"absolute",top:0,left:0,margin:0,border:0,width:"1px",height:"1px",visibility:"hidden"};for(E in M){F.style[E]=M[E]}F.innerHTML=K;L.insertBefore(F,L.firstChild);H=F.firstChild,G=H.firstChild,I=H.nextSibling.firstChild.firstChild;this.doesNotAddBorder=(G.offsetTop!==5);this.doesAddBorderForTableAndCells=(I.offsetTop===5);H.style.overflow="hidden",H.style.position="relative";this.subtractsBorderForOverflowNotVisible=(G.offsetTop===-5);L.style.marginTop="1px";this.doesNotIncludeMarginInBodyOffset=(L.offsetTop===0);L.style.marginTop=J;L.removeChild(F);this.initialized=true},bodyOffset:function(E){o.offset.initialized||o.offset.initialize();var G=E.offsetTop,F=E.offsetLeft;if(o.offset.doesNotIncludeMarginInBodyOffset){G+=parseInt(o.curCSS(E,"marginTop",true),10)||0,F+=parseInt(o.curCSS(E,"marginLeft",true),10)||0}return{top:G,left:F}}};o.fn.extend({position:function(){var I=0,H=0,F;if(this[0]){var G=this.offsetParent(),J=this.offset(),E=/^body|html$/i.test(G[0].tagName)?{top:0,left:0}:G.offset();J.top-=j(this,"marginTop");J.left-=j(this,"marginLeft");E.top+=j(G,"borderTopWidth");E.left+=j(G,"borderLeftWidth");F={top:J.top-E.top,left:J.left-E.left}}return F},offsetParent:function(){var E=this[0].offsetParent||document.body;while(E&&(!/^body|html$/i.test(E.tagName)&&o.css(E,"position")=="static")){E=E.offsetParent}return o(E)}});o.each(["Left","Top"],function(F,E){var G="scroll"+E;o.fn[G]=function(H){if(!this[0]){return null}return H!==g?this.each(function(){this==l||this==document?l.scrollTo(!F?H:o(l).scrollLeft(),F?H:o(l).scrollTop()):this[G]=H}):this[0]==l||this[0]==document?self[F?"pageYOffset":"pageXOffset"]||o.boxModel&&document.documentElement[G]||document.body[G]:this[0][G]}});o.each(["Height","Width"],function(I,G){var E=I?"Left":"Top",H=I?"Right":"Bottom",F=G.toLowerCase();o.fn["inner"+G]=function(){return this[0]?o.css(this[0],F,false,"padding"):null};o.fn["outer"+G]=function(K){return this[0]?o.css(this[0],F,false,K?"margin":"border"):null};var J=G.toLowerCase();o.fn[J]=function(K){return this[0]==l?document.compatMode=="CSS1Compat"&&document.documentElement["client"+G]||document.body["client"+G]:this[0]==document?Math.max(document.documentElement["client"+G],document.body["scroll"+G],document.documentElement["scroll"+G],document.body["offset"+G],document.documentElement["offset"+G]):K===g?(this.length?o.css(this[0],J):null):this.css(J,typeof K==="string"?K:K+"px")}})})();
 
 
 
@@ -173,102 +179,102 @@ var fileMETA = parseHeaders(<><![CDATA[
  * File generated: Wed Aug 18 09:10:10 GMT 2010
  */
 (function(){function f(a,b){if(b)for(var c in b)if(b.hasOwnProperty(c))a[c]=b[c];return a}function l(a,b){var c=[];for(var d in a)if(a.hasOwnProperty(d))c[d]=b(a[d]);return c}function m(a,b,c){if(e.isSupported(b.version))a.innerHTML=e.getHTML(b,c);else if(b.expressInstall&&e.isSupported([6,65]))a.innerHTML=e.getHTML(f(b,{src:b.expressInstall}),{MMredirectURL:location.href,MMplayerType:"PlugIn",MMdoctitle:document.title});else{if(!a.innerHTML.replace(/\s/g,"")){a.innerHTML="<h2>Flash version "+b.version+
-  " or greater is required</h2><h3>"+(g[0]>0?"Your version is "+g:"You have no flash plugin installed")+"</h3>"+(a.tagName=="A"?"<p>Click here to download latest version</p>":"<p>Download latest version from <a href='"+k+"'>here</a></p>");if(a.tagName=="A")a.onclick=function(){location.href=k}}if(b.onFail){var d=b.onFail.call(this);if(typeof d=="string")a.innerHTML=d}}if(i)window[b.id]=document.getElementById(b.id);f(this,{getRoot:function(){return a},getOptions:function(){return b},getConf:function(){return c},
-  getApi:function(){return a.firstChild}})}var i=document.all,k="http://www.adobe.com/go/getflashplayer",n=typeof jQuery=="function",o=/(\d+)[^\d]+(\d+)[^\d]*(\d*)/,j={width:"100%",height:"100%",id:"_"+(""+Math.random()).slice(9),allowfullscreen:true,allowscriptaccess:"always",quality:"high",version:[3,0],onFail:null,expressInstall:null,w3c:false,cachebusting:false};window.attachEvent&&window.attachEvent("onbeforeunload",function(){__flash_unloadHandler=function(){};__flash_savedUnloadHandler=function(){}});
-  window.flashembed=function(a,b,c){if(typeof a=="string")a=document.getElementById(a.replace("#",""));if(a){if(typeof b=="string")b={src:b};return new m(a,f(f({},j),b),c)}};var e=f(window.flashembed,{conf:j,getVersion:function(){var a,b;try{b=navigator.plugins["Shockwave Flash"].description.slice(16)}catch(c){try{b=(a=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7"))&&a.GetVariable("$version")}catch(d){try{b=(a=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6"))&&a.GetVariable("$version")}catch(h){}}}return(b=
-    o.exec(b))?[b[1],b[3]]:[0,0]},asString:function(a){if(a===null||a===undefined)return null;var b=typeof a;if(b=="object"&&a.push)b="array";switch(b){case "string":a=a.replace(new RegExp('(["\\\\])',"g"),"\\$1");a=a.replace(/^\s?(\d+\.?\d+)%/,"$1pct");return'"'+a+'"';case "array":return"["+l(a,function(d){return e.asString(d)}).join(",")+"]";case "function":return'"function()"';case "object":b=[];for(var c in a)a.hasOwnProperty(c)&&b.push('"'+c+'":'+e.asString(a[c]));return"{"+b.join(",")+"}"}return String(a).replace(/\s/g,
-    " ").replace(/\'/g,'"')},getHTML:function(a,b){a=f({},a);var c='<object width="'+a.width+'" height="'+a.height+'" id="'+a.id+'" name="'+a.id+'"';if(a.cachebusting)a.src+=(a.src.indexOf("?")!=-1?"&":"?")+Math.random();c+=a.w3c||!i?' data="'+a.src+'" type="application/x-shockwave-flash"':' classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';c+=">";if(a.w3c||i)c+='<param name="movie" value="'+a.src+'" />';a.width=a.height=a.id=a.w3c=a.src=null;a.onFail=a.version=a.expressInstall=null;for(var d in a)if(a[d])c+=
-    '<param name="'+d+'" value="'+a[d]+'" />';a="";if(b){for(var h in b)if(b[h]){d=b[h];a+=h+"="+(/function|object/.test(typeof d)?e.asString(d):d)+"&"}a=a.slice(0,-1);c+='<param name="flashvars" value=\''+a+"' />"}c+="</object>";return c},isSupported:function(a){return g[0]>a[0]||g[0]==a[0]&&g[1]>=a[1]}}),g=e.getVersion();if(n){jQuery.tools=jQuery.tools||{version:"1.2.4"};jQuery.tools.flashembed={conf:j};jQuery.fn.flashembed=function(a,b){return this.each(function(){$(this).data("flashembed",flashembed(this,
-    a,b))})}}})();
+" or greater is required</h2><h3>"+(g[0]>0?"Your version is "+g:"You have no flash plugin installed")+"</h3>"+(a.tagName=="A"?"<p>Click here to download latest version</p>":"<p>Download latest version from <a href='"+k+"'>here</a></p>");if(a.tagName=="A")a.onclick=function(){location.href=k}}if(b.onFail){var d=b.onFail.call(this);if(typeof d=="string")a.innerHTML=d}}if(i)window[b.id]=document.getElementById(b.id);f(this,{getRoot:function(){return a},getOptions:function(){return b},getConf:function(){return c},
+getApi:function(){return a.firstChild}})}var i=document.all,k="http://www.adobe.com/go/getflashplayer",n=typeof jQuery=="function",o=/(\d+)[^\d]+(\d+)[^\d]*(\d*)/,j={width:"100%",height:"100%",id:"_"+(""+Math.random()).slice(9),allowfullscreen:true,allowscriptaccess:"always",quality:"high",version:[3,0],onFail:null,expressInstall:null,w3c:false,cachebusting:false};window.attachEvent&&window.attachEvent("onbeforeunload",function(){__flash_unloadHandler=function(){};__flash_savedUnloadHandler=function(){}});
+window.flashembed=function(a,b,c){if(typeof a=="string")a=document.getElementById(a.replace("#",""));if(a){if(typeof b=="string")b={src:b};return new m(a,f(f({},j),b),c)}};var e=f(window.flashembed,{conf:j,getVersion:function(){var a,b;try{b=navigator.plugins["Shockwave Flash"].description.slice(16)}catch(c){try{b=(a=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7"))&&a.GetVariable("$version")}catch(d){try{b=(a=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6"))&&a.GetVariable("$version")}catch(h){}}}return(b=
+o.exec(b))?[b[1],b[3]]:[0,0]},asString:function(a){if(a===null||a===undefined)return null;var b=typeof a;if(b=="object"&&a.push)b="array";switch(b){case "string":a=a.replace(new RegExp('(["\\\\])',"g"),"\\$1");a=a.replace(/^\s?(\d+\.?\d+)%/,"$1pct");return'"'+a+'"';case "array":return"["+l(a,function(d){return e.asString(d)}).join(",")+"]";case "function":return'"function()"';case "object":b=[];for(var c in a)a.hasOwnProperty(c)&&b.push('"'+c+'":'+e.asString(a[c]));return"{"+b.join(",")+"}"}return String(a).replace(/\s/g,
+" ").replace(/\'/g,'"')},getHTML:function(a,b){a=f({},a);var c='<object width="'+a.width+'" height="'+a.height+'" id="'+a.id+'" name="'+a.id+'"';if(a.cachebusting)a.src+=(a.src.indexOf("?")!=-1?"&":"?")+Math.random();c+=a.w3c||!i?' data="'+a.src+'" type="application/x-shockwave-flash"':' classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';c+=">";if(a.w3c||i)c+='<param name="movie" value="'+a.src+'" />';a.width=a.height=a.id=a.w3c=a.src=null;a.onFail=a.version=a.expressInstall=null;for(var d in a)if(a[d])c+=
+'<param name="'+d+'" value="'+a[d]+'" />';a="";if(b){for(var h in b)if(b[h]){d=b[h];a+=h+"="+(/function|object/.test(typeof d)?e.asString(d):d)+"&"}a=a.slice(0,-1);c+='<param name="flashvars" value=\''+a+"' />"}c+="</object>";return c},isSupported:function(a){return g[0]>a[0]||g[0]==a[0]&&g[1]>=a[1]}}),g=e.getVersion();if(n){jQuery.tools=jQuery.tools||{version:"1.2.4"};jQuery.tools.flashembed={conf:j};jQuery.fn.flashembed=function(a,b){return this.each(function(){$(this).data("flashembed",flashembed(this,
+a,b))})}}})();
 (function(b){function h(c){if(c){var a=d.contentWindow.document;a.open().close();a.location.hash=c}}var g,d,f,i;b.tools=b.tools||{version:"1.2.4"};b.tools.history={init:function(c){if(!i){if(b.browser.msie&&b.browser.version<"8"){if(!d){d=b("<iframe/>").attr("src","javascript:false;").hide().get(0);b("body").append(d);setInterval(function(){var a=d.contentWindow.document;a=a.location.hash;g!==a&&b.event.trigger("hash",a)},100);h(location.hash||"#")}}else setInterval(function(){var a=location.hash;
-  a!==g&&b.event.trigger("hash",a)},100);f=!f?c:f.add(c);c.click(function(a){var e=b(this).attr("href");d&&h(e);if(e.slice(0,1)!="#"){location.href="#"+e;return a.preventDefault()}});i=true}}};b(window).bind("hash",function(c,a){a?f.filter(function(){var e=b(this).attr("href");return e==a||e==a.replace("#","")}).trigger("history",[a]):f.eq(0).trigger("history",[a]);g=a;window.location.hash=g});b.fn.history=function(c){b.tools.history.init(this);return this.bind("history",c)}})(jQuery);
+a!==g&&b.event.trigger("hash",a)},100);f=!f?c:f.add(c);c.click(function(a){var e=b(this).attr("href");d&&h(e);if(e.slice(0,1)!="#"){location.href="#"+e;return a.preventDefault()}});i=true}}};b(window).bind("hash",function(c,a){a?f.filter(function(){var e=b(this).attr("href");return e==a||e==a.replace("#","")}).trigger("history",[a]):f.eq(0).trigger("history",[a]);g=a;window.location.hash=g});b.fn.history=function(c){b.tools.history.init(this);return this.bind("history",c)}})(jQuery);
 (function(b){function k(){if(b.browser.msie){var a=b(document).height(),d=b(window).height();return[window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth,a-d<20?d:a]}return[b(document).width(),b(document).height()]}function h(a){if(a)return a.call(b.mask)}b.tools=b.tools||{version:"1.2.4"};var l;l=b.tools.expose={conf:{maskId:"exposeMask",loadSpeed:"slow",closeSpeed:"fast",closeOnClick:true,closeOnEsc:true,zIndex:9998,opacity:0.8,startOpacity:0,color:"#fff",onLoad:null,
-  onClose:null}};var c,i,e,g,j;b.mask={load:function(a,d){if(e)return this;if(typeof a=="string")a={color:a};a=a||g;g=a=b.extend(b.extend({},l.conf),a);c=b("#"+a.maskId);if(!c.length){c=b("<div/>").attr("id",a.maskId);b("body").append(c)}var m=k();c.css({position:"absolute",top:0,left:0,width:m[0],height:m[1],display:"none",opacity:a.startOpacity,zIndex:a.zIndex});a.color&&c.css("backgroundColor",a.color);if(h(a.onBeforeLoad)===false)return this;a.closeOnEsc&&b(document).bind("keydown.mask",function(f){f.keyCode==
-  27&&b.mask.close(f)});a.closeOnClick&&c.bind("click.mask",function(f){b.mask.close(f)});b(window).bind("resize.mask",function(){b.mask.fit()});if(d&&d.length){j=d.eq(0).css("zIndex");b.each(d,function(){var f=b(this);/relative|absolute|fixed/i.test(f.css("position"))||f.css("position","relative")});i=d.css({zIndex:Math.max(a.zIndex+1,j=="auto"?0:j)})}c.css({display:"block"}).fadeTo(a.loadSpeed,a.opacity,function(){b.mask.fit();h(a.onLoad);e="full"});e=true;return this},close:function(){if(e){if(h(g.onBeforeClose)===
-  false)return this;c.fadeOut(g.closeSpeed,function(){h(g.onClose);i&&i.css({zIndex:j});e=false});b(document).unbind("keydown.mask");c.unbind("click.mask");b(window).unbind("resize.mask")}return this},fit:function(){if(e){var a=k();c.css({width:a[0],height:a[1]})}},getMask:function(){return c},isLoaded:function(a){return a?e=="full":e},getConf:function(){return g},getExposed:function(){return i}};b.fn.mask=function(a){b.mask.load(a);return this};b.fn.expose=function(a){b.mask.load(a,this);return this}})(jQuery);
+onClose:null}};var c,i,e,g,j;b.mask={load:function(a,d){if(e)return this;if(typeof a=="string")a={color:a};a=a||g;g=a=b.extend(b.extend({},l.conf),a);c=b("#"+a.maskId);if(!c.length){c=b("<div/>").attr("id",a.maskId);b("body").append(c)}var m=k();c.css({position:"absolute",top:0,left:0,width:m[0],height:m[1],display:"none",opacity:a.startOpacity,zIndex:a.zIndex});a.color&&c.css("backgroundColor",a.color);if(h(a.onBeforeLoad)===false)return this;a.closeOnEsc&&b(document).bind("keydown.mask",function(f){f.keyCode==
+27&&b.mask.close(f)});a.closeOnClick&&c.bind("click.mask",function(f){b.mask.close(f)});b(window).bind("resize.mask",function(){b.mask.fit()});if(d&&d.length){j=d.eq(0).css("zIndex");b.each(d,function(){var f=b(this);/relative|absolute|fixed/i.test(f.css("position"))||f.css("position","relative")});i=d.css({zIndex:Math.max(a.zIndex+1,j=="auto"?0:j)})}c.css({display:"block"}).fadeTo(a.loadSpeed,a.opacity,function(){b.mask.fit();h(a.onLoad);e="full"});e=true;return this},close:function(){if(e){if(h(g.onBeforeClose)===
+false)return this;c.fadeOut(g.closeSpeed,function(){h(g.onClose);i&&i.css({zIndex:j});e=false});b(document).unbind("keydown.mask");c.unbind("click.mask");b(window).unbind("resize.mask")}return this},fit:function(){if(e){var a=k();c.css({width:a[0],height:a[1]})}},getMask:function(){return c},isLoaded:function(a){return a?e=="full":e},getConf:function(){return g},getExposed:function(){return i}};b.fn.mask=function(a){b.mask.load(a);return this};b.fn.expose=function(a){b.mask.load(a,this);return this}})(jQuery);
 (function(b){function c(a){switch(a.type){case "mousemove":return b.extend(a.data,{clientX:a.clientX,clientY:a.clientY,pageX:a.pageX,pageY:a.pageY});case "DOMMouseScroll":b.extend(a,a.data);a.delta=-a.detail/3;break;case "mousewheel":a.delta=a.wheelDelta/120;break}a.type="wheel";return b.event.handle.call(this,a,a.delta)}b.fn.mousewheel=function(a){return this[a?"bind":"trigger"]("wheel",a)};b.event.special.wheel={setup:function(){b.event.add(this,d,c,{})},teardown:function(){b.event.remove(this,
-  d,c)}};var d=!b.browser.mozilla?"mousewheel":"DOMMouseScroll"+(b.browser.version<"1.9"?" mousemove":"")})(jQuery);
+d,c)}};var d=!b.browser.mozilla?"mousewheel":"DOMMouseScroll"+(b.browser.version<"1.9"?" mousemove":"")})(jQuery);
 (function(c){function p(d,b,a){var e=this,l=d.add(this),h=d.find(a.tabs),i=b.jquery?b:d.children(b),j;h.length||(h=d.children());i.length||(i=d.parent().find(b));i.length||(i=c(b));c.extend(this,{click:function(f,g){var k=h.eq(f);if(typeof f=="string"&&f.replace("#","")){k=h.filter("[href*="+f.replace("#","")+"]");f=Math.max(h.index(k),0)}if(a.rotate){var n=h.length-1;if(f<0)return e.click(n,g);if(f>n)return e.click(0,g)}if(!k.length){if(j>=0)return e;f=a.initialIndex;k=h.eq(f)}if(f===j)return e;
-  g=g||c.Event();g.type="onBeforeClick";l.trigger(g,[f]);if(!g.isDefaultPrevented()){o[a.effect].call(e,f,function(){g.type="onClick";l.trigger(g,[f])});j=f;h.removeClass(a.current);k.addClass(a.current);return e}},getConf:function(){return a},getTabs:function(){return h},getPanes:function(){return i},getCurrentPane:function(){return i.eq(j)},getCurrentTab:function(){return h.eq(j)},getIndex:function(){return j},next:function(){return e.click(j+1)},prev:function(){return e.click(j-1)},destroy:function(){h.unbind(a.event).removeClass(a.current);
-  i.find("a[href^=#]").unbind("click.T");return e}});c.each("onBeforeClick,onClick".split(","),function(f,g){c.isFunction(a[g])&&c(e).bind(g,a[g]);e[g]=function(k){k&&c(e).bind(g,k);return e}});if(a.history&&c.fn.history){c.tools.history.init(h);a.event="history"}h.each(function(f){c(this).bind(a.event,function(g){e.click(f,g);return g.preventDefault()})});i.find("a[href^=#]").bind("click.T",function(f){e.click(c(this).attr("href"),f)});if(location.hash&&a.tabs==="a"&&d.find(a.tabs+location.hash).length)e.click(location.hash);
+g=g||c.Event();g.type="onBeforeClick";l.trigger(g,[f]);if(!g.isDefaultPrevented()){o[a.effect].call(e,f,function(){g.type="onClick";l.trigger(g,[f])});j=f;h.removeClass(a.current);k.addClass(a.current);return e}},getConf:function(){return a},getTabs:function(){return h},getPanes:function(){return i},getCurrentPane:function(){return i.eq(j)},getCurrentTab:function(){return h.eq(j)},getIndex:function(){return j},next:function(){return e.click(j+1)},prev:function(){return e.click(j-1)},destroy:function(){h.unbind(a.event).removeClass(a.current);
+i.find("a[href^=#]").unbind("click.T");return e}});c.each("onBeforeClick,onClick".split(","),function(f,g){c.isFunction(a[g])&&c(e).bind(g,a[g]);e[g]=function(k){k&&c(e).bind(g,k);return e}});if(a.history&&c.fn.history){c.tools.history.init(h);a.event="history"}h.each(function(f){c(this).bind(a.event,function(g){e.click(f,g);return g.preventDefault()})});i.find("a[href^=#]").bind("click.T",function(f){e.click(c(this).attr("href"),f)});if(location.hash&&a.tabs==="a"&&d.find(a.tabs+location.hash).length)e.click(location.hash);
 else if(a.initialIndex===0||a.initialIndex>0)e.click(a.initialIndex)}c.tools=c.tools||{version:"1.2.4"};c.tools.tabs={conf:{tabs:"a",current:"current",onBeforeClick:null,onClick:null,effect:"default",initialIndex:0,event:"click",rotate:false,history:false},addEffect:function(d,b){o[d]=b}};var o={"default":function(d,b){this.getPanes().hide().eq(d).show();b.call()},fade:function(d,b){var a=this.getConf(),e=a.fadeOutSpeed,l=this.getPanes();e?l.fadeOut(e):l.hide();l.eq(d).fadeIn(a.fadeInSpeed,b)},slide:function(d,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  b){this.getPanes().slideUp(200);this.getPanes().eq(d).slideDown(400,b)},ajax:function(d,b){this.getPanes().eq(0).load(this.getTabs().eq(d).attr("href"),b)}},m;c.tools.tabs.addEffect("horizontal",function(d,b){m||(m=this.getPanes().eq(0).width());this.getCurrentPane().animate({width:0},function(){c(this).hide()});this.getPanes().eq(d).animate({width:m},function(){c(this).show();b.call()})});c.fn.tabs=function(d,b){var a=this.data("tabs");if(a){a.destroy();this.removeData("tabs")}if(c.isFunction(b))b=
+b){this.getPanes().slideUp(200);this.getPanes().eq(d).slideDown(400,b)},ajax:function(d,b){this.getPanes().eq(0).load(this.getTabs().eq(d).attr("href"),b)}},m;c.tools.tabs.addEffect("horizontal",function(d,b){m||(m=this.getPanes().eq(0).width());this.getCurrentPane().animate({width:0},function(){c(this).hide()});this.getPanes().eq(d).animate({width:m},function(){c(this).show();b.call()})});c.fn.tabs=function(d,b){var a=this.data("tabs");if(a){a.destroy();this.removeData("tabs")}if(c.isFunction(b))b=
 {onBeforeClick:b};b=c.extend({},c.tools.tabs.conf,b);this.each(function(){a=new p(c(this),d,b);c(this).data("tabs",a)});return b.api?a:this}})(jQuery);
 (function(d){function r(g,a){function p(f){var e=d(f);return e.length<2?e:g.parent().find(f)}var c=this,j=g.add(this),b=g.data("tabs"),h,m,k,n=false,o=p(a.next).click(function(){b.next()}),l=p(a.prev).click(function(){b.prev()});d.extend(c,{getTabs:function(){return b},getConf:function(){return a},play:function(){if(!h){var f=d.Event("onBeforePlay");j.trigger(f);if(f.isDefaultPrevented())return c;n=false;h=setInterval(b.next,a.interval);j.trigger("onPlay");b.next()}},pause:function(){if(!h&&!k)return c;
-  var f=d.Event("onBeforePause");j.trigger(f);if(f.isDefaultPrevented())return c;h=clearInterval(h);k=clearInterval(k);j.trigger("onPause")},stop:function(){c.pause();n=true}});d.each("onBeforePlay,onPlay,onBeforePause,onPause".split(","),function(f,e){d.isFunction(a[e])&&c.bind(e,a[e]);c[e]=function(s){return c.bind(e,s)}});if(a.autopause){var t=b.getTabs().add(o).add(l).add(b.getPanes());t.hover(function(){c.pause();m=clearInterval(m)},function(){n||(m=setTimeout(c.play,a.interval))})}if(a.autoplay)k=
-  setTimeout(c.play,a.interval);else c.stop();a.clickable&&b.getPanes().click(function(){b.next()});if(!b.getConf().rotate){var i=a.disabledClass;b.getIndex()||l.addClass(i);b.onBeforeClick(function(f,e){if(e){l.removeClass(i);e==b.getTabs().length-1?o.addClass(i):o.removeClass(i)}else l.addClass(i)})}}var q;q=d.tools.tabs.slideshow={conf:{next:".forward",prev:".backward",disabledClass:"disabled",autoplay:false,autopause:true,interval:3E3,clickable:true,api:false}};d.fn.slideshow=function(g){var a=
-  this.data("slideshow");if(a)return a;g=d.extend({},q.conf,g);this.each(function(){a=new r(d(this),g);d(this).data("slideshow",a)});return g.api?a:this}})(jQuery);
+var f=d.Event("onBeforePause");j.trigger(f);if(f.isDefaultPrevented())return c;h=clearInterval(h);k=clearInterval(k);j.trigger("onPause")},stop:function(){c.pause();n=true}});d.each("onBeforePlay,onPlay,onBeforePause,onPause".split(","),function(f,e){d.isFunction(a[e])&&c.bind(e,a[e]);c[e]=function(s){return c.bind(e,s)}});if(a.autopause){var t=b.getTabs().add(o).add(l).add(b.getPanes());t.hover(function(){c.pause();m=clearInterval(m)},function(){n||(m=setTimeout(c.play,a.interval))})}if(a.autoplay)k=
+setTimeout(c.play,a.interval);else c.stop();a.clickable&&b.getPanes().click(function(){b.next()});if(!b.getConf().rotate){var i=a.disabledClass;b.getIndex()||l.addClass(i);b.onBeforeClick(function(f,e){if(e){l.removeClass(i);e==b.getTabs().length-1?o.addClass(i):o.removeClass(i)}else l.addClass(i)})}}var q;q=d.tools.tabs.slideshow={conf:{next:".forward",prev:".backward",disabledClass:"disabled",autoplay:false,autopause:true,interval:3E3,clickable:true,api:false}};d.fn.slideshow=function(g){var a=
+this.data("slideshow");if(a)return a;g=d.extend({},q.conf,g);this.each(function(){a=new r(d(this),g);d(this).data("slideshow",a)});return g.api?a:this}})(jQuery);
 (function(f){function p(a,b,c){var h=c.relative?a.position().top:a.offset().top,e=c.relative?a.position().left:a.offset().left,i=c.position[0];h-=b.outerHeight()-c.offset[0];e+=a.outerWidth()+c.offset[1];var j=b.outerHeight()+a.outerHeight();if(i=="center")h+=j/2;if(i=="bottom")h+=j;i=c.position[1];a=b.outerWidth()+a.outerWidth();if(i=="center")e-=a/2;if(i=="left")e-=a;return{top:h,left:e}}function u(a,b){var c=this,h=a.add(c),e,i=0,j=0,m=a.attr("title"),q=a.attr("data-tooltip"),r=n[b.effect],l,s=
-  a.is(":input"),v=s&&a.is(":checkbox, :radio, select, :button, :submit"),t=a.attr("type"),k=b.events[t]||b.events[s?v?"widget":"input":"def"];if(!r)throw'Nonexistent effect "'+b.effect+'"';k=k.split(/,\s*/);if(k.length!=2)throw"Tooltip: bad events configuration for "+t;a.bind(k[0],function(d){clearTimeout(i);if(b.predelay)j=setTimeout(function(){c.show(d)},b.predelay);else c.show(d)}).bind(k[1],function(d){clearTimeout(j);if(b.delay)i=setTimeout(function(){c.hide(d)},b.delay);else c.hide(d)});if(m&&
-  b.cancelDefault){a.removeAttr("title");a.data("title",m)}f.extend(c,{show:function(d){if(!e){if(q)e=f(q);else if(m)e=f(b.layout).addClass(b.tipClass).appendTo(document.body).hide().append(m);else if(b.tip)e=f(b.tip).eq(0);else{e=a.next();e.length||(e=a.parent().next())}if(!e.length)throw"Cannot find tooltip for "+a;}if(c.isShown())return c;e.stop(true,true);var g=p(a,e,b);d=d||f.Event();d.type="onBeforeShow";h.trigger(d,[g]);if(d.isDefaultPrevented())return c;g=p(a,e,b);e.css({position:"absolute",
-  top:g.top,left:g.left});l=true;r[0].call(c,function(){d.type="onShow";l="full";h.trigger(d)});g=b.events.tooltip.split(/,\s*/);e.bind(g[0],function(){clearTimeout(i);clearTimeout(j)});g[1]&&!a.is("input:not(:checkbox, :radio), textarea")&&e.bind(g[1],function(o){o.relatedTarget!=a[0]&&a.trigger(k[1].split(" ")[0])});return c},hide:function(d){if(!e||!c.isShown())return c;d=d||f.Event();d.type="onBeforeHide";h.trigger(d);if(!d.isDefaultPrevented()){l=false;n[b.effect][1].call(c,function(){d.type="onHide";
-  h.trigger(d)});return c}},isShown:function(d){return d?l=="full":l},getConf:function(){return b},getTip:function(){return e},getTrigger:function(){return a}});f.each("onHide,onBeforeShow,onShow,onBeforeHide".split(","),function(d,g){f.isFunction(b[g])&&f(c).bind(g,b[g]);c[g]=function(o){f(c).bind(g,o);return c}})}f.tools=f.tools||{version:"1.2.4"};f.tools.tooltip={conf:{effect:"toggle",fadeOutSpeed:"fast",predelay:0,delay:30,opacity:1,tip:0,position:["top","center"],offset:[0,0],relative:false,cancelDefault:true,
-  events:{def:"mouseenter,mouseleave",input:"focus,blur",widget:"focus mouseenter,blur mouseleave",tooltip:"mouseenter,mouseleave"},layout:"<div/>",tipClass:"tooltip"},addEffect:function(a,b,c){n[a]=[b,c]}};var n={toggle:[function(a){var b=this.getConf(),c=this.getTip();b=b.opacity;b<1&&c.css({opacity:b});c.show();a.call()},function(a){this.getTip().hide();a.call()}],fade:[function(a){var b=this.getConf();this.getTip().fadeTo(b.fadeInSpeed,b.opacity,a)},function(a){this.getTip().fadeOut(this.getConf().fadeOutSpeed,
-  a)}]};f.fn.tooltip=function(a){var b=this.data("tooltip");if(b)return b;a=f.extend(true,{},f.tools.tooltip.conf,a);if(typeof a.position=="string")a.position=a.position.split(/,?\s/);this.each(function(){b=new u(f(this),a);f(this).data("tooltip",b)});return a.api?b:this}})(jQuery);
+a.is(":input"),v=s&&a.is(":checkbox, :radio, select, :button, :submit"),t=a.attr("type"),k=b.events[t]||b.events[s?v?"widget":"input":"def"];if(!r)throw'Nonexistent effect "'+b.effect+'"';k=k.split(/,\s*/);if(k.length!=2)throw"Tooltip: bad events configuration for "+t;a.bind(k[0],function(d){clearTimeout(i);if(b.predelay)j=setTimeout(function(){c.show(d)},b.predelay);else c.show(d)}).bind(k[1],function(d){clearTimeout(j);if(b.delay)i=setTimeout(function(){c.hide(d)},b.delay);else c.hide(d)});if(m&&
+b.cancelDefault){a.removeAttr("title");a.data("title",m)}f.extend(c,{show:function(d){if(!e){if(q)e=f(q);else if(m)e=f(b.layout).addClass(b.tipClass).appendTo(document.body).hide().append(m);else if(b.tip)e=f(b.tip).eq(0);else{e=a.next();e.length||(e=a.parent().next())}if(!e.length)throw"Cannot find tooltip for "+a;}if(c.isShown())return c;e.stop(true,true);var g=p(a,e,b);d=d||f.Event();d.type="onBeforeShow";h.trigger(d,[g]);if(d.isDefaultPrevented())return c;g=p(a,e,b);e.css({position:"absolute",
+top:g.top,left:g.left});l=true;r[0].call(c,function(){d.type="onShow";l="full";h.trigger(d)});g=b.events.tooltip.split(/,\s*/);e.bind(g[0],function(){clearTimeout(i);clearTimeout(j)});g[1]&&!a.is("input:not(:checkbox, :radio), textarea")&&e.bind(g[1],function(o){o.relatedTarget!=a[0]&&a.trigger(k[1].split(" ")[0])});return c},hide:function(d){if(!e||!c.isShown())return c;d=d||f.Event();d.type="onBeforeHide";h.trigger(d);if(!d.isDefaultPrevented()){l=false;n[b.effect][1].call(c,function(){d.type="onHide";
+h.trigger(d)});return c}},isShown:function(d){return d?l=="full":l},getConf:function(){return b},getTip:function(){return e},getTrigger:function(){return a}});f.each("onHide,onBeforeShow,onShow,onBeforeHide".split(","),function(d,g){f.isFunction(b[g])&&f(c).bind(g,b[g]);c[g]=function(o){f(c).bind(g,o);return c}})}f.tools=f.tools||{version:"1.2.4"};f.tools.tooltip={conf:{effect:"toggle",fadeOutSpeed:"fast",predelay:0,delay:30,opacity:1,tip:0,position:["top","center"],offset:[0,0],relative:false,cancelDefault:true,
+events:{def:"mouseenter,mouseleave",input:"focus,blur",widget:"focus mouseenter,blur mouseleave",tooltip:"mouseenter,mouseleave"},layout:"<div/>",tipClass:"tooltip"},addEffect:function(a,b,c){n[a]=[b,c]}};var n={toggle:[function(a){var b=this.getConf(),c=this.getTip();b=b.opacity;b<1&&c.css({opacity:b});c.show();a.call()},function(a){this.getTip().hide();a.call()}],fade:[function(a){var b=this.getConf();this.getTip().fadeTo(b.fadeInSpeed,b.opacity,a)},function(a){this.getTip().fadeOut(this.getConf().fadeOutSpeed,
+a)}]};f.fn.tooltip=function(a){var b=this.data("tooltip");if(b)return b;a=f.extend(true,{},f.tools.tooltip.conf,a);if(typeof a.position=="string")a.position=a.position.split(/,?\s/);this.each(function(){b=new u(f(this),a);f(this).data("tooltip",b)});return a.api?b:this}})(jQuery);
 (function(d){var i=d.tools.tooltip;d.extend(i.conf,{direction:"up",bounce:false,slideOffset:10,slideInSpeed:200,slideOutSpeed:200,slideFade:!d.browser.msie});var e={up:["-","top"],down:["+","top"],left:["-","left"],right:["+","left"]};i.addEffect("slide",function(g){var a=this.getConf(),f=this.getTip(),b=a.slideFade?{opacity:a.opacity}:{},c=e[a.direction]||e.up;b[c[1]]=c[0]+"="+a.slideOffset;a.slideFade&&f.css({opacity:0});f.show().animate(b,a.slideInSpeed,g)},function(g){var a=this.getConf(),f=a.slideOffset,
-  b=a.slideFade?{opacity:0}:{},c=e[a.direction]||e.up,h=""+c[0];if(a.bounce)h=h=="+"?"-":"+";b[c[1]]=h+"="+f;this.getTip().animate(b,a.slideOutSpeed,function(){d(this).hide();g.call()})})})(jQuery);
+b=a.slideFade?{opacity:0}:{},c=e[a.direction]||e.up,h=""+c[0];if(a.bounce)h=h=="+"?"-":"+";b[c[1]]=h+"="+f;this.getTip().animate(b,a.slideOutSpeed,function(){d(this).hide();g.call()})})})(jQuery);
 (function(g){function j(a){var c=g(window),d=c.width()+c.scrollLeft(),h=c.height()+c.scrollTop();return[a.offset().top<=c.scrollTop(),d<=a.offset().left+a.width(),h<=a.offset().top+a.height(),c.scrollLeft()>=a.offset().left]}function k(a){for(var c=a.length;c--;)if(a[c])return false;return true}var i=g.tools.tooltip;i.dynamic={conf:{classNames:"top right bottom left"}};g.fn.dynamic=function(a){if(typeof a=="number")a={speed:a};a=g.extend({},i.dynamic.conf,a);var c=a.classNames.split(/\s/),d;this.each(function(){var h=
-  g(this).tooltip().onBeforeShow(function(e,f){e=this.getTip();var b=this.getConf();d||(d=[b.position[0],b.position[1],b.offset[0],b.offset[1],g.extend({},b)]);g.extend(b,d[4]);b.position=[d[0],d[1]];b.offset=[d[2],d[3]];e.css({visibility:"hidden",position:"absolute",top:f.top,left:f.left}).show();f=j(e);if(!k(f)){if(f[2]){g.extend(b,a.top);b.position[0]="top";e.addClass(c[0])}if(f[3]){g.extend(b,a.right);b.position[1]="right";e.addClass(c[1])}if(f[0]){g.extend(b,a.bottom);b.position[0]="bottom";e.addClass(c[2])}if(f[1]){g.extend(b,
-    a.left);b.position[1]="left";e.addClass(c[3])}if(f[0]||f[2])b.offset[0]*=-1;if(f[1]||f[3])b.offset[1]*=-1}e.css({visibility:"visible"}).hide()});h.onBeforeShow(function(){var e=this.getConf();this.getTip();setTimeout(function(){e.position=[d[0],d[1]];e.offset=[d[2],d[3]]},0)});h.onHide(function(){var e=this.getTip();e.removeClass(a.classNames)});ret=h});return a.api?ret:this}})(jQuery);
+g(this).tooltip().onBeforeShow(function(e,f){e=this.getTip();var b=this.getConf();d||(d=[b.position[0],b.position[1],b.offset[0],b.offset[1],g.extend({},b)]);g.extend(b,d[4]);b.position=[d[0],d[1]];b.offset=[d[2],d[3]];e.css({visibility:"hidden",position:"absolute",top:f.top,left:f.left}).show();f=j(e);if(!k(f)){if(f[2]){g.extend(b,a.top);b.position[0]="top";e.addClass(c[0])}if(f[3]){g.extend(b,a.right);b.position[1]="right";e.addClass(c[1])}if(f[0]){g.extend(b,a.bottom);b.position[0]="bottom";e.addClass(c[2])}if(f[1]){g.extend(b,
+a.left);b.position[1]="left";e.addClass(c[3])}if(f[0]||f[2])b.offset[0]*=-1;if(f[1]||f[3])b.offset[1]*=-1}e.css({visibility:"visible"}).hide()});h.onBeforeShow(function(){var e=this.getConf();this.getTip();setTimeout(function(){e.position=[d[0],d[1]];e.offset=[d[2],d[3]]},0)});h.onHide(function(){var e=this.getTip();e.removeClass(a.classNames)});ret=h});return a.api?ret:this}})(jQuery);
 (function(e){function n(f,c){var a=e(c);return a.length<2?a:f.parent().find(c)}function t(f,c){var a=this,l=f.add(a),g=f.children(),k=0,m=c.vertical;j||(j=a);if(g.length>1)g=e(c.items,f);e.extend(a,{getConf:function(){return c},getIndex:function(){return k},getSize:function(){return a.getItems().size()},getNaviButtons:function(){return o.add(p)},getRoot:function(){return f},getItemWrap:function(){return g},getItems:function(){return g.children(c.item).not("."+c.clonedClass)},move:function(b,d){return a.seekTo(k+
-  b,d)},next:function(b){return a.move(1,b)},prev:function(b){return a.move(-1,b)},begin:function(b){return a.seekTo(0,b)},end:function(b){return a.seekTo(a.getSize()-1,b)},focus:function(){return j=a},addItem:function(b){b=e(b);if(c.circular){g.children("."+c.clonedClass+":last").before(b);g.children("."+c.clonedClass+":first").replaceWith(b.clone().addClass(c.clonedClass))}else g.append(b);l.trigger("onAddItem",[b]);return a},seekTo:function(b,d,h){b.jquery||(b*=1);if(c.circular&&b===0&&k==-1&&d!==
-  0)return a;if(!c.circular&&b<0||b>a.getSize()||b<-1)return a;var i=b;if(b.jquery)b=a.getItems().index(b);else i=a.getItems().eq(b);var q=e.Event("onBeforeSeek");if(!h){l.trigger(q,[b,d]);if(q.isDefaultPrevented()||!i.length)return a}i=m?{top:-i.position().top}:{left:-i.position().left};k=b;j=a;if(d===undefined)d=c.speed;g.animate(i,d,c.easing,h||function(){l.trigger("onSeek",[b])});return a}});e.each(["onBeforeSeek","onSeek","onAddItem"],function(b,d){e.isFunction(c[d])&&e(a).bind(d,c[d]);a[d]=function(h){e(a).bind(d,
-  h);return a}});if(c.circular){var r=a.getItems().slice(-1).clone().prependTo(g),s=a.getItems().eq(1).clone().appendTo(g);r.add(s).addClass(c.clonedClass);a.onBeforeSeek(function(b,d,h){if(!b.isDefaultPrevented())if(d==-1){a.seekTo(r,h,function(){a.end(0)});return b.preventDefault()}else d==a.getSize()&&a.seekTo(s,h,function(){a.begin(0)})});a.seekTo(0,0,function(){})}var o=n(f,c.prev).click(function(){a.prev()}),p=n(f,c.next).click(function(){a.next()});!c.circular&&a.getSize()>1&&a.onBeforeSeek(function(b,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                d){setTimeout(function(){if(!b.isDefaultPrevented()){o.toggleClass(c.disabledClass,d<=0);p.toggleClass(c.disabledClass,d>=a.getSize()-1)}},1)});c.mousewheel&&e.fn.mousewheel&&f.mousewheel(function(b,d){if(c.mousewheel){a.move(d<0?1:-1,c.wheelSpeed||50);return false}});c.keyboard&&e(document).bind("keydown.scrollable",function(b){if(!(!c.keyboard||b.altKey||b.ctrlKey||e(b.target).is(":input")))if(!(c.keyboard!="static"&&j!=a)){var d=b.keyCode;if(m&&(d==38||d==40)){a.move(d==38?-1:1);return b.preventDefault()}if(!m&&
-  (d==37||d==39)){a.move(d==37?-1:1);return b.preventDefault()}}});c.initialIndex&&a.seekTo(c.initialIndex,0,function(){})}e.tools=e.tools||{version:"1.2.4"};e.tools.scrollable={conf:{activeClass:"active",circular:false,clonedClass:"cloned",disabledClass:"disabled",easing:"swing",initialIndex:0,item:null,items:".items",keyboard:true,mousewheel:false,next:".next",prev:".prev",speed:400,vertical:false,wheelSpeed:0}};var j;e.fn.scrollable=function(f){var c=this.data("scrollable");if(c)return c;f=e.extend({},
-  e.tools.scrollable.conf,f);this.each(function(){c=new t(e(this),f);e(this).data("scrollable",c)});return f.api?c:this}})(jQuery);
+b,d)},next:function(b){return a.move(1,b)},prev:function(b){return a.move(-1,b)},begin:function(b){return a.seekTo(0,b)},end:function(b){return a.seekTo(a.getSize()-1,b)},focus:function(){return j=a},addItem:function(b){b=e(b);if(c.circular){g.children("."+c.clonedClass+":last").before(b);g.children("."+c.clonedClass+":first").replaceWith(b.clone().addClass(c.clonedClass))}else g.append(b);l.trigger("onAddItem",[b]);return a},seekTo:function(b,d,h){b.jquery||(b*=1);if(c.circular&&b===0&&k==-1&&d!==
+0)return a;if(!c.circular&&b<0||b>a.getSize()||b<-1)return a;var i=b;if(b.jquery)b=a.getItems().index(b);else i=a.getItems().eq(b);var q=e.Event("onBeforeSeek");if(!h){l.trigger(q,[b,d]);if(q.isDefaultPrevented()||!i.length)return a}i=m?{top:-i.position().top}:{left:-i.position().left};k=b;j=a;if(d===undefined)d=c.speed;g.animate(i,d,c.easing,h||function(){l.trigger("onSeek",[b])});return a}});e.each(["onBeforeSeek","onSeek","onAddItem"],function(b,d){e.isFunction(c[d])&&e(a).bind(d,c[d]);a[d]=function(h){e(a).bind(d,
+h);return a}});if(c.circular){var r=a.getItems().slice(-1).clone().prependTo(g),s=a.getItems().eq(1).clone().appendTo(g);r.add(s).addClass(c.clonedClass);a.onBeforeSeek(function(b,d,h){if(!b.isDefaultPrevented())if(d==-1){a.seekTo(r,h,function(){a.end(0)});return b.preventDefault()}else d==a.getSize()&&a.seekTo(s,h,function(){a.begin(0)})});a.seekTo(0,0,function(){})}var o=n(f,c.prev).click(function(){a.prev()}),p=n(f,c.next).click(function(){a.next()});!c.circular&&a.getSize()>1&&a.onBeforeSeek(function(b,
+d){setTimeout(function(){if(!b.isDefaultPrevented()){o.toggleClass(c.disabledClass,d<=0);p.toggleClass(c.disabledClass,d>=a.getSize()-1)}},1)});c.mousewheel&&e.fn.mousewheel&&f.mousewheel(function(b,d){if(c.mousewheel){a.move(d<0?1:-1,c.wheelSpeed||50);return false}});c.keyboard&&e(document).bind("keydown.scrollable",function(b){if(!(!c.keyboard||b.altKey||b.ctrlKey||e(b.target).is(":input")))if(!(c.keyboard!="static"&&j!=a)){var d=b.keyCode;if(m&&(d==38||d==40)){a.move(d==38?-1:1);return b.preventDefault()}if(!m&&
+(d==37||d==39)){a.move(d==37?-1:1);return b.preventDefault()}}});c.initialIndex&&a.seekTo(c.initialIndex,0,function(){})}e.tools=e.tools||{version:"1.2.4"};e.tools.scrollable={conf:{activeClass:"active",circular:false,clonedClass:"cloned",disabledClass:"disabled",easing:"swing",initialIndex:0,item:null,items:".items",keyboard:true,mousewheel:false,next:".next",prev:".prev",speed:400,vertical:false,wheelSpeed:0}};var j;e.fn.scrollable=function(f){var c=this.data("scrollable");if(c)return c;f=e.extend({},
+e.tools.scrollable.conf,f);this.each(function(){c=new t(e(this),f);e(this).data("scrollable",c)});return f.api?c:this}})(jQuery);
 (function(c){var g=c.tools.scrollable;g.autoscroll={conf:{autoplay:true,interval:3E3,autopause:true}};c.fn.autoscroll=function(d){if(typeof d=="number")d={interval:d};var b=c.extend({},g.autoscroll.conf,d),h;this.each(function(){var a=c(this).data("scrollable");if(a)h=a;var e,i,f=true;a.play=function(){if(!e){f=false;e=setInterval(function(){a.next()},b.interval);a.next()}};a.pause=function(){e=clearInterval(e)};a.stop=function(){a.pause();f=true};b.autopause&&a.getRoot().add(a.getNaviButtons()).hover(function(){a.pause();
-  clearInterval(i)},function(){f||(i=setTimeout(a.play,b.interval))});b.autoplay&&setTimeout(a.play,b.interval)});return b.api?h:this}})(jQuery);
+clearInterval(i)},function(){f||(i=setTimeout(a.play,b.interval))});b.autoplay&&setTimeout(a.play,b.interval)});return b.api?h:this}})(jQuery);
 (function(d){function p(b,g){var h=d(g);return h.length<2?h:b.parent().find(g)}var m=d.tools.scrollable;m.navigator={conf:{navi:".navi",naviItem:null,activeClass:"active",indexed:false,idPrefix:null,history:false}};d.fn.navigator=function(b){if(typeof b=="string")b={navi:b};b=d.extend({},m.navigator.conf,b);var g;this.each(function(){function h(a,c,i){e.seekTo(c);if(j){if(location.hash)location.hash=a.attr("href").replace("#","")}else return i.preventDefault()}function f(){return k.find(b.naviItem||
-  "> *")}function n(a){var c=d("<"+(b.naviItem||"a")+"/>").click(function(i){h(d(this),a,i)}).attr("href","#"+a);a===0&&c.addClass(l);b.indexed&&c.text(a+1);b.idPrefix&&c.attr("id",b.idPrefix+a);return c.appendTo(k)}function o(a,c){a=f().eq(c.replace("#",""));a.length||(a=f().filter("[href="+c+"]"));a.click()}var e=d(this).data("scrollable"),k=b.navi.jquery?b.navi:p(e.getRoot(),b.navi),q=e.getNaviButtons(),l=b.activeClass,j=b.history&&d.fn.history;if(e)g=e;e.getNaviButtons=function(){return q.add(k)};
-  f().length?f().each(function(a){d(this).click(function(c){h(d(this),a,c)})}):d.each(e.getItems(),function(a){n(a)});e.onBeforeSeek(function(a,c){setTimeout(function(){if(!a.isDefaultPrevented()){var i=f().eq(c);!a.isDefaultPrevented()&&i.length&&f().removeClass(l).eq(c).addClass(l)}},1)});e.onAddItem(function(a,c){c=n(e.getItems().index(c));j&&c.history(o)});j&&f().history(o)});return b.api?g:this}})(jQuery);
+"> *")}function n(a){var c=d("<"+(b.naviItem||"a")+"/>").click(function(i){h(d(this),a,i)}).attr("href","#"+a);a===0&&c.addClass(l);b.indexed&&c.text(a+1);b.idPrefix&&c.attr("id",b.idPrefix+a);return c.appendTo(k)}function o(a,c){a=f().eq(c.replace("#",""));a.length||(a=f().filter("[href="+c+"]"));a.click()}var e=d(this).data("scrollable"),k=b.navi.jquery?b.navi:p(e.getRoot(),b.navi),q=e.getNaviButtons(),l=b.activeClass,j=b.history&&d.fn.history;if(e)g=e;e.getNaviButtons=function(){return q.add(k)};
+f().length?f().each(function(a){d(this).click(function(c){h(d(this),a,c)})}):d.each(e.getItems(),function(a){n(a)});e.onBeforeSeek(function(a,c){setTimeout(function(){if(!a.isDefaultPrevented()){var i=f().eq(c);!a.isDefaultPrevented()&&i.length&&f().removeClass(l).eq(c).addClass(l)}},1)});e.onAddItem(function(a,c){c=n(e.getItems().index(c));j&&c.history(o)});j&&f().history(o)});return b.api?g:this}})(jQuery);
 (function(a){function t(d,b){var c=this,i=d.add(c),o=a(window),k,f,m,g=a.tools.expose&&(b.mask||b.expose),n=Math.random().toString().slice(10);if(g){if(typeof g=="string")g={color:g};g.closeOnClick=g.closeOnEsc=false}var p=b.target||d.attr("rel");f=p?a(p):d;if(!f.length)throw"Could not find Overlay: "+p;d&&d.index(f)==-1&&d.click(function(e){c.load(e);return e.preventDefault()});a.extend(c,{load:function(e){if(c.isOpened())return c;var h=q[b.effect];if(!h)throw'Overlay: cannot find effect : "'+b.effect+
-  '"';b.oneInstance&&a.each(s,function(){this.close(e)});e=e||a.Event();e.type="onBeforeLoad";i.trigger(e);if(e.isDefaultPrevented())return c;m=true;g&&a(f).expose(g);var j=b.top,r=b.left,u=f.outerWidth({margin:true}),v=f.outerHeight({margin:true});if(typeof j=="string")j=j=="center"?Math.max((o.height()-v)/2,0):parseInt(j,10)/100*o.height();if(r=="center")r=Math.max((o.width()-u)/2,0);h[0].call(c,{top:j,left:r},function(){if(m){e.type="onLoad";i.trigger(e)}});g&&b.closeOnClick&&a.mask.getMask().one("click",
-  c.close);b.closeOnClick&&a(document).bind("click."+n,function(l){a(l.target).parents(f).length||c.close(l)});b.closeOnEsc&&a(document).bind("keydown."+n,function(l){l.keyCode==27&&c.close(l)});return c},close:function(e){if(!c.isOpened())return c;e=e||a.Event();e.type="onBeforeClose";i.trigger(e);if(!e.isDefaultPrevented()){m=false;q[b.effect][1].call(c,function(){e.type="onClose";i.trigger(e)});a(document).unbind("click."+n).unbind("keydown."+n);g&&a.mask.close();return c}},getOverlay:function(){return f},
-  getTrigger:function(){return d},getClosers:function(){return k},isOpened:function(){return m},getConf:function(){return b}});a.each("onBeforeLoad,onStart,onLoad,onBeforeClose,onClose".split(","),function(e,h){a.isFunction(b[h])&&a(c).bind(h,b[h]);c[h]=function(j){a(c).bind(h,j);return c}});k=f.find(b.close||".close");if(!k.length&&!b.close){k=a('<a class="close"></a>');f.prepend(k)}k.click(function(e){c.close(e)});b.load&&c.load()}a.tools=a.tools||{version:"1.2.4"};a.tools.overlay={addEffect:function(d,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            b,c){q[d]=[b,c]},conf:{close:null,closeOnClick:true,closeOnEsc:true,closeSpeed:"fast",effect:"default",fixed:!a.browser.msie||a.browser.version>6,left:"center",load:false,mask:null,oneInstance:true,speed:"normal",target:null,top:"10%"}};var s=[],q={};a.tools.overlay.addEffect("default",function(d,b){var c=this.getConf(),i=a(window);if(!c.fixed){d.top+=i.scrollTop();d.left+=i.scrollLeft()}d.position=c.fixed?"fixed":"absolute";this.getOverlay().css(d).fadeIn(c.speed,b)},function(d){this.getOverlay().fadeOut(this.getConf().closeSpeed,
-  d)});a.fn.overlay=function(d){var b=this.data("overlay");if(b)return b;if(a.isFunction(d))d={onBeforeLoad:d};d=a.extend(true,{},a.tools.overlay.conf,d);this.each(function(){b=new t(a(this),d);s.push(b);a(this).data("overlay",b)});return d.api?b:this}})(jQuery);
+'"';b.oneInstance&&a.each(s,function(){this.close(e)});e=e||a.Event();e.type="onBeforeLoad";i.trigger(e);if(e.isDefaultPrevented())return c;m=true;g&&a(f).expose(g);var j=b.top,r=b.left,u=f.outerWidth({margin:true}),v=f.outerHeight({margin:true});if(typeof j=="string")j=j=="center"?Math.max((o.height()-v)/2,0):parseInt(j,10)/100*o.height();if(r=="center")r=Math.max((o.width()-u)/2,0);h[0].call(c,{top:j,left:r},function(){if(m){e.type="onLoad";i.trigger(e)}});g&&b.closeOnClick&&a.mask.getMask().one("click",
+c.close);b.closeOnClick&&a(document).bind("click."+n,function(l){a(l.target).parents(f).length||c.close(l)});b.closeOnEsc&&a(document).bind("keydown."+n,function(l){l.keyCode==27&&c.close(l)});return c},close:function(e){if(!c.isOpened())return c;e=e||a.Event();e.type="onBeforeClose";i.trigger(e);if(!e.isDefaultPrevented()){m=false;q[b.effect][1].call(c,function(){e.type="onClose";i.trigger(e)});a(document).unbind("click."+n).unbind("keydown."+n);g&&a.mask.close();return c}},getOverlay:function(){return f},
+getTrigger:function(){return d},getClosers:function(){return k},isOpened:function(){return m},getConf:function(){return b}});a.each("onBeforeLoad,onStart,onLoad,onBeforeClose,onClose".split(","),function(e,h){a.isFunction(b[h])&&a(c).bind(h,b[h]);c[h]=function(j){a(c).bind(h,j);return c}});k=f.find(b.close||".close");if(!k.length&&!b.close){k=a('<a class="close"></a>');f.prepend(k)}k.click(function(e){c.close(e)});b.load&&c.load()}a.tools=a.tools||{version:"1.2.4"};a.tools.overlay={addEffect:function(d,
+b,c){q[d]=[b,c]},conf:{close:null,closeOnClick:true,closeOnEsc:true,closeSpeed:"fast",effect:"default",fixed:!a.browser.msie||a.browser.version>6,left:"center",load:false,mask:null,oneInstance:true,speed:"normal",target:null,top:"10%"}};var s=[],q={};a.tools.overlay.addEffect("default",function(d,b){var c=this.getConf(),i=a(window);if(!c.fixed){d.top+=i.scrollTop();d.left+=i.scrollLeft()}d.position=c.fixed?"fixed":"absolute";this.getOverlay().css(d).fadeIn(c.speed,b)},function(d){this.getOverlay().fadeOut(this.getConf().closeSpeed,
+d)});a.fn.overlay=function(d){var b=this.data("overlay");if(b)return b;if(a.isFunction(d))d={onBeforeLoad:d};d=a.extend(true,{},a.tools.overlay.conf,d);this.each(function(){b=new t(a(this),d);s.push(b);a(this).data("overlay",b)});return d.api?b:this}})(jQuery);
 (function(i){function j(b){var d=b.offset();return{top:d.top+b.height()/2,left:d.left+b.width()/2}}var k=i.tools.overlay,f=i(window);i.extend(k.conf,{start:{top:null,left:null},fadeInSpeed:"fast",zIndex:9999});function n(b,d){var a=this.getOverlay(),c=this.getConf(),g=this.getTrigger(),o=this,l=a.outerWidth({margin:true}),h=a.data("img");if(!h){var e=a.css("backgroundImage");if(!e)throw"background-image CSS property not set for overlay";e=e.slice(e.indexOf("(")+1,e.indexOf(")")).replace(/\"/g,"");
-  a.css("backgroundImage","none");h=i('<img src="'+e+'"/>');h.css({border:0,display:"none"}).width(l);i("body").append(h);a.data("img",h)}e=c.start.top||Math.round(f.height()/2);var m=c.start.left||Math.round(f.width()/2);if(g){g=j(g);e=g.top;m=g.left}h.css({position:"absolute",top:e,left:m,width:0,zIndex:c.zIndex}).show();b.top+=f.scrollTop();b.left+=f.scrollLeft();b.position="absolute";a.css(b);h.animate({top:a.css("top"),left:a.css("left"),width:l},c.speed,function(){if(c.fixed){b.top-=f.scrollTop();
-  b.left-=f.scrollLeft();b.position="fixed";h.add(a).css(b)}a.css("zIndex",c.zIndex+1).fadeIn(c.fadeInSpeed,function(){o.isOpened()&&!i(this).index(a)?d.call():a.hide()})})}function p(b){var d=this.getOverlay().hide(),a=this.getConf(),c=this.getTrigger();d=d.data("img");var g={top:a.start.top,left:a.start.left,width:0};c&&i.extend(g,j(c));a.fixed&&d.css({position:"absolute"}).animate({top:"+="+f.scrollTop(),left:"+="+f.scrollLeft()},0);d.animate(g,a.closeSpeed,b)}k.addEffect("apple",n,p)})(jQuery);
+a.css("backgroundImage","none");h=i('<img src="'+e+'"/>');h.css({border:0,display:"none"}).width(l);i("body").append(h);a.data("img",h)}e=c.start.top||Math.round(f.height()/2);var m=c.start.left||Math.round(f.width()/2);if(g){g=j(g);e=g.top;m=g.left}h.css({position:"absolute",top:e,left:m,width:0,zIndex:c.zIndex}).show();b.top+=f.scrollTop();b.left+=f.scrollLeft();b.position="absolute";a.css(b);h.animate({top:a.css("top"),left:a.css("left"),width:l},c.speed,function(){if(c.fixed){b.top-=f.scrollTop();
+b.left-=f.scrollLeft();b.position="fixed";h.add(a).css(b)}a.css("zIndex",c.zIndex+1).fadeIn(c.fadeInSpeed,function(){o.isOpened()&&!i(this).index(a)?d.call():a.hide()})})}function p(b){var d=this.getOverlay().hide(),a=this.getConf(),c=this.getTrigger();d=d.data("img");var g={top:a.start.top,left:a.start.left,width:0};c&&i.extend(g,j(c));a.fixed&&d.css({position:"absolute"}).animate({top:"+="+f.scrollTop(),left:"+="+f.scrollLeft()},0);d.animate(g,a.closeSpeed,b)}k.addEffect("apple",n,p)})(jQuery);
 (function(d){function R(b,c){return 32-(new Date(b,c,32)).getDate()}function S(b,c){b=""+b;for(c=c||2;b.length<c;)b="0"+b;return b}function T(b,c,i){var p=b.getDate(),h=b.getDay(),q=b.getMonth();b=b.getFullYear();var f={d:p,dd:S(p),ddd:B[i].shortDays[h],dddd:B[i].days[h],m:q+1,mm:S(q+1),mmm:B[i].shortMonths[q],mmmm:B[i].months[q],yy:String(b).slice(2),yyyy:b};c=c.replace(X,function(r){return r in f?f[r]:r.slice(1,r.length-1)});return Y.html(c).html()}function y(b){return parseInt(b,10)}function U(b,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      c){return b.getFullYear()===c.getFullYear()&&b.getMonth()==c.getMonth()&&b.getDate()==c.getDate()}function C(b){if(b){if(b.constructor==Date)return b;if(typeof b=="string"){var c=b.split("-");if(c.length==3)return new Date(y(c[0]),y(c[1])-1,y(c[2]));if(!/^-?\d+$/.test(b))return;b=y(b)}c=new Date;c.setDate(c.getDate()+b);return c}}function Z(b,c){function i(a,e,g){m=a;D=a.getFullYear();E=a.getMonth();G=a.getDate();g=g||d.Event("api");g.type="change";H.trigger(g,[a]);if(!g.isDefaultPrevented()){b.val(T(a,
-  e.format,e.lang));b.data("date",a);h.hide(g)}}function p(a){a.type="onShow";H.trigger(a);d(document).bind("keydown.d",function(e){if(e.ctrlKey)return true;var g=e.keyCode;if(g==8){b.val("");return h.hide(e)}if(g==27)return h.hide(e);if(d(V).index(g)>=0){if(!v){h.show(e);return e.preventDefault()}var j=d("#"+f.weeks+" a"),s=d("."+f.focus),n=j.index(s);s.removeClass(f.focus);if(g==74||g==40)n+=7;else if(g==75||g==38)n-=7;else if(g==76||g==39)n+=1;else if(g==72||g==37)n-=1;if(n>41){h.addMonth();s=d("#"+
-  f.weeks+" a:eq("+(n-42)+")")}else if(n<0){h.addMonth(-1);s=d("#"+f.weeks+" a:eq("+(n+42)+")")}else s=j.eq(n);s.addClass(f.focus);return e.preventDefault()}if(g==34)return h.addMonth();if(g==33)return h.addMonth(-1);if(g==36)return h.today();if(g==13)d(e.target).is("select")||d("."+f.focus).click();return d([16,17,18,9]).index(g)>=0});d(document).bind("click.d",function(e){var g=e.target;if(!d(g).parents("#"+f.root).length&&g!=b[0]&&(!L||g!=L[0]))h.hide(e)})}var h=this,q=new Date,f=c.css,r=B[c.lang],
-  k=d("#"+f.root),M=k.find("#"+f.title),L,I,J,D,E,G,m=b.attr("data-value")||c.value||b.val(),o=b.attr("min")||c.min,t=b.attr("max")||c.max,v;if(o===0)o="0";m=C(m)||q;o=C(o||c.yearRange[0]*365);t=C(t||c.yearRange[1]*365);if(!r)throw"Dateinput: invalid language: "+c.lang;if(b.attr("type")=="date"){var N=d("<input/>");d.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","),function(a,e){N.attr(e,b.attr(e))});b.replaceWith(N);b=N}b.addClass(f.input);var H=
-  b.add(h);if(!k.length){k=d("<div><div><a/><div/><a/></div><div><div/><div/></div></div>").hide().css({position:"absolute"}).attr("id",f.root);k.children().eq(0).attr("id",f.head).end().eq(1).attr("id",f.body).children().eq(0).attr("id",f.days).end().eq(1).attr("id",f.weeks).end().end().end().find("a").eq(0).attr("id",f.prev).end().eq(1).attr("id",f.next);M=k.find("#"+f.head).find("div").attr("id",f.title);if(c.selectors){var z=d("<select/>").attr("id",f.month),A=d("<select/>").attr("id",f.year);M.append(z.add(A))}for(var $=
-  k.find("#"+f.days),O=0;O<7;O++)$.append(d("<span/>").text(r.shortDays[(O+c.firstDay)%7]));d("body").append(k)}if(c.trigger)L=d("<a/>").attr("href","#").addClass(f.trigger).click(function(a){h.show();return a.preventDefault()}).insertAfter(b);var K=k.find("#"+f.weeks);A=k.find("#"+f.year);z=k.find("#"+f.month);d.extend(h,{show:function(a){if(!(b.is("[readonly]")||v)){a=a||d.Event();a.type="onBeforeShow";H.trigger(a);if(!a.isDefaultPrevented()){d.each(W,function(){this.hide()});v=true;z.unbind("change").change(function(){h.setValue(A.val(),
-  d(this).val())});A.unbind("change").change(function(){h.setValue(d(this).val(),z.val())});I=k.find("#"+f.prev).unbind("click").click(function(){I.hasClass(f.disabled)||h.addMonth(-1);return false});J=k.find("#"+f.next).unbind("click").click(function(){J.hasClass(f.disabled)||h.addMonth();return false});h.setValue(m);var e=b.position();k.css({top:e.top+b.outerHeight({margins:true})+c.offset[0],left:e.left+c.offset[1]});if(c.speed)k.show(c.speed,function(){p(a)});else{k.show();p(a)}return h}}},setValue:function(a,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     e,g){var j;if(parseInt(e,10)>=-1){a=y(a);e=y(e);g=y(g);j=new Date(a,e,g)}else{j=a||m;a=j.getFullYear();e=j.getMonth();g=j.getDate()}if(e==-1){e=11;a--}else if(e==12){e=0;a++}if(!v){i(j,c);return h}E=e;D=a;g=new Date(a,e,1-c.firstDay);g=g.getDay();var s=R(a,e),n=R(a,e-1),P;if(c.selectors){z.empty();d.each(r.months,function(w,F){o<new Date(a,w+1,-1)&&t>new Date(a,w,0)&&z.append(d("<option/>").html(F).attr("value",w))});A.empty();j=q.getFullYear();for(var l=j+c.yearRange[0];l<j+c.yearRange[1];l++)o<
-  new Date(l+1,-1,0)&&t>new Date(l,0,0)&&A.append(d("<option/>").text(l));z.val(e);A.val(a)}else M.html(r.months[e]+" "+a);K.empty();I.add(J).removeClass(f.disabled);l=!g?-7:0;for(var u,x;l<(!g?35:42);l++){u=d("<a/>");if(l%7===0){P=d("<div/>").addClass(f.week);K.append(P)}if(l<g){u.addClass(f.off);x=n-g+l+1;j=new Date(a,e-1,x)}else if(l>=g+s){u.addClass(f.off);x=l-s-g+1;j=new Date(a,e+1,x)}else{x=l-g+1;j=new Date(a,e,x);if(U(m,j))u.attr("id",f.current).addClass(f.focus);else U(q,j)&&u.attr("id",f.today)}o&&
-  j<o&&u.add(I).addClass(f.disabled);t&&j>t&&u.add(J).addClass(f.disabled);u.attr("href","#"+x).text(x).data("date",j);P.append(u)}K.find("a").click(function(w){var F=d(this);if(!F.hasClass(f.disabled)){d("#"+f.current).removeAttr("id");F.attr("id",f.current);i(F.data("date"),c,w)}return false});f.sunday&&K.find(f.week).each(function(){var w=c.firstDay?7-c.firstDay:0;d(this).children().slice(w,w+1).addClass(f.sunday)});return h},setMin:function(a,e){o=C(a);e&&m<o&&h.setValue(o);return h},setMax:function(a,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             e){t=C(a);e&&m>t&&h.setValue(t);return h},today:function(){return h.setValue(q)},addDay:function(a){return this.setValue(D,E,G+(a||1))},addMonth:function(a){return this.setValue(D,E+(a||1),G)},addYear:function(a){return this.setValue(D+(a||1),E,G)},hide:function(a){if(v){a=d.Event();a.type="onHide";H.trigger(a);d(document).unbind("click.d").unbind("keydown.d");if(a.isDefaultPrevented())return;k.hide();v=false}return h},getConf:function(){return c},getInput:function(){return b},getCalendar:function(){return k},
-  getValue:function(a){return a?T(m,a,c.lang):m},isOpen:function(){return v}});d.each(["onBeforeShow","onShow","change","onHide"],function(a,e){d.isFunction(c[e])&&d(h).bind(e,c[e]);h[e]=function(g){d(h).bind(e,g);return h}});b.bind("focus click",h.show).keydown(function(a){var e=a.keyCode;if(!v&&d(V).index(e)>=0){h.show(a);return a.preventDefault()}return a.shiftKey||a.ctrlKey||a.altKey||e==9?true:a.preventDefault()});C(b.val())&&i(m,c)}d.tools=d.tools||{version:"1.2.4"};var W=[],Q,V=[75,76,38,39,
-  74,72,40,37],B={};Q=d.tools.dateinput={conf:{format:"mm/dd/yy",selectors:false,yearRange:[-5,5],lang:"en",offset:[0,0],speed:0,firstDay:0,min:undefined,max:undefined,trigger:false,css:{prefix:"cal",input:"date",root:0,head:0,title:0,prev:0,next:0,month:0,year:0,days:0,body:0,weeks:0,today:0,current:0,week:0,off:0,sunday:0,focus:0,disabled:0,trigger:0}},localize:function(b,c){d.each(c,function(i,p){c[i]=p.split(",")});B[b]=c}};Q.localize("en",{months:"January,February,March,April,May,June,July,August,September,October,November,December",
-  shortMonths:"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",days:"Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",shortDays:"Sun,Mon,Tue,Wed,Thu,Fri,Sat"});var X=/d{1,4}|m{1,4}|yy(?:yy)?|"[^"]*"|'[^']*'/g,Y=d("<a/>");d.expr[":"].date=function(b){var c=b.getAttribute("type");return c&&c=="date"||!!d(b).data("dateinput")};d.fn.dateinput=function(b){if(this.data("dateinput"))return this;b=d.extend(true,{},Q.conf,b);d.each(b.css,function(i,p){if(!p&&i!="prefix")b.css[i]=(b.css.prefix||"")+
-  (p||i)});var c;this.each(function(){var i=new Z(d(this),b);W.push(i);i=i.getInput().data("dateinput",i);c=c?c.add(i):i});return c?c:this}})(jQuery);
+c){return b.getFullYear()===c.getFullYear()&&b.getMonth()==c.getMonth()&&b.getDate()==c.getDate()}function C(b){if(b){if(b.constructor==Date)return b;if(typeof b=="string"){var c=b.split("-");if(c.length==3)return new Date(y(c[0]),y(c[1])-1,y(c[2]));if(!/^-?\d+$/.test(b))return;b=y(b)}c=new Date;c.setDate(c.getDate()+b);return c}}function Z(b,c){function i(a,e,g){m=a;D=a.getFullYear();E=a.getMonth();G=a.getDate();g=g||d.Event("api");g.type="change";H.trigger(g,[a]);if(!g.isDefaultPrevented()){b.val(T(a,
+e.format,e.lang));b.data("date",a);h.hide(g)}}function p(a){a.type="onShow";H.trigger(a);d(document).bind("keydown.d",function(e){if(e.ctrlKey)return true;var g=e.keyCode;if(g==8){b.val("");return h.hide(e)}if(g==27)return h.hide(e);if(d(V).index(g)>=0){if(!v){h.show(e);return e.preventDefault()}var j=d("#"+f.weeks+" a"),s=d("."+f.focus),n=j.index(s);s.removeClass(f.focus);if(g==74||g==40)n+=7;else if(g==75||g==38)n-=7;else if(g==76||g==39)n+=1;else if(g==72||g==37)n-=1;if(n>41){h.addMonth();s=d("#"+
+f.weeks+" a:eq("+(n-42)+")")}else if(n<0){h.addMonth(-1);s=d("#"+f.weeks+" a:eq("+(n+42)+")")}else s=j.eq(n);s.addClass(f.focus);return e.preventDefault()}if(g==34)return h.addMonth();if(g==33)return h.addMonth(-1);if(g==36)return h.today();if(g==13)d(e.target).is("select")||d("."+f.focus).click();return d([16,17,18,9]).index(g)>=0});d(document).bind("click.d",function(e){var g=e.target;if(!d(g).parents("#"+f.root).length&&g!=b[0]&&(!L||g!=L[0]))h.hide(e)})}var h=this,q=new Date,f=c.css,r=B[c.lang],
+k=d("#"+f.root),M=k.find("#"+f.title),L,I,J,D,E,G,m=b.attr("data-value")||c.value||b.val(),o=b.attr("min")||c.min,t=b.attr("max")||c.max,v;if(o===0)o="0";m=C(m)||q;o=C(o||c.yearRange[0]*365);t=C(t||c.yearRange[1]*365);if(!r)throw"Dateinput: invalid language: "+c.lang;if(b.attr("type")=="date"){var N=d("<input/>");d.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","),function(a,e){N.attr(e,b.attr(e))});b.replaceWith(N);b=N}b.addClass(f.input);var H=
+b.add(h);if(!k.length){k=d("<div><div><a/><div/><a/></div><div><div/><div/></div></div>").hide().css({position:"absolute"}).attr("id",f.root);k.children().eq(0).attr("id",f.head).end().eq(1).attr("id",f.body).children().eq(0).attr("id",f.days).end().eq(1).attr("id",f.weeks).end().end().end().find("a").eq(0).attr("id",f.prev).end().eq(1).attr("id",f.next);M=k.find("#"+f.head).find("div").attr("id",f.title);if(c.selectors){var z=d("<select/>").attr("id",f.month),A=d("<select/>").attr("id",f.year);M.append(z.add(A))}for(var $=
+k.find("#"+f.days),O=0;O<7;O++)$.append(d("<span/>").text(r.shortDays[(O+c.firstDay)%7]));d("body").append(k)}if(c.trigger)L=d("<a/>").attr("href","#").addClass(f.trigger).click(function(a){h.show();return a.preventDefault()}).insertAfter(b);var K=k.find("#"+f.weeks);A=k.find("#"+f.year);z=k.find("#"+f.month);d.extend(h,{show:function(a){if(!(b.is("[readonly]")||v)){a=a||d.Event();a.type="onBeforeShow";H.trigger(a);if(!a.isDefaultPrevented()){d.each(W,function(){this.hide()});v=true;z.unbind("change").change(function(){h.setValue(A.val(),
+d(this).val())});A.unbind("change").change(function(){h.setValue(d(this).val(),z.val())});I=k.find("#"+f.prev).unbind("click").click(function(){I.hasClass(f.disabled)||h.addMonth(-1);return false});J=k.find("#"+f.next).unbind("click").click(function(){J.hasClass(f.disabled)||h.addMonth();return false});h.setValue(m);var e=b.position();k.css({top:e.top+b.outerHeight({margins:true})+c.offset[0],left:e.left+c.offset[1]});if(c.speed)k.show(c.speed,function(){p(a)});else{k.show();p(a)}return h}}},setValue:function(a,
+e,g){var j;if(parseInt(e,10)>=-1){a=y(a);e=y(e);g=y(g);j=new Date(a,e,g)}else{j=a||m;a=j.getFullYear();e=j.getMonth();g=j.getDate()}if(e==-1){e=11;a--}else if(e==12){e=0;a++}if(!v){i(j,c);return h}E=e;D=a;g=new Date(a,e,1-c.firstDay);g=g.getDay();var s=R(a,e),n=R(a,e-1),P;if(c.selectors){z.empty();d.each(r.months,function(w,F){o<new Date(a,w+1,-1)&&t>new Date(a,w,0)&&z.append(d("<option/>").html(F).attr("value",w))});A.empty();j=q.getFullYear();for(var l=j+c.yearRange[0];l<j+c.yearRange[1];l++)o<
+new Date(l+1,-1,0)&&t>new Date(l,0,0)&&A.append(d("<option/>").text(l));z.val(e);A.val(a)}else M.html(r.months[e]+" "+a);K.empty();I.add(J).removeClass(f.disabled);l=!g?-7:0;for(var u,x;l<(!g?35:42);l++){u=d("<a/>");if(l%7===0){P=d("<div/>").addClass(f.week);K.append(P)}if(l<g){u.addClass(f.off);x=n-g+l+1;j=new Date(a,e-1,x)}else if(l>=g+s){u.addClass(f.off);x=l-s-g+1;j=new Date(a,e+1,x)}else{x=l-g+1;j=new Date(a,e,x);if(U(m,j))u.attr("id",f.current).addClass(f.focus);else U(q,j)&&u.attr("id",f.today)}o&&
+j<o&&u.add(I).addClass(f.disabled);t&&j>t&&u.add(J).addClass(f.disabled);u.attr("href","#"+x).text(x).data("date",j);P.append(u)}K.find("a").click(function(w){var F=d(this);if(!F.hasClass(f.disabled)){d("#"+f.current).removeAttr("id");F.attr("id",f.current);i(F.data("date"),c,w)}return false});f.sunday&&K.find(f.week).each(function(){var w=c.firstDay?7-c.firstDay:0;d(this).children().slice(w,w+1).addClass(f.sunday)});return h},setMin:function(a,e){o=C(a);e&&m<o&&h.setValue(o);return h},setMax:function(a,
+e){t=C(a);e&&m>t&&h.setValue(t);return h},today:function(){return h.setValue(q)},addDay:function(a){return this.setValue(D,E,G+(a||1))},addMonth:function(a){return this.setValue(D,E+(a||1),G)},addYear:function(a){return this.setValue(D+(a||1),E,G)},hide:function(a){if(v){a=d.Event();a.type="onHide";H.trigger(a);d(document).unbind("click.d").unbind("keydown.d");if(a.isDefaultPrevented())return;k.hide();v=false}return h},getConf:function(){return c},getInput:function(){return b},getCalendar:function(){return k},
+getValue:function(a){return a?T(m,a,c.lang):m},isOpen:function(){return v}});d.each(["onBeforeShow","onShow","change","onHide"],function(a,e){d.isFunction(c[e])&&d(h).bind(e,c[e]);h[e]=function(g){d(h).bind(e,g);return h}});b.bind("focus click",h.show).keydown(function(a){var e=a.keyCode;if(!v&&d(V).index(e)>=0){h.show(a);return a.preventDefault()}return a.shiftKey||a.ctrlKey||a.altKey||e==9?true:a.preventDefault()});C(b.val())&&i(m,c)}d.tools=d.tools||{version:"1.2.4"};var W=[],Q,V=[75,76,38,39,
+74,72,40,37],B={};Q=d.tools.dateinput={conf:{format:"mm/dd/yy",selectors:false,yearRange:[-5,5],lang:"en",offset:[0,0],speed:0,firstDay:0,min:undefined,max:undefined,trigger:false,css:{prefix:"cal",input:"date",root:0,head:0,title:0,prev:0,next:0,month:0,year:0,days:0,body:0,weeks:0,today:0,current:0,week:0,off:0,sunday:0,focus:0,disabled:0,trigger:0}},localize:function(b,c){d.each(c,function(i,p){c[i]=p.split(",")});B[b]=c}};Q.localize("en",{months:"January,February,March,April,May,June,July,August,September,October,November,December",
+shortMonths:"Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec",days:"Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday",shortDays:"Sun,Mon,Tue,Wed,Thu,Fri,Sat"});var X=/d{1,4}|m{1,4}|yy(?:yy)?|"[^"]*"|'[^']*'/g,Y=d("<a/>");d.expr[":"].date=function(b){var c=b.getAttribute("type");return c&&c=="date"||!!d(b).data("dateinput")};d.fn.dateinput=function(b){if(this.data("dateinput"))return this;b=d.extend(true,{},Q.conf,b);d.each(b.css,function(i,p){if(!p&&i!="prefix")b.css[i]=(b.css.prefix||"")+
+(p||i)});var c;this.each(function(){var i=new Z(d(this),b);W.push(i);i=i.getInput().data("dateinput",i);c=c?c.add(i):i});return c?c:this}})(jQuery);
 (function(e){function F(d,a){a=Math.pow(10,a);return Math.round(d*a)/a}function p(d,a){if(a=parseInt(d.css(a),10))return a;return(d=d[0].currentStyle)&&d.width&&parseInt(d.width,10)}function C(d){return(d=d.data("events"))&&d.onSlide}function G(d,a){function h(c,b,f,j){if(f===undefined)f=b/k*z;else if(j)f-=a.min;if(r)f=Math.round(f/r)*r;if(b===undefined||r)b=f*k/z;if(isNaN(f))return g;b=Math.max(0,Math.min(b,k));f=b/k*z;if(j||!n)f+=a.min;if(n)if(j)b=k-b;else f=a.max-f;f=F(f,t);var q=c.type=="click";
-  if(D&&l!==undefined&&!q){c.type="onSlide";A.trigger(c,[f,b]);if(c.isDefaultPrevented())return g}j=q?a.speed:0;q=q?function(){c.type="change";A.trigger(c,[f])}:null;if(n){m.animate({top:b},j,q);a.progress&&B.animate({height:k-b+m.width()/2},j)}else{m.animate({left:b},j,q);a.progress&&B.animate({width:b+m.width()/2},j)}l=f;H=b;d.val(f);return g}function s(){if(n=a.vertical||p(i,"height")>p(i,"width")){k=p(i,"height")-p(m,"height");u=i.offset().top+k}else{k=p(i,"width")-p(m,"width");u=i.offset().left}}
-  function v(){s();g.setValue(a.value||a.min)}var g=this,o=a.css,i=e("<div><div/><a href='#'/></div>").data("rangeinput",g),n,l,u,k,H;d.before(i);var m=i.addClass(o.slider).find("a").addClass(o.handle),B=i.find("div").addClass(o.progress);e.each("min,max,step,value".split(","),function(c,b){c=d.attr(b);if(parseFloat(c))a[b]=parseFloat(c,10)});var z=a.max-a.min,r=a.step=="any"?0:a.step,t=a.precision;if(t===undefined)try{t=r.toString().split(".")[1].length}catch(I){t=0}if(d.attr("type")=="range"){var w=
-    e("<input/>");e.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","),function(c,b){w.attr(b,d.attr(b))});w.val(a.value);d.replaceWith(w);d=w}d.addClass(o.input);var A=e(g).add(d),D=true;e.extend(g,{getValue:function(){return l},setValue:function(c,b){return h(b||e.Event("api"),undefined,c,true)},getConf:function(){return a},getProgress:function(){return B},getHandle:function(){return m},getInput:function(){return d},step:function(c,b){b=b||e.Event();
-    var f=a.step=="any"?1:a.step;g.setValue(l+f*(c||1),b)},stepUp:function(c){return g.step(c||1)},stepDown:function(c){return g.step(-c||-1)}});e.each("onSlide,change".split(","),function(c,b){e.isFunction(a[b])&&e(g).bind(b,a[b]);g[b]=function(f){e(g).bind(b,f);return g}});m.drag({drag:false}).bind("dragStart",function(){D=C(e(g))||C(d)}).bind("drag",function(c,b,f){if(d.is(":disabled"))return false;h(c,n?b:f)}).bind("dragEnd",function(c){if(!c.isDefaultPrevented()){c.type="change";A.trigger(c,[l])}}).click(function(c){return c.preventDefault()});
-  i.click(function(c){if(d.is(":disabled")||c.target==m[0])return c.preventDefault();s();var b=m.width()/2;h(c,n?k-u-b+c.pageY:c.pageX-u-b)});a.keyboard&&d.keydown(function(c){if(!d.attr("readonly")){var b=c.keyCode,f=e([75,76,38,33,39]).index(b)!=-1,j=e([74,72,40,34,37]).index(b)!=-1;if((f||j)&&!(c.shiftKey||c.altKey||c.ctrlKey)){if(f)g.step(b==33?10:1,c);else if(j)g.step(b==34?-10:-1,c);return c.preventDefault()}}});d.blur(function(c){var b=e(this).val();b!==l&&g.setValue(b,c)});e.extend(d[0],{stepUp:g.stepUp,
-    stepDown:g.stepDown});v();k||e(window).load(v)}e.tools=e.tools||{version:"1.2.4"};var E;E=e.tools.rangeinput={conf:{min:0,max:100,step:"any",steps:0,value:0,precision:undefined,vertical:0,keyboard:true,progress:false,speed:100,css:{input:"range",slider:"slider",progress:"progress",handle:"handle"}}};var x,y;e.fn.drag=function(d){document.ondragstart=function(){return false};d=e.extend({x:true,y:true,drag:true},d);x=x||e(document).bind("mousedown mouseup",function(a){var h=e(a.target);if(a.type=="mousedown"&&
-  h.data("drag")){var s=h.position(),v=a.pageX-s.left,g=a.pageY-s.top,o=true;x.bind("mousemove.drag",function(i){var n=i.pageX-v;i=i.pageY-g;var l={};if(d.x)l.left=n;if(d.y)l.top=i;if(o){h.trigger("dragStart");o=false}d.drag&&h.css(l);h.trigger("drag",[i,n]);y=h});a.preventDefault()}else try{y&&y.trigger("dragEnd")}finally{x.unbind("mousemove.drag");y=null}});return this.data("drag",true)};e.expr[":"].range=function(d){var a=d.getAttribute("type");return a&&a=="range"||!!e(d).filter("input").data("rangeinput")};
-  e.fn.rangeinput=function(d){if(this.data("rangeinput"))return this;d=e.extend(true,{},E.conf,d);var a;this.each(function(){var h=new G(e(this),e.extend(true,{},d));h=h.getInput().data("rangeinput",h);a=a?a.add(h):h});return a?a:this}})(jQuery);
+if(D&&l!==undefined&&!q){c.type="onSlide";A.trigger(c,[f,b]);if(c.isDefaultPrevented())return g}j=q?a.speed:0;q=q?function(){c.type="change";A.trigger(c,[f])}:null;if(n){m.animate({top:b},j,q);a.progress&&B.animate({height:k-b+m.width()/2},j)}else{m.animate({left:b},j,q);a.progress&&B.animate({width:b+m.width()/2},j)}l=f;H=b;d.val(f);return g}function s(){if(n=a.vertical||p(i,"height")>p(i,"width")){k=p(i,"height")-p(m,"height");u=i.offset().top+k}else{k=p(i,"width")-p(m,"width");u=i.offset().left}}
+function v(){s();g.setValue(a.value||a.min)}var g=this,o=a.css,i=e("<div><div/><a href='#'/></div>").data("rangeinput",g),n,l,u,k,H;d.before(i);var m=i.addClass(o.slider).find("a").addClass(o.handle),B=i.find("div").addClass(o.progress);e.each("min,max,step,value".split(","),function(c,b){c=d.attr(b);if(parseFloat(c))a[b]=parseFloat(c,10)});var z=a.max-a.min,r=a.step=="any"?0:a.step,t=a.precision;if(t===undefined)try{t=r.toString().split(".")[1].length}catch(I){t=0}if(d.attr("type")=="range"){var w=
+e("<input/>");e.each("class,disabled,id,maxlength,name,readonly,required,size,style,tabindex,title,value".split(","),function(c,b){w.attr(b,d.attr(b))});w.val(a.value);d.replaceWith(w);d=w}d.addClass(o.input);var A=e(g).add(d),D=true;e.extend(g,{getValue:function(){return l},setValue:function(c,b){return h(b||e.Event("api"),undefined,c,true)},getConf:function(){return a},getProgress:function(){return B},getHandle:function(){return m},getInput:function(){return d},step:function(c,b){b=b||e.Event();
+var f=a.step=="any"?1:a.step;g.setValue(l+f*(c||1),b)},stepUp:function(c){return g.step(c||1)},stepDown:function(c){return g.step(-c||-1)}});e.each("onSlide,change".split(","),function(c,b){e.isFunction(a[b])&&e(g).bind(b,a[b]);g[b]=function(f){e(g).bind(b,f);return g}});m.drag({drag:false}).bind("dragStart",function(){D=C(e(g))||C(d)}).bind("drag",function(c,b,f){if(d.is(":disabled"))return false;h(c,n?b:f)}).bind("dragEnd",function(c){if(!c.isDefaultPrevented()){c.type="change";A.trigger(c,[l])}}).click(function(c){return c.preventDefault()});
+i.click(function(c){if(d.is(":disabled")||c.target==m[0])return c.preventDefault();s();var b=m.width()/2;h(c,n?k-u-b+c.pageY:c.pageX-u-b)});a.keyboard&&d.keydown(function(c){if(!d.attr("readonly")){var b=c.keyCode,f=e([75,76,38,33,39]).index(b)!=-1,j=e([74,72,40,34,37]).index(b)!=-1;if((f||j)&&!(c.shiftKey||c.altKey||c.ctrlKey)){if(f)g.step(b==33?10:1,c);else if(j)g.step(b==34?-10:-1,c);return c.preventDefault()}}});d.blur(function(c){var b=e(this).val();b!==l&&g.setValue(b,c)});e.extend(d[0],{stepUp:g.stepUp,
+stepDown:g.stepDown});v();k||e(window).load(v)}e.tools=e.tools||{version:"1.2.4"};var E;E=e.tools.rangeinput={conf:{min:0,max:100,step:"any",steps:0,value:0,precision:undefined,vertical:0,keyboard:true,progress:false,speed:100,css:{input:"range",slider:"slider",progress:"progress",handle:"handle"}}};var x,y;e.fn.drag=function(d){document.ondragstart=function(){return false};d=e.extend({x:true,y:true,drag:true},d);x=x||e(document).bind("mousedown mouseup",function(a){var h=e(a.target);if(a.type=="mousedown"&&
+h.data("drag")){var s=h.position(),v=a.pageX-s.left,g=a.pageY-s.top,o=true;x.bind("mousemove.drag",function(i){var n=i.pageX-v;i=i.pageY-g;var l={};if(d.x)l.left=n;if(d.y)l.top=i;if(o){h.trigger("dragStart");o=false}d.drag&&h.css(l);h.trigger("drag",[i,n]);y=h});a.preventDefault()}else try{y&&y.trigger("dragEnd")}finally{x.unbind("mousemove.drag");y=null}});return this.data("drag",true)};e.expr[":"].range=function(d){var a=d.getAttribute("type");return a&&a=="range"||!!e(d).filter("input").data("rangeinput")};
+e.fn.rangeinput=function(d){if(this.data("rangeinput"))return this;d=e.extend(true,{},E.conf,d);var a;this.each(function(){var h=new G(e(this),e.extend(true,{},d));h=h.getInput().data("rangeinput",h);a=a?a.add(h):h});return a?a:this}})(jQuery);
 (function(e){function t(a,b,c){var k=a.offset().top,f=a.offset().left,l=c.position.split(/,?\s+/),p=l[0];l=l[1];k-=b.outerHeight()-c.offset[0];f+=a.outerWidth()+c.offset[1];c=b.outerHeight()+a.outerHeight();if(p=="center")k+=c/2;if(p=="bottom")k+=c;a=a.outerWidth();if(l=="center")f-=(a+b.outerWidth())/2;if(l=="left")f-=a;return{top:k,left:f}}function x(a){function b(){return this.getAttribute("type")==a}b.key="[type="+a+"]";return b}function u(a,b,c){function k(g,d,j){if(!(!c.grouped&&g.length)){var h;
-  if(j===false||e.isArray(j)){h=i.messages[d.key||d]||i.messages["*"];h=h[c.lang]||i.messages["*"].en;(d=h.match(/\$\d/g))&&e.isArray(j)&&e.each(d,function(n){h=h.replace(this,j[n])})}else h=j[c.lang]||j;g.push(h)}}var f=this,l=b.add(f);a=a.not(":button, :image, :reset, :submit");e.extend(f,{getConf:function(){return c},getForm:function(){return b},getInputs:function(){return a},reflow:function(){a.each(function(){var g=e(this),d=g.data("msg.el");if(d){g=t(g,d,c);d.css({top:g.top,left:g.left})}});return f},
-  invalidate:function(g,d){if(!d){var j=[];e.each(g,function(h,n){h=a.filter("[name='"+h+"']");if(h.length){h.trigger("OI",[n]);j.push({input:h,messages:[n]})}});g=j;d=e.Event()}d.type="onFail";l.trigger(d,[g]);d.isDefaultPrevented()||r[c.effect][0].call(f,g,d);return f},reset:function(g){g=g||a;g.removeClass(c.errorClass).each(function(){var d=e(this).data("msg.el");if(d){d.remove();e(this).data("msg.el",null)}}).unbind(c.errorInputEvent||"");return f},destroy:function(){b.unbind(c.formEvent).unbind("reset.V");
-    a.unbind(c.inputEvent||"").unbind("change.V");return f.reset()},checkValidity:function(g,d){g=g||a;g=g.not(":disabled");if(!g.length)return true;d=d||e.Event();d.type="onBeforeValidate";l.trigger(d,[g]);if(d.isDefaultPrevented())return d.result;var j=[],h=c.errorInputEvent+".v";g.not(":radio:not(:checked)").each(function(){var q=[],m=e(this).unbind(h).data("messages",q);e.each(v,function(){var o=this,s=o[0];if(m.filter(s).length){o=o[1].call(f,m,m.val());if(o!==true){d.type="onBeforeFail";l.trigger(d,
-    [m,s]);if(d.isDefaultPrevented())return false;var w=m.attr(c.messageAttr);if(w){q=[w];return false}else k(q,s,o)}}});if(q.length){j.push({input:m,messages:q});m.trigger("OI",[q]);c.errorInputEvent&&m.bind(h,function(o){f.checkValidity(m,o)})}if(c.singleError&&j.length)return false});var n=r[c.effect];if(!n)throw'Validator: cannot find effect "'+c.effect+'"';if(j.length){f.invalidate(j,d);return false}else{n[1].call(f,g,d);d.type="onSuccess";l.trigger(d,[g]);g.unbind(h)}return true}});e.each("onBeforeValidate,onBeforeFail,onFail,onSuccess".split(","),
-  function(g,d){e.isFunction(c[d])&&e(f).bind(d,c[d]);f[d]=function(j){e(f).bind(d,j);return f}});c.formEvent&&b.bind(c.formEvent,function(g){if(!f.checkValidity(null,g))return g.preventDefault()});b.bind("reset.V",function(){f.reset()});a[0]&&a[0].validity&&a.each(function(){this.oninvalid=function(){return false}});if(b[0])b[0].checkValidity=f.checkValidity;c.inputEvent&&a.bind(c.inputEvent,function(g){f.checkValidity(e(this),g)});a.filter(":checkbox, select").filter("[required]").bind("change.V",
-  function(g){var d=e(this);if(this.checked||d.is("select")&&e(this).val())r[c.effect][1].call(f,d,g)});var p=a.filter(":radio").change(function(g){f.checkValidity(p,g)});e(window).resize(function(){f.reflow()})}e.tools=e.tools||{version:"1.2.4"};var y=/\[type=([a-z]+)\]/,z=/^-?[0-9]*(\.[0-9]+)?$/,A=/^([a-z0-9_\.\-\+]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/i,B=/^(https?:\/\/)?[\da-z\.\-]+\.[a-z\.]{2,6}[#\?\/\w \.\-=]*$/i,i;i=e.tools.validator={conf:{grouped:false,effect:"default",errorClass:"invalid",inputEvent:null,
-  errorInputEvent:"keyup",formEvent:"submit",lang:"en",message:"<div/>",messageAttr:"data-message",messageClass:"error",offset:[0,0],position:"center right",singleError:false,speed:"normal"},messages:{"*":{en:"Please correct this value"}},localize:function(a,b){e.each(b,function(c,k){i.messages[c]=i.messages[c]||{};i.messages[c][a]=k})},localizeFn:function(a,b){i.messages[a]=i.messages[a]||{};e.extend(i.messages[a],b)},fn:function(a,b,c){if(e.isFunction(b))c=b;else{if(typeof b=="string")b={en:b};this.messages[a.key||
-  a]=b}if(b=y.exec(a))a=x(b[1]);v.push([a,c])},addEffect:function(a,b,c){r[a]=[b,c]}};var v=[],r={"default":[function(a){var b=this.getConf();e.each(a,function(c,k){c=k.input;c.addClass(b.errorClass);var f=c.data("msg.el");if(!f){f=e(b.message).addClass(b.messageClass).appendTo(document.body);c.data("msg.el",f)}f.css({visibility:"hidden",display:"none"}).find("span").remove();e.each(k.messages,function(l,p){e("<span/>").html(p).appendTo(f)});f.outerWidth()==f.parent().width()&&f.add(f.find("p")).css({display:"inline"});
-  k=t(c,f,b);f.css({visibility:"visible",position:"absolute",top:k.top,left:k.left}).fadeIn(b.speed)})},function(a){var b=this.getConf();a.removeClass(b.errorClass).each(function(){var c=e(this).data("msg.el");c&&c.css({visibility:"hidden"})})}]};e.each("email,url,number".split(","),function(a,b){e.expr[":"][b]=function(c){return c.getAttribute("type")===b}});e.fn.oninvalid=function(a){return this[a?"bind":"trigger"]("OI",a)};i.fn(":email","Please enter a valid email address",function(a,b){return!b||
-  A.test(b)});i.fn(":url","Please enter a valid URL",function(a,b){return!b||B.test(b)});i.fn(":number","Please enter a numeric value.",function(a,b){return z.test(b)});i.fn("[max]","Please enter a value smaller than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("max");return parseFloat(b)<=parseFloat(a)?true:[a]});i.fn("[min]","Please enter a value larger than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("min");return parseFloat(b)>=
-  parseFloat(a)?true:[a]});i.fn("[required]","Please complete this mandatory field.",function(a,b){if(a.is(":checkbox"))return a.is(":checked");return!!b});i.fn("[pattern]",function(a){var b=new RegExp("^"+a.attr("pattern")+"$");return b.test(a.val())});e.fn.validator=function(a){var b=this.data("validator");if(b){b.destroy();this.removeData("validator")}a=e.extend(true,{},i.conf,a);if(this.is("form"))return this.each(function(){var c=e(this);b=new u(c.find(":input"),c,a);c.data("validator",b)});else{b=
-  new u(this,this.eq(0).closest("form"),a);return this.data("validator",b)}}})(jQuery);
+if(j===false||e.isArray(j)){h=i.messages[d.key||d]||i.messages["*"];h=h[c.lang]||i.messages["*"].en;(d=h.match(/\$\d/g))&&e.isArray(j)&&e.each(d,function(n){h=h.replace(this,j[n])})}else h=j[c.lang]||j;g.push(h)}}var f=this,l=b.add(f);a=a.not(":button, :image, :reset, :submit");e.extend(f,{getConf:function(){return c},getForm:function(){return b},getInputs:function(){return a},reflow:function(){a.each(function(){var g=e(this),d=g.data("msg.el");if(d){g=t(g,d,c);d.css({top:g.top,left:g.left})}});return f},
+invalidate:function(g,d){if(!d){var j=[];e.each(g,function(h,n){h=a.filter("[name='"+h+"']");if(h.length){h.trigger("OI",[n]);j.push({input:h,messages:[n]})}});g=j;d=e.Event()}d.type="onFail";l.trigger(d,[g]);d.isDefaultPrevented()||r[c.effect][0].call(f,g,d);return f},reset:function(g){g=g||a;g.removeClass(c.errorClass).each(function(){var d=e(this).data("msg.el");if(d){d.remove();e(this).data("msg.el",null)}}).unbind(c.errorInputEvent||"");return f},destroy:function(){b.unbind(c.formEvent).unbind("reset.V");
+a.unbind(c.inputEvent||"").unbind("change.V");return f.reset()},checkValidity:function(g,d){g=g||a;g=g.not(":disabled");if(!g.length)return true;d=d||e.Event();d.type="onBeforeValidate";l.trigger(d,[g]);if(d.isDefaultPrevented())return d.result;var j=[],h=c.errorInputEvent+".v";g.not(":radio:not(:checked)").each(function(){var q=[],m=e(this).unbind(h).data("messages",q);e.each(v,function(){var o=this,s=o[0];if(m.filter(s).length){o=o[1].call(f,m,m.val());if(o!==true){d.type="onBeforeFail";l.trigger(d,
+[m,s]);if(d.isDefaultPrevented())return false;var w=m.attr(c.messageAttr);if(w){q=[w];return false}else k(q,s,o)}}});if(q.length){j.push({input:m,messages:q});m.trigger("OI",[q]);c.errorInputEvent&&m.bind(h,function(o){f.checkValidity(m,o)})}if(c.singleError&&j.length)return false});var n=r[c.effect];if(!n)throw'Validator: cannot find effect "'+c.effect+'"';if(j.length){f.invalidate(j,d);return false}else{n[1].call(f,g,d);d.type="onSuccess";l.trigger(d,[g]);g.unbind(h)}return true}});e.each("onBeforeValidate,onBeforeFail,onFail,onSuccess".split(","),
+function(g,d){e.isFunction(c[d])&&e(f).bind(d,c[d]);f[d]=function(j){e(f).bind(d,j);return f}});c.formEvent&&b.bind(c.formEvent,function(g){if(!f.checkValidity(null,g))return g.preventDefault()});b.bind("reset.V",function(){f.reset()});a[0]&&a[0].validity&&a.each(function(){this.oninvalid=function(){return false}});if(b[0])b[0].checkValidity=f.checkValidity;c.inputEvent&&a.bind(c.inputEvent,function(g){f.checkValidity(e(this),g)});a.filter(":checkbox, select").filter("[required]").bind("change.V",
+function(g){var d=e(this);if(this.checked||d.is("select")&&e(this).val())r[c.effect][1].call(f,d,g)});var p=a.filter(":radio").change(function(g){f.checkValidity(p,g)});e(window).resize(function(){f.reflow()})}e.tools=e.tools||{version:"1.2.4"};var y=/\[type=([a-z]+)\]/,z=/^-?[0-9]*(\.[0-9]+)?$/,A=/^([a-z0-9_\.\-\+]+)@([\da-z\.\-]+)\.([a-z\.]{2,6})$/i,B=/^(https?:\/\/)?[\da-z\.\-]+\.[a-z\.]{2,6}[#\?\/\w \.\-=]*$/i,i;i=e.tools.validator={conf:{grouped:false,effect:"default",errorClass:"invalid",inputEvent:null,
+errorInputEvent:"keyup",formEvent:"submit",lang:"en",message:"<div/>",messageAttr:"data-message",messageClass:"error",offset:[0,0],position:"center right",singleError:false,speed:"normal"},messages:{"*":{en:"Please correct this value"}},localize:function(a,b){e.each(b,function(c,k){i.messages[c]=i.messages[c]||{};i.messages[c][a]=k})},localizeFn:function(a,b){i.messages[a]=i.messages[a]||{};e.extend(i.messages[a],b)},fn:function(a,b,c){if(e.isFunction(b))c=b;else{if(typeof b=="string")b={en:b};this.messages[a.key||
+a]=b}if(b=y.exec(a))a=x(b[1]);v.push([a,c])},addEffect:function(a,b,c){r[a]=[b,c]}};var v=[],r={"default":[function(a){var b=this.getConf();e.each(a,function(c,k){c=k.input;c.addClass(b.errorClass);var f=c.data("msg.el");if(!f){f=e(b.message).addClass(b.messageClass).appendTo(document.body);c.data("msg.el",f)}f.css({visibility:"hidden",display:"none"}).find("span").remove();e.each(k.messages,function(l,p){e("<span/>").html(p).appendTo(f)});f.outerWidth()==f.parent().width()&&f.add(f.find("p")).css({display:"inline"});
+k=t(c,f,b);f.css({visibility:"visible",position:"absolute",top:k.top,left:k.left}).fadeIn(b.speed)})},function(a){var b=this.getConf();a.removeClass(b.errorClass).each(function(){var c=e(this).data("msg.el");c&&c.css({visibility:"hidden"})})}]};e.each("email,url,number".split(","),function(a,b){e.expr[":"][b]=function(c){return c.getAttribute("type")===b}});e.fn.oninvalid=function(a){return this[a?"bind":"trigger"]("OI",a)};i.fn(":email","Please enter a valid email address",function(a,b){return!b||
+A.test(b)});i.fn(":url","Please enter a valid URL",function(a,b){return!b||B.test(b)});i.fn(":number","Please enter a numeric value.",function(a,b){return z.test(b)});i.fn("[max]","Please enter a value smaller than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("max");return parseFloat(b)<=parseFloat(a)?true:[a]});i.fn("[min]","Please enter a value larger than $1",function(a,b){if(b===""||e.tools.dateinput&&a.is(":date"))return true;a=a.attr("min");return parseFloat(b)>=
+parseFloat(a)?true:[a]});i.fn("[required]","Please complete this mandatory field.",function(a,b){if(a.is(":checkbox"))return a.is(":checked");return!!b});i.fn("[pattern]",function(a){var b=new RegExp("^"+a.attr("pattern")+"$");return b.test(a.val())});e.fn.validator=function(a){var b=this.data("validator");if(b){b.destroy();this.removeData("validator")}a=e.extend(true,{},i.conf,a);if(this.is("form"))return this.each(function(){var c=e(this);b=new u(c.find(":input"),c,a);c.data("validator",b)});else{b=
+new u(this,this.eq(0).closest("form"),a);return this.data("validator",b)}}})(jQuery);
 
 
 
@@ -284,9 +290,9 @@ Yesterday.setDate(Today.getDate() - 1);
 var Recent = new Date();
 Recent.setDate(Today.getDate() - 7);
 
-var TODAY_STRING = Today.getFullYear()+'/'+(((Today.getMonth()+1)<10)?'0':'')+(Today.getMonth()+1)+'/'+((Today.getDate()<10)?'0':'')+Today.getDate();
-var YESTERDAY_STRING = Yesterday.getFullYear()+'/'+(((Yesterday.getMonth()+1)<10)?'0':'')+(Yesterday.getMonth()+1)+'/'+((Yesterday.getDate()<10)?'0':'')+Yesterday.getDate();
-var RECENT_STRING = Yesterday.getFullYear()+'/'+(((Yesterday.getMonth()+1)<10)?'0':'')+(Yesterday.getMonth()+1)+'/'+((Yesterday.getDate()<10)?'0':'')+Yesterday.getDate();
+var TODAY_STRING = Today.getFullYear() + '/' + ((10 > (Today.getMonth() + 1)) ? '0' : '') + (Today.getMonth() + 1) + '/' + ((10 > Today.getDate()) ? '0' : '') + Today.getDate();
+var YESTERDAY_STRING = Yesterday.getFullYear() + '/' + ((10 > (Yesterday.getMonth() + 1)) ? '0' : '') + (Yesterday.getMonth() + 1) + '/' + ((10 > Yesterday.getDate()) ? '0' : '') + Yesterday.getDate();
+var RECENT_STRING = Yesterday.getFullYear() + '/' + ((10 > (Yesterday.getMonth() + 1)) ? '0' : '') + (Yesterday.getMonth() + 1) + '/' + ((10 < Yesterday.getDate()) ? '0' : '') + Yesterday.getDate();
 
 var dates_array = [];
 var i=0;
@@ -294,12 +300,10 @@ do
 {
   var blah = new Date();
   blah.setDate(new Date().getDate() - i);
-
-  var tmp_DateString = blah.getFullYear() + '/' + (((blah.getMonth()+1) < 10) ? '0' + (blah.getMonth()+1) : (blah.getMonth()+1)) + '/' + (((blah.getDate()) < 10) ? '0' + (blah.getDate()) : (blah.getDate()));
-  dates_array[9-i] = tmp_DateString;
+  dates_array[9-i] = blah.getFullYear() + '/' + padZeros(blah.getMonth()+1, 2) + '/' + padZeros(blah.getDate(), 2);
   i++;
 
-}while(i<30);
+}while(i<90);
 
 
 
@@ -315,15 +319,15 @@ var friendlyNameLookup = {
   'ch_ext_schedule': 'extensions',
   'ch_earnings': 'referralEarinings',
   'ch_profit': 'referralProfit'
-}
-
+};
 
 
 // //COMPATIBILITY ////
 
 // Logging //
 // If GM_log() not available, attempt to use other logging methods
-if ('undefined' == typeof GM_log) {
+if ('undefined' == typeof GM_log) 
+{
   // Firebug & Opera
   if ('undefined' !== typeof console.info) {
     console.info('typeof console.info = ' + (typeof console.info));
@@ -331,19 +335,19 @@ if ('undefined' == typeof GM_log) {
   }
 }
 
-
 // GM_registerMenuCommand() //
-if ('undefined' == typeof GM_registerMenuCommand) {
+if ('undefined' == typeof GM_registerMenuCommand) 
+{
   // Alternative not yet created
   function GM_registerMenuCommand(){
     // TODO: Elements placed into the page
   }
 }
 
-
 // GM_addStyle() //
 // The same function as used within the Greasemonkey source
-if ('undefined' == typeof GM_addStyle) {
+if ('undefined' == typeof GM_addStyle) 
+{
   function GM_addStyle(css) {
     var head = document.getElementsByTagName("head")[0];
     if (head) {
@@ -379,9 +383,8 @@ if ('undefined' == typeof GM_addStyle) {
 
 // Will try using HTML5 localStorage to implement similar functionality as
 // GM_get/setValue (lesser of the evils?)
-
-
-if ('undefined' == typeof GM_setValue) {
+if ('undefined' == typeof GM_setValue)
+{
   function GM_setValue(key, value) {
     try {
       window.localStorage[key] = value;
@@ -393,7 +396,8 @@ if ('undefined' == typeof GM_setValue) {
   }
 }
 
-if ('undefined' == typeof GM_getValue) {
+if ('undefined' == typeof GM_getValue)
+{
   function GM_getValue(key, value) {
     // GM_log('Get Item:' + key);
     // Store item in local storage:
@@ -422,22 +426,35 @@ if ('undefined' == typeof GM_getValue) {
 
 
 
-
 // /////////////////////////
 // //UTILITY FUNCTIONS ////
 // /////////////////////////
+function utils() { }
 
-function utils()
+function logger()
 {
-
+  if(arguments.__count__ > 0){
+    console.info(arguments);
+  }
+  else
+  {
+    console.info(arguments[0]);
+  }
 }
 
-
+function docEvaluate(_xpath)
+{
+  return document.evaluate(_xpath,
+      document,
+      null,
+      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+      null);
+}
 
 Object.merge = function Object_merge(_newObj)
 {
   if('object' !== typeof _newObj) {
-    console.info("ERROR!\nObject.merge = function Object_merge(_newObj)\n\n_newObj is not an Object!");
+    logger("ERROR!\nObject.merge = function Object_merge(_newObj)\n\n_newObj is not an Object!");
   }
 
   for (newVar in _newObj)
@@ -463,16 +480,13 @@ Object.merge = function Object_merge(_newObj)
         break;
 
       default:
-        console.info('Error!\nObject.merge = function Object_merge(_newObj)');
+        logger('Error!\nObject.merge = function Object_merge(_newObj)');
     }
   }
 
   return this;
 
 }
-
-
-
 
 function padZeros(_input,_desiredStringLength)
 {
@@ -484,16 +498,16 @@ function padZeros(_input,_desiredStringLength)
   return output;
 }
 
-
-function sanitiseDate(_dateString){
+function sanitiseDate(_dateString)
+{
   _dateString = _dateString.replace(/Today/,TODAY_STRING);
   _dateString = _dateString.replace(/Yesterday/,YESTERDAY_STRING);
 
   return _dateString;
 }
 
-
-function toBool(str){
+function toBool(str)
+{
   switch(str){
     case "false":
       return false;
@@ -508,10 +522,7 @@ function toBool(str){
 }
 
 
-
-
 function manipulatePrefs() {}
-
 
 /**
  * Sets a stored variable using whatever storage methods are avalaible
@@ -523,41 +534,41 @@ function manipulatePrefs() {}
  * @return
  *
  */
-manipulatePrefs.setPref = function manipulatePrefs_setPref(_pref, _value) {
+manipulatePrefs.setPref = function manipulatePrefs_setPref(_pref, _value)
+{
   //    _pref = _pref || 'replacement_pref';
   //    _value = _value || 'replacement_value';
-  //    console.info('manipulatePrefs.setPref:::\n');
-  //    console.info(_pref,_value);
+  //    logger('manipulatePrefs.setPref:::\n');
+  //    logger(_pref,_value);
 
   try
   {
     return GM_setValue(_pref, _value);
   } catch(e)
   {
-    console.info('setPref::\nERROR! When trying to set '+_pref+' to '+_value+' ('+(typeof _value)+')');
+    logger('setPref::\nERROR! When trying to set '+_pref+' to '+_value+' ('+(typeof _value)+')');
 
     if('number' == typeof _value)
     {
-      console.info('setPref::\nTesting whether is a float / int');
+      logger('setPref::\nTesting whether is a float / int');
       if(_value === parseInt(_value))
       {
-        console.info('setPref::\nTest:\n(_value === parseInt(_value))\nResult: True\n\nCan be stored');
+        logger('setPref::\nTest:\n(_value === parseInt(_value))\nResult: True\n\nCan be stored');
         return GM_setValue(_pref, _value.toString());
       }
       else if(_value === parseFloat(_value))
       {
-        console.info('setPref::\nTest:\n(_value === parseFloat(_value))\nResult: True\n\nCannot be stored as a float, will convert to string');
+        logger('setPref::\nTest:\n(_value === parseFloat(_value))\nResult: True\n\nCannot be stored as a float, will convert to string');
         return GM_setValue(_pref, _value.toString());
       }
     }
     else if('object' == typeof _value)
     {
-      console.info("setPref::\nTest:\n('object' == typeof _value)\nResult: True\n\nCannot be stored as a object, will JSON.stringify");
+      logger("setPref::\nTest:\n('object' == typeof _value)\nResult: True\n\nCannot be stored as a object, will JSON.stringify");
       return GM_setValue(_pref, JSON.stringify(_value));
     }
   }
 };
-
 
 /**
  * Gets a stored variable using whatever storage methods are avalaible [currently only supports GM_getValue() ]
@@ -571,19 +582,19 @@ manipulatePrefs.setPref = function manipulatePrefs_setPref(_pref, _value) {
  */
 manipulatePrefs.getPref = function manipulatePrefs_setPref(_pref, _defaultValue)
 {
-  //    console.info('manipulatePrefs.getPref:::\n');
-  //    console.info(_pref,_defaultValue);
+  //    logger('manipulatePrefs.getPref:::\n');
+  //    logger(_pref,_defaultValue);
 
   // Check if the _preference exists
   // NOTE:: Must check against typeof GM_getValue(_pref) *NOT* typeof GM_getValue(_pref, _defaultValue)
   if ('undefined' !== typeof GM_getValue(_pref))
   {
-    // console.info('manipulate_prefs.getPref():\n' + _pref + ' was found. Returning the value of  GM_getValue(_pref, _defaultValue)');
+    // logger('manipulate_prefs.getPref():\n' + _pref + ' was found. Returning the value of  GM_getValue(_pref, _defaultValue)');
     return GM_getValue(_pref, _defaultValue);
   }
   else
   {
-    console.info('manipulate_prefs.getPref():\n' + _pref + ' was not found. Set as default value before fetching. Default value = ' + _defaultValue);
+    logger('manipulate_prefs.getPref():\n' + _pref + ' was not found. Set as default value before fetching. Default value = ' + _defaultValue);
     manipulatePrefs.setPref(_pref, _defaultValue);
 
     return GM_getValue(_pref, _defaultValue);
@@ -609,9 +620,10 @@ function PAGE()
   // included in the final variable value)
   this.URL = document.location.href.split('#')[0];
 
-  this.pageName = function ()
+  this.pageName = function PAGE_pageName()
   {
     var message = '';
+    var _currentPage;
 
     try
     {
@@ -622,75 +634,82 @@ function PAGE()
       message += '\n\n' +('No URL variables available');
     }
 
-    // message += '\n\n' +('urlVariables = '+urlVariables);
-    // message += '\n\n' +('urlVariables.toString() = '+urlVariables.toString());
-    var _currentPage;
-
-    if (urlVariables.indexOf('s=rs') >= 0)
+    if (0 <= urlVariables.indexOf('s=rs'))
     {
       message += '\n\n' +('s=rs, therefore referral statistics');
       _currentPage = 'refStats';
 
-    } else if (urlVariables.indexOf('RentedRefListings') >= 0)
+    }
+    if (0 <= urlVariables.indexOf('RentedRefListings'))
     {
       message += '\n\n' +("indexOf('RentedRefListings'), therefore rented referral listings");
       _currentPage = 'rentedRefListing';
 
-    } else if (urlVariables.indexOf('u=c') >= 0 && urlVariables.indexOf('s=r') >= 0)
+    }
+    if (0 <= urlVariables.indexOf('u=c') && 0 <= urlVariables.indexOf('s=r'))
     {
       message += '\n\n' +('u=c and s=r, therefore referral listings');
 
-      if (urlVariables.indexOf('ss3=1') >= 0)
+      if (0 <= urlVariables.indexOf('ss3=1'))
       {
         message += '\n\n' + ('ss3=1, therefore direct referral listings');
         _currentPage = 'directRefListing';
-      } else if (urlVariables.indexOf('ss3=2') >= 0)
+      } else if (0 <= urlVariables.indexOf('ss3=2'))
       {
         message += '\n\n' + ('ss3=2, therefore rented referral listings');
         _currentPage = 'rentedRefListing';
       }
 
-    } else if (urlVariables.indexOf('u=v') >= 0)
+    }
+    if (0 <= urlVariables.indexOf('u=v'))
     {
       message += '\n\n' +('u=v, therefore view advertisements page');
       _currentPage = 'advertisements';
 
-    } else if (this.URL.indexOf('/v/') >= 0)
+    }
+    if (0 <= this.URL.indexOf('/v/'))
     {
       message += '\n\n' +('/v/, therefore in the forums');
       _currentPage = 'viewing an advertisement';
 
-    } else if (this.URL.search(/[\?u=c]$/) >= 0)
+    }
+    if (0 <= this.URL.search(/[\?u=c]$/))
     {
       message += '\n\n' +('?u=c, therefore account summary (from top bar)');
       _currentPage = 'accSummary';
 
-    } else if (this.URL.search(/[\?u=c&s=i]$/) >= 0)
+    }
+    if (0 <= this.URL.search(/[\?u=c&s=i]$/))
     {
       message += '\n\n' +('?u=c&s=i, therefore account summary (from sidebar)');
       _currentPage = 'accSummary';
 
-    } else if (this.URL.indexOf('/rel/bl/') >= 0)
+    }
+    if (0 <= this.URL.indexOf('/rel/bl/'))
     {
       message += '\n\n' +('/rel/bl/, therefore account export data');
       _currentPage = 'accExport';
 
-    } else if (this.URL.indexOf('/forum/') >= 0)
+    }
+    if (0 <= this.URL.indexOf('/forum/'))
     {
       message += '\n\n' +('/forum/, therefore in the forums');
       _currentPage = 'forums';
 
-    } else if (this.URL.indexOf('/refstat/') >= 0)
+    }
+    if (0 <= this.URL.indexOf('/refstat/'))
     {
       message += '\n\n' +('/refstat/, therefore referral graph');
       _currentPage = 'referralGraph';
 
-    } else if (this.URL.indexOf('#Neobux2Config') >= 0)
+    }
+    if (0 <= this.URL.indexOf('#Neobux2Config'))
     {
       message += '\n\n' +('#Neobux2Config, therefore referral graph');
       _currentPage = 'scriptConfig';
 
-    } else
+    }
+    if(null == _currentPage)
     {
       message += '\n\n' +('unknown page');
       _currentPage = 'unknown';
@@ -698,10 +717,10 @@ function PAGE()
 
     //GM_log(message);
     return _currentPage;
-  }
+  };
 
 
-  this.languageCode = function ()
+  this.languageCode = function PAGE_languageCode()
   {
     var message = '';
     if (document.body.innerHTML.indexOf(' src="http://neobux.cachefly.net/imagens/band1.png"') > 0)
@@ -720,15 +739,12 @@ function PAGE()
       return 'EN';
     }
   };
-};
+}
 
 var currentPage = new PAGE();
 
 
-
-
-GM_log('Neobux 2+ (v4.1.100915.1420 Dev)');
-
+GM_log('Neobux 2+ (v'+fileMETA.version+' Dev)');
 
 
 if(manipulatePrefs.getPref('firstRun',true))
@@ -737,10 +753,9 @@ if(manipulatePrefs.getPref('firstRun',true))
   manipulatePrefs.setPref('firstRun',false);
 }
 
-
 if(manipulatePrefs.getPref('setupComplete',false) === false)
 {
-  console.info("(manipulatePrefs.getPref('setupComplete',false) === false)");
+  logger("(manipulatePrefs.getPref('setupComplete',false) === false)");
 
   switch(currentPage.pageName())
   {
@@ -768,7 +783,7 @@ if(manipulatePrefs.getPref('setupComplete',false) === false)
   setupLevel += manipulatePrefs.getPref('viewed_referralStatistics',false) ? 1 : 0;
   setupLevel += manipulatePrefs.getPref('viewed_advertisements',false) ? 1 : 0;
 
-  console.info('setupLevel = '+setupLevel);
+  logger('setupLevel = '+setupLevel);
   manipulatePrefs.setPref('setupLevel',setupLevel);
 
   if(manipulatePrefs.getPref('setupLevel',0) == 5)
@@ -782,7 +797,7 @@ if(manipulatePrefs.getPref('setupComplete',false) === false)
 
 var Neobux = {};
 
-Neobux.possibleAccTypes = [
+Neobux.possibleAccTypes =[
   'Standard',
   'Golden',
   'Emerald',
@@ -793,8 +808,8 @@ Neobux.possibleAccTypes = [
   'Pioneer'
 ];
 
-Neobux.defaults = {
-
+Neobux.accountDefaults =
+{
   'autopayLimit': {
     'Standard': 20,
     'Golden':   20,
@@ -805,7 +820,6 @@ Neobux.defaults = {
     'Ultimate': 10,
     'Pioneer':  20
   },
-
 
   'recycleCost': {
     'Standard': 0.07,
@@ -818,7 +832,6 @@ Neobux.defaults = {
     'Pioneer':  0.07
   },
 
-
   'goldenPackCost': {
     'Standard': 0,
     'Golden':   0,
@@ -830,10 +843,7 @@ Neobux.defaults = {
     'Pioneer':  0
   },
 
-
-
   // CORRECT @ 27/Feb/2010
-
   // Referrals, Standard, Golden, Emerald, Sapphire, Platinum, Diamond, Ultimate
   // 0 -> 250, $0.25, $0.20, $0.20, $0.20, $0.20, $0.20, $0.20
   // 251 -> 500, $0.26, $0.21, $0.21, $0.20, $0.21, $0.20, $0.20
@@ -922,22 +932,22 @@ Neobux.defaults = {
     150: 0,
     240: 0
   }
-}
+};
 
-
-var defaultSettings = {
+var defaultSettings =
+{
 
   columnPrefixes: {
     flag: " | ",
-    refName: "",
-    refSince: "",
+    referralName: "",
+    referralSince: "",
     nextPayment: "",
     lastClick: "",
     totalClicks: "",
     average: "",
     clickText: "",
-    average_1: "",
-    average_2: "",
+    average1: "",
+    average2: "",
     RSA: "",
     SD: "",
     profit: "$"
@@ -945,31 +955,63 @@ var defaultSettings = {
 
   shrinkColumnContents: {
     flag: true,
-    refName: true,
-    refSince: true,
+    referralName: true,
+    referralSince: true,
     nextPayment: true,
     lastClick: true,
     totalClicks: false,
     average: false,
     clickText: true,
-    average_1: true,
-    average_2: true,
+    average1: true,
+    average2: true,
     RSA: true,
     SD: true,
     profit: false
   },
 
+  numeriseDates: {
+    flag: null,
+    referralName: null,
+    referralSince: true,
+    nextPayment: null,
+    lastClick: true,
+    totalClicks: null,
+    average: null,
+    clickText: null,
+    average1: null,
+    average2: null,
+    RSA: null,
+    SD: null,
+    profit: null
+  },
+
+  shortFormatTimer: {
+    flag: null,
+    referralName: null,
+    referralSince: true,
+    nextPayment: null,
+    lastClick: true,
+    totalClicks: null,
+    average: null,
+    clickText: null,
+    average1: null,
+    average2: null,
+    RSA: null,
+    SD: null,
+    profit: null
+  },
+
   showColumn: {
     flag: true,
-    refName: true,
-    refSince: true,
+    referralName: true,
+    referralSince: true,
     nextPayment: true,
     lastClick: true,
     totalClicks: true,
     average: true,
     clickText: true,
-    average_1: true,
-    average_2: true,
+    average1: true,
+    average2: true,
     RSA: true,
     SD: true,
     profit: true
@@ -985,46 +1027,47 @@ var defaultSettings = {
     averageCols: [10,7],// Time Period for the 'average1' & 'average2' column (previously defined as the A10&A7 column)
     extensionsGraph: [7,15,30,60,90]
   }
-}
+};
 
 
 var testing = false;
-
 
 
 /**
  * Extra functions needed to deal with closures
  */
 
-var setValue_InStoredObject = function setValue_InStoredObject(_prefName, _varName, _newValue)
+function setValue_InStoredObject(_preferralName, _varName, _newValue)
 {
-  var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify( {} )));
+  var tmp_original = JSON.parse(manipulatePrefs.getPref(_preferralName, JSON.stringify( {} )));
   tmp_original[_varName] = _newValue;
 
-  manipulatePrefs.setPref(_prefName,JSON.stringify(tmp_original));
+  manipulatePrefs.setPref(_preferralName,JSON.stringify(tmp_original));
 };
 
-var getValue_FromStoredObject = function getValue_FromStoredObject(_prefName, _varName, _defaultValue) {
-  return function() {
-    return JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(_defaultValue)))[_varName];
+function getValue_FromStoredObject(_preferralName, _varName, _defaultValue) 
+{
+  return function () {
+    return JSON.parse(manipulatePrefs.getPref(_preferralName, JSON.stringify(_defaultValue)))[_varName];
   };
 };
 
-var setFunction = function setFunction(_prefName,loop_columnName){
+function setFunction(_preferralName,loop_columnName)
+{
   return function(_newValue) {
-    setValue_InStoredObject(_prefName,loop_columnName, _newValue)
+    setValue_InStoredObject(_preferralName,loop_columnName, _newValue)
   }
 };
 
-function addSettersGetters(_obj, _prefName, _defaults)
+function addSettersGetters(_obj, _preferralName, _defaults)
 {
-  console.info(arguments);
+  logger(arguments);
   for(var loop_columnName in _defaults)
   {
-    var getfunc = getValue_FromStoredObject(_prefName,loop_columnName, _defaults);
-    _obj.__defineGetter__(loop_columnName, getfunc);
+    var getFunc = getValue_FromStoredObject(_preferralName,loop_columnName, _defaults);
+    _obj.__defineGetter__(loop_columnName, getFunc);
 
-    var setfunc = setFunction(_prefName,loop_columnName);
+    var setfunc = setFunction(_preferralName,loop_columnName);
     _obj.__defineSetter__(loop_columnName, setfunc);
   }
 }
@@ -1036,9 +1079,9 @@ var ACCOUNT_FUNCTIONS =
   /**
    * Function that returns the autopay limit (minimum days left for autopay to apply) for each account type
    */
-  'getAutopayLimit': function(_accType)
+  'getAutopayLimit': function getAutopayLimit(_accType)
   {
-    var defaultAutopayLimit = Neobux.defaults.autopayLimit[_accType.verbose];
+    var defaultAutopayLimit = Neobux.accountDefaults.autopayLimit[_accType.verbose];
     return manipulatePrefs.getPref('autopayLimit', defaultAutopayLimit);
   },
 
@@ -1046,12 +1089,12 @@ var ACCOUNT_FUNCTIONS =
   /**
    * Function that returns the cost of recycling one referral for each account type
    */
-  'getRecycleCost': function(_accType)
+  'getRecycleCost': function getRecycleCost(_accType)
   {
-    var defaultRecycleCost = Neobux.defaults.recycleCost[_accType.verbose];
+    var defaultRecycleCost = Neobux.accountDefaults.recycleCost[_accType.verbose];
 
     // If the current page is the rented referral listings, store the *actual* recycle cost
-    if (currentPage.pageName() == 'rentedRefListing')
+    if ('rentedRefListing' == currentPage.pageName())
     {
       var tmp = document.body.innerHTML.match(/var p=\[([\d,\.]+)\];/)[1].split(',');
       var _recycleCost = tmp[1];
@@ -1066,9 +1109,9 @@ var ACCOUNT_FUNCTIONS =
   /**
    * Function that returns the total cost purchasing each ultimate pack **from golden**
    */
-  'getGoldenPackCost': function(_accType)
+  'getGoldenPackCost': function getGoldenPackCost(_accType)
   {
-    var defaultGoldenPackCost = Neobux.defaults.goldenPackCost[_accType.verbose];
+    var defaultGoldenPackCost = Neobux.accountDefaults.goldenPackCost[_accType.verbose];
     return manipulatePrefs.getPref('goldenPackCost', defaultGoldenPackCost);
   },
 
@@ -1076,25 +1119,25 @@ var ACCOUNT_FUNCTIONS =
   /**
    * Function that returns the cost of paying via autopay for one renewal
    */
-  'getAutopayCost': function(_accType,_numberOfRefs)
+  'getAutopayCost': function getAutopayCost(_accType,_numberOfRentedRefs)
   {
-    var defaultAutopayValues = Neobux.defaults.autopayValues[_accType.verbose];
+    var defaultAutopayValues = Neobux.accountDefaults.autopayValues[_accType.verbose];
 
-    var totalRentedRefs = myAccountDetails.numberOfRefs.Rented;
+    var totalRentedRefs = (0 <= _numberOfRentedRefs) ? _numberOfRentedRefs : myAccountDetails.numberOfRefs.Rented;
     var perAutoPayCost = 0;
 
     var j = defaultAutopayValues[_accType.numerical].length - 1;
     var currentTest;
     do
     {
-      console.info('j = '+j);
+      logger('j = '+j);
       currentTest = defaultAutopayValues[_accType.verbose][j];
 
       if(parseInt(currentTest.minRefs) < parseInt(totalRentedRefs))
       {
-        console.info('currentTest.minRefs = '+currentTest.minRefs+'\n'+
-          'totalRentedRefs = '+totalRentedRefs+'\n'+
-          'currentTest.cost = '+currentTest.cost);
+        logger('currentTest.minRefs = '+currentTest.minRefs+'\n'+
+            'totalRentedRefs = '+totalRentedRefs+'\n'+
+            'currentTest.cost = '+currentTest.cost);
 
         perAutoPayCost = currentTest.cost;
       }
@@ -1102,7 +1145,7 @@ var ACCOUNT_FUNCTIONS =
     } while((parseInt(defaultAutopayValues[_accType.numerical][j--].minRefs) > parseInt(totalRentedRefs)));
 
 
-    return manipulatePrefs.setPref('autopayValues', perAutoPayCost);
+    manipulatePrefs.setPref('autopayValues', perAutoPayCost);
     return manipulatePrefs.getPref('autopayValues', defaultAutopayValues);
   },
 
@@ -1110,17 +1153,17 @@ var ACCOUNT_FUNCTIONS =
   /**
    * Function that returns the cost of one referral for each allowed period of time
    */
-  'getRenewalFees': function(_accType)
+  'getRenewalFees': function getRenewalFees(_accType)
   {
     //    console.group();
-    var defaultRenewalFees = Neobux.defaults.renewalFees[_accType.verbose];
-    //    console.info('defaultRenewalFees');
-    //    console.info(defaultRenewalFees);
+    var defaultRenewalFees = Neobux.accountDefaults.renewalFees[_accType.verbose];
+    //    logger('defaultRenewalFees');
+    //    logger(defaultRenewalFees);
 
 
     var _renewCost = {};
     // If the current page is the rented referral listings, store the *actual* renewal fees
-    if (currentPage.pageName() == 'rentedRefListing')
+    if ('rentedRefListing' == currentPage.pageName())
     {
       // returns array of values used in the drop-down box on the ref listings page
       // var p=[0,0.07,0.25,0.45,0.60,0];
@@ -1134,23 +1177,23 @@ var ACCOUNT_FUNCTIONS =
       _renewCost[150] = tmp[6];
       _renewCost[240] = tmp[7];
 
-      //      console.info('JSON.stringify(_renewCost)');
-      //      console.info(JSON.stringify(_renewCost));
-      //      console.info("manipulatePrefs.setPref('renewalFees', JSON.stringify(_renewCost))");
+      //      logger('JSON.stringify(_renewCost)');
+      //      logger(JSON.stringify(_renewCost));
+      //      logger("manipulatePrefs.setPref('renewalFees', JSON.stringify(_renewCost))");
       manipulatePrefs.setPref('renewalFees', JSON.stringify(_renewCost));
     }
 
 
-    //    console.info("manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))");
-    //    console.info(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)));
+    //    logger("manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))");
+    //    logger(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)));
 
-    //  console.info(arguments);
-    if(arguments.length == 2)
+    //  logger(arguments);
+    if(2 == arguments.length)
     {
-      //        console.info('arguments[1]');
-      //        console.info(arguments[1]);
-      //        console.info("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]");
-      //        console.info(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]);
+      //        logger('arguments[1]');
+      //        logger(arguments[1]);
+      //        logger("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]");
+      //        logger(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))[arguments[1]]);
       //      console.groupEnd();
 
 
@@ -1158,25 +1201,20 @@ var ACCOUNT_FUNCTIONS =
     }
     else
     {
-      //        console.info('arguments[0]');
-      //        console.info(arguments[0]);
-      //        console.info("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))");
-      //        console.info(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))));
+      //        logger('arguments[0]');
+      //        logger(arguments[0]);
+      //        logger("JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)))");
+      //        logger(JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees))));
       //      console.groupEnd();
 
       return JSON.parse(manipulatePrefs.getPref('renewalFees',JSON.stringify(defaultRenewalFees)));
     }
   }
-}
+};
 
-
-var getAccountType = new function()
+var getAccountType = new function ()
 {
-  var accDiv = document.evaluate('//div[@class="tag"][last()]',
-    document,
-    null,
-    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-    null).snapshotItem(0);
+  var accDiv = docEvaluate('//div[@class="tag"][last()]').snapshotItem(0);
 
   for(var i = 0; i < Neobux.possibleAccTypes.length; i++) {
     if(accDiv.textContent.match(Neobux.possibleAccTypes[i])) {
@@ -1195,8 +1233,7 @@ var getAccountType = new function()
   this.isStandard =  (0 == _acctype.numerical) ? true : false;
 
   return this;
-}
-
+};
 
 function extractNumberOfRefs()
 {
@@ -1204,17 +1241,22 @@ function extractNumberOfRefs()
   if ((currentPage.pageName() == 'rentedRefListing') || (currentPage.pageName() == 'directRefListing'))
   {
     // Deduce which page is being viewed
-    var _pageRefType = (currentPage.pageName() == 'rentedRefListing') ? 'Rented' : (currentPage.pageName() == 'directRefListing') ? 'Direct' : null;
+    var _pageRefType = null;
+    switch (currentPage.pageName())
+    {
+      case 'rentedRefListing':
+        _pageRefType = 'Rented';
+        break;
+      case 'directRefListing':
+        _pageRefType = 'Direct'
+        break;
+    }
 
-    console.info('_pageRefType');
-    console.info(_pageRefType);
+    logger('_pageRefType');
+    logger(_pageRefType);
 
     var tmp_numberOfRefs = null;
-    var noOfRefsString = document.evaluate('//td[@class="f_r"]/descendant::span[@class="f_b"]',
-      document,
-      null,
-      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-      null);
+    var noOfRefsString = docEvaluate('//td[@class="f_r"]/descendant::span[@class="f_b"]');
 
     // Only expecting one result if the user has referrals
     if(1 == noOfRefsString.snapshotLength)
@@ -1231,7 +1273,7 @@ function extractNumberOfRefs()
     {
       /**
        *
-       * Most likely reason for incorrect snapshotLength is an error in pageload or
+       * Most likely reason for incorrect snapshotLength is an error in page load or
        * zero refs.
        *
        * Will now check for zero refs.
@@ -1240,12 +1282,8 @@ function extractNumberOfRefs()
       var zeroRefsXpath = {
         'EN': '//span[contains(text(),"You don\'t have")]',
         'PT': '//span[contains(text(),"Não tem referidos")]'
-      }
-      var zeroRefsString = document.evaluate(zeroRefsXpath[currentPage.languageCode()],
-        document,
-        null,
-        XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-        null);
+      };
+      var zeroRefsString = docEvaluate(zeroRefsXpath[currentPage.languageCode()]);
 
       // If evidence of zero refs is found, set the number of refs to zero (0)
       tmp_numberOfRefs = (1 == zeroRefsString.snapshotLength) ? 0 : false;
@@ -1255,7 +1293,7 @@ function extractNumberOfRefs()
     // manipulatePrefs.setPref('numberOf' + _pageRefType + 'Refs', tmp_numberOfRefs);
     myAccountDetails.numberOfRefs[_pageRefType] = tmp_numberOfRefs;
   }
-  else if(currentPage.pageName() == 'accSummary')
+  else if('accSummary' == currentPage.pageName())
   {
     // TODO: Extract number of refs from main page
   }
@@ -1277,67 +1315,38 @@ myAccountDetails.recycleCost = ACCOUNT_FUNCTIONS.getRecycleCost(getAccountType);
 myAccountDetails.goldenPackCost = ACCOUNT_FUNCTIONS.getGoldenPackCost(getAccountType);
 myAccountDetails.renewalFees = ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType);
 
-
-//console.info('myAccountDetails.renewalFees = ');
-//console.info(myAccountDetails.renewalFees);
-//console.info('ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType)');
-//console.info(ACCOUNT_FUNCTIONS.getRenewalFees(getAccountType));
-
-
 myAccountDetails.numberOfRefs = {};
 addSettersGetters(myAccountDetails.numberOfRefs,'numberOfRefs',defaultSettings.numberOfRefs);
 
-
-myAccountDetails.__defineGetter__('autopayCost', function() {
-  var currentStoredValues = manipulatePrefs.getPref('autopayCost', ACCOUNT_FUNCTIONS.getAutopayCost(getAccountType));
-  return currentStoredValues;
+myAccountDetails.__defineGetter__('autopayCost', function autoPayCost_Getter() {
+  return manipulatePrefs.getPref('autopayCost', ACCOUNT_FUNCTIONS.getAutopayCost(getAccountType,null));
 });
-
-myAccountDetails.__defineSetter__('autopayCost', function(_value) {
+myAccountDetails.__defineSetter__('autopayCost', function autoPayCost_Setter(_value) {
   return manipulatePrefs.setPref('autopayCost', _value);
 });
 
-console.info('myAccountDetails');
-console.info(myAccountDetails);
-
-/**
- * Tests due to issue with setting numberOfRefs - setters/getters were set for numberOfRefs but not .Rented / .Direct
- */
-/*console.info('myAccountDetails.numberOfRefs.Rented');
- console.info(myAccountDetails.numberOfRefs.Rented);
- console.info('myAccountDetails.numberOfRefs.Rented = 200;');
- myAccountDetails.numberOfRefs.Rented = '200';
- console.info('myAccountDetails.numberOfRefs.Rented');
- console.info(myAccountDetails.numberOfRefs.Rented);*/
-
-/* END myAccountDetails */
-
-//var myAccountDetails = new ACCOUNT();
+logger('myAccountDetails');
+logger(myAccountDetails);
 
 
-
-
-
-
-function setterGetter_GM_Storage(storageVar, defaultPreferences)
+function setterGetter_GM_Storage(_storageVar, _defaultPreferences)
 {
-
   function bindGettersSetters(_objToAddPrefsTo, _defaultPrefs, _property)
   {
-    if('object' !== typeof _objToAddPrefsTo)
+    if ('object' !== typeof _objToAddPrefsTo)
     {
-      _objToAddPrefsTo.__defineGetter__(_property, function()
+      _objToAddPrefsTo.__defineGetter__(_property, function _objToAddPrefsTo_Getter()
       {
-        var valueToReturn = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(_defaultPrefs)))[_property];
+        var valueToReturn = JSON.parse(manipulatePrefs.getPref(_storageVar, JSON.stringify(_defaultPrefs)))[_property];
         return valueToReturn;
       });
 
-      _objToAddPrefsTo.__defineSetter__(_property, function(val)
+      _objToAddPrefsTo.__defineSetter__(_property, function _objToAddPrefsTo_Setter(val)
       {
-        var originalValues = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(_defaultPrefs)));
+        var originalValues = JSON.parse(manipulatePrefs.getPref(_storageVar, JSON.stringify(_defaultPrefs)));
         originalValues[_property] = val;
 
-        manipulatePrefs.setPref(storageVar, JSON.stringify(originalValues));
+        manipulatePrefs.setPref(_storageVar, JSON.stringify(originalValues));
 
         // Return this so that methods can be strung foo.setA(10).setB(20).setC(30);
         return this;
@@ -1345,37 +1354,27 @@ function setterGetter_GM_Storage(storageVar, defaultPreferences)
     }
     else
     {
-      for(_property in _objToAddPrefsTo) {
+      for (_property in _objToAddPrefsTo)
+      {
         //bindGettersSetters(_objToAddPrefsTo, _defaultPrefs, _property);
       }
     }
   }
 
-  /* setterGetter_GM_Storage(storageVar, defaultPreferences) */
-  for (var property in defaultPreferences)
+  /* setterGetter_GM_Storage(_storageVar, _defaultPreferences) */
+  for (var property in _defaultPreferences)
   {
-    //    console.group();
-    //    console.info(JSON.stringify(this));
-    if(defaultPreferences[property] === false)
-    {
+    if (false === _defaultPreferences[property]) {
       this[property] = false;
+    } else {
+      this[property] = JSON.parse(manipulatePrefs.getPref(_storageVar, JSON.stringify(_defaultPreferences)))[property] || {};
     }
-    else
-    {
-      this[property] = JSON.parse(manipulatePrefs.getPref(storageVar, JSON.stringify(defaultPreferences)))[property] || {};
-    }
-    //    console.info(JSON.stringify(this));
 
-    bindGettersSetters(this, defaultPreferences, property);
-
-    //    console.groupEnd();
-
+    bindGettersSetters(this, _defaultPreferences, property);
   }
 
   return this;
 }
-
-
 
 
 // Information about the users account
@@ -1401,31 +1400,29 @@ script.preferences =
   flag_textify: manipulatePrefs.getPref('flag_textify',true),
 
   // Owned Since column:
-  referralSince_numerise: manipulatePrefs.getPref('referralSince_numerise',true),
   referralSince_fullerTimers: manipulatePrefs.getPref('referralSince_fullerTimers',true),
-  referralSince_shortFormatTimer: manipulatePrefs.getPref('referralSince_shortFormatTimer',true),
   referralSince_replace: manipulatePrefs.getPref('referralSince_replace',false),
 
   // Last Click column:
-  lastClick_numerise: manipulatePrefs.getPref('lastClick_numerise',true),
   lastClick_fullerTimers: manipulatePrefs.getPref('lastClick_fullerTimers',true),
-  lastClick_shortFormatTimer: manipulatePrefs.getPref('lastClick_shortFormatTimer',false),
   lastClick_replace: manipulatePrefs.getPref('lastClick_replace',false),
   lastClick_replaceNilClicks: manipulatePrefs.getPref('lastClick_replaceNilClicks',false),
 
   // Average column;
-  exactAverage_show: manipulatePrefs.getPref('exactAverage_show',true),
-  exactAverage_replace: manipulatePrefs.getPref('exactAverage_replace',false),
-  exactAverage_seperator: manipulatePrefs.getPref('exactAverage_seperator',' | '),
+  exactaverageshow: manipulatePrefs.getPref('exactaverageshow',true),
+  exactaveragereplace: manipulatePrefs.getPref('exactaveragereplace',false),
+  exactaverageseperator: manipulatePrefs.getPref('exactaverageseperator',' | '),
 
   // Profit Column
   profit_includeRecycleCost: manipulatePrefs.getPref('profit_includeRecycleCost',false),
 
-  
+
   // Referral listings. Column preferences
   columnPrefix: JSON.parse(manipulatePrefs.getPref('columnPrefix',JSON.stringify(defaultSettings.columnPrefixes))),
   shrinkContents: JSON.parse(manipulatePrefs.getPref('shrinkContents',JSON.stringify(defaultSettings.shrinkColumnContents))),
   showColumn: JSON.parse(manipulatePrefs.getPref('showColumn',JSON.stringify(defaultSettings.showColumn))),
+  numeriseDates: JSON.parse(manipulatePrefs.getPref('numeriseDates',JSON.stringify(defaultSettings.numeriseDates))),
+  shortFormatTimer: JSON.parse(manipulatePrefs.getPref('shortFormatTimer',JSON.stringify(defaultSettings.shortFormatTimer))),
 
 
   /** Time Periods **/
@@ -1433,74 +1430,134 @@ script.preferences =
 
   /* Local = Server Time clock */
   localServerTimeClock_show: manipulatePrefs.getPref('localServerTimeClock_show',true)
-}
-
-/*
- // Referral listings. Column preferences
- script.preferences.columnPrefix = defaultSettings.columnPrefixes;
- script.preferences.shrinkContents = defaultSettings.shrinkColumnContents;
- script.preferences.showColumn = defaultSettings.showColumn;
+};
 
 
- *//** Time Periods **//*
- script.preferences.timePeriods = defaultSettings.timePeriods;
- */
+logger('script.preferences');
+logger(script.preferences);
 
 
-console.info('script.preferences');
-console.info(script.preferences);
-
-/*
- setterGetter_GM_Storage( storageVar,
-  objToAddPrefsTo,
-  defaultPreferences )
- */
-
-
-
-
-/*
-
- // Some logging to test whether the getters/setters work
- // note: getters appear to work, though setters appear to have the same problem
- // as those encountered when attempting to define the getters
- console.info('script.preferences.columnPrefix.flag = '+ script.preferences.columnPrefix.flag);
- console.info('script.preferences.columnPrefix.profit = '+ script.preferences.columnPrefix.profit);
-
- console.group();
- console.info('---');
- // set the flag prefix to something (usually) different each time
- script.preferences.columnPrefix.flag = new Date().getMilliseconds();
- console.info('---');
- console.groupEnd();
-
- console.info('script.preferences.columnPrefix.flag = '+ script.preferences.columnPrefix.flag);
- console.info('script.preferences.columnPrefix.profit = '+ script.preferences.columnPrefix.profit);
-
-
- */
-
-
-
-
-
-
-function pageFunctions()
-{
-
-}
-
-
+function pageFunctions() {}
 
 /* REFSTATS AND ACCSUMMARY FUNCTIONS */
-
 function extractGraphData()
 {
-  var xpathResults_graphData = document.evaluate('//script[contains(text(),"eval")]',
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null);
+  function updateGraphData()
+  {
+    // Grab the data from storage
+    _graphs = JSON.parse(manipulatePrefs.getPref('_graphs','{}')) || {} ;
+
+    // Update the stored data with the new data obtained from the current page
+    for(_i in GRAPHS_onCurrentPage)
+    {
+      var _currentGraph = GRAPHS_onCurrentPage[_i];
+
+      var tmp_currentGraph = {};
+      tmp_currentGraph.containerID = _currentGraph[0];
+      tmp_currentGraph.name = _currentGraph[5][0]['name'];
+
+      tmp_currentGraph.rawData = (tmp_currentGraph.containerID !== 'ch_ext_schedule') ? _currentGraph[5][0]['data'].reverse() : _currentGraph[5][0]['data'];
+
+      tmp_currentGraph.data = {};
+      for(var i = 0, length = _currentGraph[2].length; i < length; i++) {
+        tmp_currentGraph.data[sanitiseDate(_currentGraph[2][i])] = _currentGraph[5][0]['data'][length - i - 1];
+      }
+
+      var sqsum = 0;
+      tmp_currentGraph.mean = new Array();
+      tmp_currentGraph.sum = new Array();
+      tmp_currentGraph.variance = new Array();
+      tmp_currentGraph.sdev = new Array();
+
+      tmp_currentGraph.mean[0] = tmp_currentGraph.rawData[0];
+      tmp_currentGraph.sum[0] = tmp_currentGraph.rawData[0];
+      tmp_currentGraph.variance[0] = tmp_currentGraph.rawData[0];
+      tmp_currentGraph.sdev[0] = tmp_currentGraph.rawData[0];
+
+      for (var i = 1; i < tmp_currentGraph.rawData.length; ++i)
+      {
+        var x = tmp_currentGraph.rawData[i];
+        var delta = x - tmp_currentGraph.mean[i-1];
+        var sweep = i + 1.0;
+        tmp_currentGraph.mean[i] = tmp_currentGraph.mean[i-1] + (delta / sweep);
+        sqsum += delta * delta * (i / sweep);
+
+        tmp_currentGraph.sum[i] = tmp_currentGraph.sum[i-1] + x;
+        tmp_currentGraph.variance[i] = sqsum / (i + 1);
+        tmp_currentGraph.sdev[i] = Math.sqrt(tmp_currentGraph.variance[i]);
+      }
+
+      tmp_currentGraph.mean.splice(0,0,undefined);
+      tmp_currentGraph.sum.splice(0,0,undefined);
+      tmp_currentGraph.variance.splice(0,0,undefined);
+      tmp_currentGraph.sdev.splice(0,0,undefined);
+
+      // Generate equivalents of the data in various 'exported' formats
+      var text = new Array();
+      var CSV = new Array();
+      var TSV = new Array();
+
+      for (var i = 0; i < _currentGraph[5][0]['data'].length; i++)
+      {
+        var date = new Date();
+        date.setDate(Today.getDate() - i);
+
+        var currentDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+
+        text[i] = _currentGraph[5][0]['data'][i];
+        CSV[i] = currentDate + ',' + _currentGraph[5][0]['data'][i];
+        TSV[i] = currentDate + '\t' + _currentGraph[5][0]['data'][i];
+      }
+
+      tmp_currentGraph.export = {
+        'text': text.join('\n'),
+        'csv': CSV.join(',\n'),
+        'tsv': TSV.join('\t\n'),
+        'reverse': {
+          'text': text.reverse().join('\n'),
+          'csv': CSV.reverse().join(',\n'),
+          'tsv': TSV.reverse().join('\t\n')
+        }
+      };
+
+
+      tmp_currentGraph.today = tmp_currentGraph.data[TODAY_STRING];
+      tmp_currentGraph.yesterday = tmp_currentGraph.data[YESTERDAY_STRING];
+      tmp_currentGraph.recent = tmp_currentGraph.sum[script.preferences.timePeriods.recent];
+      tmp_currentGraph.sum = tmp_currentGraph.sum;
+
+      tmp_currentGraph.rawData = new Array();
+
+      var k = tmp_currentGraph.data.__count__;
+      for(var j in tmp_currentGraph.data)
+      {
+        k--;
+        tmp_currentGraph.rawData[k] = tmp_currentGraph.data[j];
+      }
+
+
+      var xpathResults_averages = docEvaluate("//td[@class='f_r']/span[@class='f_b']");
+
+      if ('directClicks' == _i)
+      {
+        tmp_currentGraph.currentAverage = parseFloat(xpathResults_averages.snapshotItem(1).textContent);
+        tmp_currentGraph.projectedAverage = parseFloat(xpathResults_averages.snapshotItem(2).textContent);
+        tmp_currentGraph.today_projected = tmp_currentGraph.projectedAverage * myAccountDetails.numberOfRefs.Direct;
+      }
+      else if ('rentedClicks' == _i)
+      {
+        tmp_currentGraph.currentAverage = parseFloat(xpathResults_averages.snapshotItem(3).textContent);
+        tmp_currentGraph.projectedAverage = parseFloat(xpathResults_averages.snapshotItem(4).textContent);
+        tmp_currentGraph.today_projected = tmp_currentGraph.projectedAverage * myAccountDetails.numberOfRefs.Rented;
+      }
+
+
+      _graphs[friendlyNameLookup[_currentGraph[0]]] = tmp_currentGraph;
+    }
+
+  }
+
+  var xpathResults_graphData = docEvaluate('//script[contains(text(),"eval")]');
 
   // If testing in Firebug, xpathResults_graphData.snapshotLength == 2
   if (1 == xpathResults_graphData.snapshotLength || 2 == xpathResults_graphData.snapshotLength)
@@ -1518,7 +1575,7 @@ function extractGraphData()
      * ')); eval(w('
      */
 
-    var evals = xpathResults_graphData.snapshotItem(0).text.replace(/[\ ]?eval\(w\(\'/g, '').split("'));");
+    var evals = xpathResults_graphData.snapshotItem(0).text.replace(/[ ]?eval\(w\('/g, '').split("'));");
   }
 
   var graphData = new Array();
@@ -1526,17 +1583,16 @@ function extractGraphData()
   // Cycle through each individual eval (ie, graph / graphNumber)
   for (var graphNumber = 0, length = evals.length - 1; graphNumber < length; graphNumber++)
   {
-    // console.info('graphNumber = '+graphNumber);
+    // logger('graphNumber = '+graphNumber);
     var evalString = evals[graphNumber];
 
     // Decode evalString using the w(i) function from the Neobux page
     var decodedEvalString = NeobuxDecodeEvalString(evalString);
 
-    // console.info(decodedEvalString.replace(');',']').replace('mk_ch(','graphData['+graphNumber+']
+    // logger(decodedEvalString.replace(');',']').replace('mk_ch(','graphData['+graphNumber+']
     // = ['));
     eval(decodedEvalString.replace(');', ']').replace('mk_ch(', 'graphData[' + graphNumber + '] = ['));
   }
-
 
 
   // Grab the 'script' tags
@@ -1601,7 +1657,6 @@ function extractGraphData()
    }
    **/
 
-
   // Producing the following text ::
   /**
    mk_ch( 'ch_cd', '',
@@ -1631,7 +1686,6 @@ function extractGraphData()
    data:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } ], 0, 0, 'x', 0 );
    */
 
-
   // function mk_ch(x, y, o, w0, w, O, L, m, mn, p) ::
   /**
    x = id of the container where the graph is to be inserted
@@ -1645,9 +1699,6 @@ function extractGraphData()
    mn = y-axis minimum
    p = x-axis plot bands (3-value array or 0)
    */
-
-
-
 
   // Decode evalString using the w(i) function from the Neobux page
   function U(a)
@@ -1692,156 +1743,26 @@ function extractGraphData()
 
 
 
-  for(_i in graphData)
+  for(var _i in graphData)
   {
     GRAPHS_onCurrentPage[friendlyNameLookup[graphData[_i][0]]] = graphData[_i];
   }
 
-  console.info('GRAPHS_onCurrentPage');
-  console.info(GRAPHS_onCurrentPage);
-
-
-  function updateGraphData()
-  {
-
-
-    // Grab the data from storage
-    _graphs = JSON.parse(manipulatePrefs.getPref('_graphs','{}')) || {} ;
-
-
-    // Update the stored data with the new data obtained from the current page
-    for(_i in GRAPHS_onCurrentPage)
-    {
-      var _currentGraph = GRAPHS_onCurrentPage[_i];
-
-      var tmp_currentGraph = {};
-      tmp_currentGraph.containerID = _currentGraph[0];
-      tmp_currentGraph.name = _currentGraph[5][0]['name'];
-
-      tmp_currentGraph.rawData = (tmp_currentGraph.containerID !== 'ch_ext_schedule') ? _currentGraph[5][0]['data'].reverse() : _currentGraph[5][0]['data'];
-
-      tmp_currentGraph.data = {};
-      for(var i = 0, length = _currentGraph[2].length; i < length; i++) {
-        tmp_currentGraph.data[sanitiseDate(_currentGraph[2][i])] = _currentGraph[5][0]['data'][length - i - 1];
-      }
-
-
-      var sqsum = 0;
-      tmp_currentGraph.mean = new Array();
-      tmp_currentGraph.sum = new Array();
-      tmp_currentGraph.variance = new Array();
-      tmp_currentGraph.sdev = new Array();
-
-      tmp_currentGraph.mean[0] = tmp_currentGraph.rawData[0];
-      tmp_currentGraph.sum[0] = tmp_currentGraph.rawData[0];
-      tmp_currentGraph.variance[0] = tmp_currentGraph.rawData[0];
-      tmp_currentGraph.sdev[0] = tmp_currentGraph.rawData[0];
-
-
-      for (var i = 1; i < tmp_currentGraph.rawData.length; ++i)
-      {
-        var x = tmp_currentGraph.rawData[i];
-        var delta = x - tmp_currentGraph.mean[i-1];
-        var sweep = i + 1.0;
-        tmp_currentGraph.mean[i] = tmp_currentGraph.mean[i-1] + (delta / sweep);
-        sqsum += delta * delta * (i / sweep);
-
-        tmp_currentGraph.sum[i] = tmp_currentGraph.sum[i-1] + x;
-        tmp_currentGraph.variance[i] = sqsum / (i + 1);
-        tmp_currentGraph.sdev[i] = Math.sqrt(tmp_currentGraph.variance[i]);
-      }
-
-      tmp_currentGraph.mean.splice(0,0,undefined);
-      tmp_currentGraph.sum.splice(0,0,undefined);
-      tmp_currentGraph.variance.splice(0,0,undefined);
-      tmp_currentGraph.sdev.splice(0,0,undefined);
-
-      // Generate equivalents of the data in various 'exported' formats
-      var text = new Array();
-      var CSV = new Array();
-      var TSV = new Array();
-
-      for (var i = 0; i < _currentGraph[5][0]['data'].length; i++)
-      {
-        var date = new Date();
-        date.setDate(Today.getDate() - i);
-
-        var currentDate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
-
-        text[i] = _currentGraph[5][0]['data'][i];
-        CSV[i] = currentDate + ',' + _currentGraph[5][0]['data'][i];
-        TSV[i] = currentDate + '\t' + _currentGraph[5][0]['data'][i];
-      }
-
-
-      tmp_currentGraph.export = {
-        'text': text.join('\n'),
-        'csv': CSV.join(',\n'),
-        'tsv': TSV.join('\t\n'),
-        'reverse': {
-          'text': text.reverse().join('\n'),
-          'csv': CSV.reverse().join(',\n'),
-          'tsv': TSV.reverse().join('\t\n')
-        }
-      };
-
-
-
-      tmp_currentGraph.today = tmp_currentGraph.data[TODAY_STRING];
-      tmp_currentGraph.yesterday = tmp_currentGraph.data[YESTERDAY_STRING];
-      tmp_currentGraph.recent = tmp_currentGraph.sum[script.preferences.timePeriods.recent];
-      tmp_currentGraph.sum = tmp_currentGraph.sum;
-
-      tmp_currentGraph.rawData = new Array();
-
-      var k = tmp_currentGraph.data.__count__;
-      for(var j in tmp_currentGraph.data)
-      {
-        k--;
-        tmp_currentGraph.rawData[k] = tmp_currentGraph.data[j];
-      }
-
-
-      var xpathResults_averages = document.evaluate(
-        "//td[@class='f_r']/span[@class='f_b']",
-        document,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null);
-
-      if ('directClicks' == _i)
-      {
-        tmp_currentGraph.currentAverage = parseFloat(xpathResults_averages.snapshotItem(1).textContent);
-        tmp_currentGraph.projectedAverage = parseFloat(xpathResults_averages.snapshotItem(2).textContent);
-        tmp_currentGraph.today_projected = tmp_currentGraph.projectedAverage * myAccountDetails.numberOfRefs.Direct;
-      }
-      else if ('rentedClicks' == _i)
-      {
-        tmp_currentGraph.currentAverage = parseFloat(xpathResults_averages.snapshotItem(3).textContent);
-        tmp_currentGraph.projectedAverage = parseFloat(xpathResults_averages.snapshotItem(4).textContent);
-        tmp_currentGraph.today_projected = tmp_currentGraph.projectedAverage * myAccountDetails.numberOfRefs.Rented;
-      }
-
-
-      _graphs[friendlyNameLookup[_currentGraph[0]]] = tmp_currentGraph;
-    }
-
-  }
-
+  logger('GRAPHS_onCurrentPage');
+  logger(GRAPHS_onCurrentPage);
 
   updateGraphData();
 
   // Save the updated data
   manipulatePrefs.setPref('_graphs',JSON.stringify(_graphs));
 
-  console.info('_graphs');
-  console.info(_graphs);
+  logger('_graphs');
+  logger(_graphs);
 
-  console.info('GRAPHS_onCurrentPage');
-  console.info(GRAPHS_onCurrentPage);
+  logger('GRAPHS_onCurrentPage');
+  logger(GRAPHS_onCurrentPage);
 
 }
-
 
 function insertProfitGraph()
 {
@@ -1861,8 +1782,8 @@ function insertProfitGraph()
   var newCol = document.createElement('td');
 
   newCol.innerHTML = '<div align="center" style="color: rgb(112, 112, 112);" class="f_b">Profit</div>'+
-    '<img width="284" height="2" style="margin-top: 5px;" src="http://www.neobux.com/imagens/n/gr/250.jpg">'+
-    '<div style="width: 320px; height: 220px;" id="ch_scriptProfit"></div>';
+      '<img width="284" height="2" style="margin-top: 5px;" src="http://www.neobux.com/imagens/n/gr/250.jpg">'+
+      '<div style="width: 320px; height: 220px;" id="ch_scriptProfit"></div>';
   newCol.setAttribute('style','border: 1px solid rgb(170, 170, 170); background-color: rgb(255, 255, 255);');
 
   newRow.appendChild(newCol);
@@ -1895,7 +1816,7 @@ function insertProfitGraph()
   // Redefine the Neobux functions that are already there to ensure that this script is able to use it
   // (IIRC, I had problems calling mk_ch() from this script like this)
 
-  location.href = "javascript:(" + function() {
+  location.href = "javascript:(" + function () {
 
     // x = id of the container where the graph is to be inserted
     // y = title displayed on the graph
@@ -1922,9 +1843,9 @@ function insertProfitGraph()
         pn = x_axisPlotBands;
       }
       var s1 = 30,
-        s2 = 20,
-        s3 = 20,
-        s4 = 50;
+          s2 = 20,
+          s3 = 20,
+          s4 = 50;
       if (LegendEnabled == 1) {
         s1 = 20, s3 = 30;
       }
@@ -2084,55 +2005,54 @@ function insertProfitGraph()
     }while(i<10);
 
     mk_ch2('ch_scriptProfit', '',
-      dates_array,
-      '<b>$', '</b>',
-      [
-        {
-          name:'Expenses',
-          data:[parseFloat(window.expenses[9]),parseFloat(window.expenses[8]),parseFloat(window.expenses[7]),parseFloat(window.expenses[6]),
-            parseFloat(window.expenses[5]),parseFloat(window.expenses[4]),parseFloat(window.expenses[3]),
-            parseFloat(window.expenses[2]),parseFloat(window.expenses[1]),parseFloat(window.expenses[0])
-          ],
-          type:'area',
-          color: '#bA5653',
-          fillOpacity: 0.5
-        },
-        {
-          name:'Income',
-          data:[parseFloat(window.income[9]),parseFloat(window.income[8]),parseFloat(window.income[7]),parseFloat(window.income[6]),
-            parseFloat(window.income[5]),parseFloat(window.income[4]),parseFloat(window.income[3]),
-            parseFloat(window.income[2]),parseFloat(window.income[1]),parseFloat(window.income[0])
-          ],
-          type:'area',
-          color: '#99b55E',
-          fillOpacity: 0.5
-        },
-        {
-          name:'Profit',
-          data:[parseFloat(window.profit[9]),parseFloat(window.profit[8]),parseFloat(window.profit[7]),parseFloat(window.profit[6]),
-            parseFloat(window.profit[5]),parseFloat(window.profit[4]),parseFloat(window.profit[3]),
-            parseFloat(window.profit[2]),parseFloat(window.profit[1]),parseFloat(window.profit[0])
-          ],
-          type:'line',
-          color: '#4572A7',
-          lineWidth:'2'
-        }
-      ],
-      0,
-      [0,0,0,0],
-      null,
-      [0,0,0,0]);
+        dates_array,
+        '<b>$', '</b>',
+        [
+          {
+            name:'Expenses',
+            data:[parseFloat(window.expenses[9]),parseFloat(window.expenses[8]),parseFloat(window.expenses[7]),parseFloat(window.expenses[6]),
+              parseFloat(window.expenses[5]),parseFloat(window.expenses[4]),parseFloat(window.expenses[3]),
+              parseFloat(window.expenses[2]),parseFloat(window.expenses[1]),parseFloat(window.expenses[0])
+            ],
+            type:'area',
+            color: '#bA5653',
+            fillOpacity: 0.5
+          },
+          {
+            name:'Income',
+            data:[parseFloat(window.income[9]),parseFloat(window.income[8]),parseFloat(window.income[7]),parseFloat(window.income[6]),
+              parseFloat(window.income[5]),parseFloat(window.income[4]),parseFloat(window.income[3]),
+              parseFloat(window.income[2]),parseFloat(window.income[1]),parseFloat(window.income[0])
+            ],
+            type:'area',
+            color: '#99b55E',
+            fillOpacity: 0.5
+          },
+          {
+            name:'Profit',
+            data:[parseFloat(window.profit[9]),parseFloat(window.profit[8]),parseFloat(window.profit[7]),parseFloat(window.profit[6]),
+              parseFloat(window.profit[5]),parseFloat(window.profit[4]),parseFloat(window.profit[3]),
+              parseFloat(window.profit[2]),parseFloat(window.profit[1]),parseFloat(window.profit[0])
+            ],
+            type:'line',
+            color: '#4572A7',
+            lineWidth:'2'
+          }
+        ],
+        0,
+        [0,0,0,0],
+        null,
+        [0,0,0,0]);
 
   } + ")()";
 
 }
 
-
 function generateSidebarData()
 {
 
-  console.info('_graphs');
-  console.info(_graphs);
+  logger('_graphs');
+  logger(_graphs);
 
   /**
    * This function returns an object
@@ -2144,7 +2064,8 @@ function generateSidebarData()
    */
   function SIDEBAR_STATS(_timescale)
   {
-    var _days = _timescale
+    var _days = _timescale;
+    var dividerDays = null;
 
     if('string' == typeof _timescale) {
       _days = parseInt(_days.replace(/today/,0).replace(/yesterday/,1).replace(/recent/,(script.preferences.timePeriods.recent-1)));
@@ -2155,6 +2076,7 @@ function generateSidebarData()
     switch(_timescale)
     {
       case 'today':
+        dividerDays = 1;
         this.personalClicks = _graphs.personalClicks.data[TODAY_STRING];
         this.rentedClicks = _graphs.rentedClicks.data[TODAY_STRING];
         this.directClicks = _graphs.directClicks.data[TODAY_STRING];
@@ -2164,6 +2086,7 @@ function generateSidebarData()
 
         break;
       case 'yesterday':
+        dividerDays = 1;
         this.personalClicks = _graphs.personalClicks.data[YESTERDAY_STRING];
         this.rentedClicks = _graphs.rentedClicks.data[YESTERDAY_STRING];
         this.directClicks = _graphs.directClicks.data[YESTERDAY_STRING];
@@ -2173,6 +2096,7 @@ function generateSidebarData()
 
         break;
       case 'recent':
+        dividerDays = _days+1;
         this.personalClicks = _graphs.personalClicks.sum[_days+1];
         this.rentedClicks = _graphs.rentedClicks.sum[_days+1];
         this.directClicks = _graphs.directClicks.sum[_days+1];
@@ -2182,6 +2106,7 @@ function generateSidebarData()
 
         break;
       default:
+        dividerDays = _days;
         this.personalClicks = _graphs.personalClicks.rawData[_days];
         this.rentedClicks = _graphs.rentedClicks.rawData[_days];
         this.directClicks = _graphs.directClicks.rawData[_days];
@@ -2192,12 +2117,10 @@ function generateSidebarData()
         break;
     }
 
-
-
-    this.directAverage = (myAccountDetails.numberOfRefs.Direct > 0) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (_days+1)).toFixed(3) : 0;
-    this.rentedAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? ((this.rentedClicks / myAccountDetails.numberOfRefs.Rented) / (_days+1)).toFixed(3) : 0;
-    this.rentedRAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? (((this.rentedClicks - (_graphs.recycleCost.rawData[_days] * 100)) / myAccountDetails.numberOfRefs.Rented) / (_days+1)).toFixed(3) : 0;
-    this.totalRAverage = ((myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct) > 0) ? ((((this.rentedClicks + this.directClicks) - (_graphs.recycleCost.sum[_days + 1] * 100)) / (myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct)) / (_days+1)).toFixed(3) : 0;
+    this.directAverage = (myAccountDetails.numberOfRefs.Direct > 0) ? ((this.directClicks / myAccountDetails.numberOfRefs.Direct) / (dividerDays)).toFixed(3) : 0;
+    this.rentedAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? ((this.rentedClicks / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
+    this.rentedRAverage = (myAccountDetails.numberOfRefs.Rented > 0) ? (((this.rentedClicks - (_graphs.recycleCost.rawData[_days] * 100)) / myAccountDetails.numberOfRefs.Rented) / (dividerDays)).toFixed(3) : 0;
+    this.totalRAverage = ((myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct) > 0) ? ((((this.rentedClicks + this.directClicks) - (_graphs.recycleCost.sum[_days + 1] * 100)) / (myAccountDetails.numberOfRefs.Rented + myAccountDetails.numberOfRefs.Direct)) / (dividerDays)).toFixed(3) : 0;
 
     this.netIncome = (this.income - this.expenses).toFixed(3);
     this.personalClicksIncome = myAccountDetails.ownClickValue * this.personalClicks;
@@ -2235,7 +2158,7 @@ function generateSidebarData()
 
   // RE: Stats sidebar in Stats Summary page
   // If the user has no direct referrals, these stats do not apply
-  if (!myAccountDetails.numberOfRefs.Direct > 0)
+  if (!myAccountDetails.numberOfRefs.Direct)
   {
     sidebarDATA.today.directAverage = '<i>N/A</i>';
     sidebarDATA.yesterday.directAverage = '<i>N/A</i>';
@@ -2262,69 +2185,91 @@ function generateSidebarData()
     sidebarDATA.recent.totalRAverage = '<i>N/A <small>(zero refs)</small></i>';
   }
 
-  console.info('sidebarDATA');
-  console.info(sidebarDATA);
+  logger('sidebarDATA');
+  logger(sidebarDATA);
 }
-
 
 function insertChartDataBars()
 {
 
-  function addDataBarUnderGraph(_title, _containerID, _prefix, _data, _suffix, _CSSstyle)
+  function addDataBarUnderGraph(_title, _containerID, _prefix, _data, _suffix, _cssStyle)
   {
-    var graphBarCSS = ".graphBar { border:1px solid #AAAAAA; color:#444444; float:left; font-family:verdana; font-size:9px; font-weight:bold; height:14px; margin-bottom:10px; margin-left:7%; margin-top:-11px; padding:1px 2%; text-align:left; vertical-align:middle; white-space:nowrap; width:80%; }";
+    var graphBarCSS = ".graphBar { border:1px solid #AAAAAA; color:#444444; float:left; font-family:verdana; font-size:9px; font-weight:bold; height:14px; margin-bottom:10px; margin-left:7%; margin-top:-11px; padding:1px 2%; text-align:left; vertical-align:middle; white-space:nowrap; width:82%; }";
     GM_addStyle(graphBarCSS);
 
     var bar = document.createElement("DIV");
     bar.setAttribute("class", "graphBar");
-    bar.setAttribute("style", _CSSstyle);
+    bar.setAttribute("style", _cssStyle);
 
     bar.innerHTML = _title;
 
-    for (var dataItem in _data) {
+    for (var dataItem in _data)
+    {
       bar.innerHTML += _prefix + _data[dataItem][0] + _suffix + _data[dataItem][1];
     }
 
     document.getElementById(_containerID).appendChild(bar);
     document.getElementById(_containerID).parentNode.style.height = parseInt(document.getElementById(_containerID).parentNode.style.height) + 15 + "px";
+  }
 
+  function addExtensionsBarUnderGraph(_title, _containerID, _prefix, _data, _suffix, _cssStyle)
+  {
+    var graphBarCSS = ".graphBar { border:1px solid #AAAAAA; color:#444444; float:left; font-family:verdana; font-size:9px; font-weight:bold; height:14px; margin-bottom:10px; margin-left:7%; margin-top:-11px; padding:1px 2%; text-align:left; vertical-align:middle; white-space:nowrap; width:86%; }";
+    GM_addStyle(graphBarCSS);
+
+    var bar = document.createElement("DIV");
+    bar.setAttribute("class", "graphBar");
+    bar.setAttribute("style", _cssStyle);
+
+    bar.innerHTML = _title;
+
+    for (var dataItem in _data)
+    {
+      bar.innerHTML += _prefix + _data[dataItem][0] + _suffix + _data[dataItem][1];
+    }
+
+    document.getElementById(_containerID).appendChild(bar);
+    document.getElementById(_containerID).parentNode.style.height = parseInt(document.getElementById(_containerID).parentNode.style.height) + 15 + "px";
   }
 
 
-  var blah = {
-    statsGraphs: ['ch_cd','ch_cr','ch_recycle','ch_autopay','ch_extensions','ch_trrb'],
+  var availableGraphs = {
+    standardGraphs: ['ch_cd','ch_cr','ch_recycle','ch_autopay','ch_extensions','ch_trrb'],
     goldenGraphs: ['ch_ext_schedule'],
     accSummary: ['ch_cliques']
-  }
+  };
 
   var graphsOnCurrentPage = [];
 
-  if(currentPage.pageName() == 'refStats') {
-    graphsOnCurrentPage.push(blah.statsGraphs);
-    if(myAccountDetails.accountType.numerical > 0) { graphsOnCurrentPage.push(blah.goldenGraphs); }
+  if ('refStats' == currentPage.pageName())
+  {
+    graphsOnCurrentPage.push(availableGraphs.standardGraphs);
+    if (0 < myAccountDetails.accountType.numerical) {
+      graphsOnCurrentPage.push(availableGraphs.goldenGraphs);
+    }
   }
-  else if (currentPage.pageName() == 'accSummary'){
-    graphsOnCurrentPage.push(blah.accSummary);
+  else if ('accSummary' == currentPage.pageName())
+  {
+    graphsOnCurrentPage.push(availableGraphs.accSummary);
   }
 
+  logger('graphsOnCurrentPage');
+  logger(graphsOnCurrentPage);
 
-  console.info('graphsOnCurrentPage');
-  console.info(graphsOnCurrentPage);
-
-  for(var i=0; i < graphsOnCurrentPage[0].length; i++)
+  for (var i = 0; i < graphsOnCurrentPage[0].length; i++)
   {
 
-    console.info('graphsOnCurrentPage[0][i]');
-    console.info(graphsOnCurrentPage[0][i]);
+    logger('graphsOnCurrentPage[0][i]');
+    logger(graphsOnCurrentPage[0][i]);
     var _currentGraph = _graphs[friendlyNameLookup[graphsOnCurrentPage[0][i]]];
 
-    console.info('_currentGraph');
-    console.info(_currentGraph);
+    logger('_currentGraph');
+    logger(_currentGraph);
 
     // Get the time periods appropriate for each graph size
     var graph_timePeriod = [];
 
-    switch(_currentGraph.data.__count__)
+    switch (_currentGraph.data.__count__)
     {
       case 15:
         graph_timePeriod = script.preferences.timePeriods.largeGraph;
@@ -2337,165 +2282,175 @@ function insertChartDataBars()
         break;
     }
 
-    /**
-     * Insert data bars below graphs
-     */
-
-    var sum_Array = new Array();
-    var avg_Array = new Array();
-
-    for(var j=0; j < graph_timePeriod.length; j++)
+    // Extra processing needed for the extensions graph so process seperately..
+    if ('ch_ext_schedule' == _currentGraph.containerID)
     {
-      sum_Array.push([graph_timePeriod[j], _currentGraph.sum[graph_timePeriod[j]].toFixed(3)]);
-      avg_Array.push([graph_timePeriod[j], _currentGraph.mean[graph_timePeriod[j]].toFixed(3)]);
-    }
+      var extensionsArray = [];
 
-    document.getElementById(_currentGraph.containerID).parentNode.style.height = '150px';
+      for(var i=0; i<sum_Array.length; i++) {
+        var foo = (i==0) ? sum_Array[ i ]: (sum_Array[ i ] - sum_Array[i-1]);
+        extensionsArray.push(foo);
+      }
+      addDataBarUnderGraph('Extensions due: :', _currentGraph.containerID, ' (', extensionsArray, ') ',null);
 
-    // Averages bar goes under all graphs
-    addDataBarUnderGraph('Averages :', _currentGraph.containerID, ' (', avg_Array, ') ', 'margin-top:0px;');
+      //      addExtensionsBarUnderGraph('Extensions due :', _currentGraph.containerID, ' (', extensionsArray, ') ', 'margin-top:0px;');
 
-    // Sums bar goes under all graphs
-    addDataBarUnderGraph('Sums :', _currentGraph.containerID, ' (', sum_Array, ') ');
-
-
-    switch (_currentGraph.containerID)
+    } else
     {
-      case 'ch_cliques':
-        // Personal clicks in 'Account Summary'
 
-        var personalClicks_Array = new Array();
-        for(var j=0; j < graph_timePeriod.length; j++) {
-          var tmp = [graph_timePeriod[j], (_currentGraph.sum[graph_timePeriod[j]] * myAccountDetails.ownClickValue).toFixed(3)];
-          personalClicks_Array.push(tmp);
-        }
+      /**
+       * Insert data bars below graphs
+       */
 
-        addDataBarUnderGraph('Avg. Income :', _currentGraph.containerID, ' (', personalClicks_Array, ') $');
+      var sum_Array = new Array();
+      var avg_Array = new Array();
 
-        // Need to increase the height of the container to fix issue with the
-        // 'Congratulations:	 You've been active everyday.' message not wrapping correctly
+      for (var j = 0; j < graph_timePeriod.length; j++)
+      {
+        sum_Array.push([graph_timePeriod[j], _currentGraph.sum[graph_timePeriod[j]].toFixed(3)]);
+        avg_Array.push([graph_timePeriod[j], _currentGraph.mean[graph_timePeriod[j]].toFixed(3)]);
+      }
 
-        //        document.getElementById(_currentGraph.containerID).parentNode.style.height = "180px";
+      document.getElementById(_currentGraph.containerID).parentNode.style.height = '150px';
 
-        break;
+      // Averages bar goes under all graphs
+      addDataBarUnderGraph('Averages :', _currentGraph.containerID, ' (', avg_Array, ') ', 'margin-top:0px;');
 
-      case 'ch_cd':
-      // cd = "Clicks Direct" / Direct clicks graph in 'Referral Statistics' page
-      case 'ch_cr':
-        // cr = "Clicks Rented" / Rented clicks graph in 'Referral Statistics' page
+      // Sums bar goes under all graphs
+      addDataBarUnderGraph('Sums :', _currentGraph.containerID, ' (', sum_Array, ') ',null);
 
-        var rentedClicks_Array = new Array();
-        for(var j=0; j < graph_timePeriod.length; j++) {
-          var tmp = [graph_timePeriod[j], (_currentGraph.sum[graph_timePeriod[j]] * myAccountDetails.referralClickValue).toFixed(3)];
-          rentedClicks_Array.push(tmp);
-        }
+      switch (_currentGraph.containerID)
+      {
+        case 'ch_cliques':
+          // Personal clicks in 'Account Summary'
 
-        addDataBarUnderGraph('Avg. Income :', _currentGraph.containerID, ' (', rentedClicks_Array, ') $');
+          var personalClicks_Array = new Array();
+          for (var j = 0; j < graph_timePeriod.length; j++)
+          {
+            var tmp = [graph_timePeriod[j], (_currentGraph.sum[graph_timePeriod[j]] * myAccountDetails.ownClickValue).toFixed(3)];
+            personalClicks_Array.push(tmp);
+          }
 
-        break;
+          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', personalClicks_Array, ') $',null);
 
-      case 'ch_recycle':
-      // Recyling Expenses graph in 'Referral Statistics' page
-      case 'ch_autopay':
-      // Autopay Expenses graph in 'Referral Statistics' page
-      case 'ch_extensions':
-        // Extensions Expenses graph in 'Referral Statistics' page
+          // Need to increase the height of the container to fix issue with the 'Congratulations: You've been active everyday.' message not wrapping correctly
+          document.getElementById(_currentGraph.containerID).parentNode.style.height = "206px";
 
-        addDataBarUnderGraph('Avg. Expenses :', _currentGraph.containerID, ' (', sum_Array, ') $');
-        break;
-      case 'ch_trrb':
-        // trrb = "TRansfers to Rented Balance " / Transfers to Rental Balance graph
-        // in 'Referral Statistics' page
+          break;
 
-        addDataBarUnderGraph('Avg. Transfers :', _currentGraph.containerID, ' (', sum_Array, ') $');
+        case 'ch_cd':
+        // cd = "Clicks Direct" / Direct clicks graph in 'Referral Statistics' page
+        case 'ch_cr':
+          // cr = "Clicks Rented" / Rented clicks graph in 'Referral Statistics' page
 
-        break;
-      case 'ch_ext_schedule':
-        // ext_schedule = "Extension Schedule " in 'Referral Statistics' page
+          var rentedClicks_Array = new Array();
+          for (var j = 0; j < graph_timePeriod.length; j++)
+          {
+            var tmp = [graph_timePeriod[j], (_currentGraph.sum[graph_timePeriod[j]] * myAccountDetails.referralClickValue).toFixed(3)];
+            rentedClicks_Array.push(tmp);
+          }
 
-        addDataBarUnderGraph(' :', _currentGraph.containerID, ' (', sum_Array, ') $');
+          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', rentedClicks_Array, ') $',null);
 
-        break;
-      case 'ch_profit':
-        // Profit graph for Ultimates
+          break;
 
-        // Need to increase the height of the container to fix issue with the
-        // 'Congratulations:	 You've been active everyday.' message not wrapping correctly
+        case 'ch_recycle':
+        // Recyling Expenses graph in 'Referral Statistics' page
+        case 'ch_autopay':
+        // Autopay Expenses graph in 'Referral Statistics' page
+        case 'ch_extensions':
+          // Extensions Expenses graph in 'Referral Statistics' page
 
-        //        document.getElementById(_currentGraph.containerID).parentNode.style.height = "180px";
+          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
 
-        break;
+          break;
+
+        case 'ch_trrb':
+          // trrb = "Transfers to Rented Balance " / Transfers to Rental Balance graph in 'Referral Statistics' page
+
+          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
+
+          break;
+
+        case 'ch_profit':
+          // Profit graph for Ultimates
+
+          // Need to increase the height of the container to fix issue with the 'Congratulations: You've been active everyday.' message not wrapping correctly
+          //document.getElementById(_currentGraph.containerID).parentNode.style.height = "180px";
+
+          break;
+      }
     }
   }
 }
 
 
-  var newDialog_Style = "" +
+var newDialog_Style = "" +
     "#modalContainer {"+
-      "background-color: transparent;"+
-      "position: absolute;"+
-      "width: 100%;"+
-      "height: 100%;"+
-      "top: 0px;"+
-      "left: 0px;"+
-      "z-index: 10000;"+
-      "background-image: url(tp.png); /* required by MSIE to prevent actions on lower z-index elements */"+
-   " }"+
+    "background-color: transparent;"+
+    "position: absolute;"+
+    "width: 100%;"+
+    "height: 100%;"+
+    "top: 0px;"+
+    "left: 0px;"+
+    "z-index: 10000;"+
+    "background-image: url(tp.png); /* required by MSIE to prevent actions on lower z-index elements */"+
+    " }"+
 
     "#alertBox {"+
-      "position: relative;"+
-      "width: 300px;"+
-      "min-height: 100px;"+
-      "margin-top: 50px;"+
-      "border: 2px solid #000;"+
-      "background-color: #F2F5F6;"+
-      "background-image: url(alert.png);"+
-      "background-repeat: no-repeat;"+
-      "background-position: 20px 30px;"+
-   " }"+
+    "position: relative;"+
+    "width: 300px;"+
+    "min-height: 100px;"+
+    "margin-top: 50px;"+
+    "border: 2px solid #000;"+
+    "background-color: #F2F5F6;"+
+    "background-image: url(alert.png);"+
+    "background-repeat: no-repeat;"+
+    "background-position: 20px 30px;"+
+    " }"+
 
     "#modalContainer > #alertBox {"+
-      "position: fixed;"+
-   " }"+
+    "position: fixed;"+
+    " }"+
 
     "#alertBox h1 {"+
-      "margin: 0;"+
-      "font: bold 0.9em verdana,arial;"+
-      "background-color: #78919B;"+
-      "color: #FFF;"+
-      "border-bottom: 1px solid #000;"+
-      "padding: 2px 0 2px 5px;"+
-   " }"+
+    "margin: 0;"+
+    "font: bold 0.9em verdana,arial;"+
+    "background-color: #78919B;"+
+    "color: #FFF;"+
+    "border-bottom: 1px solid #000;"+
+    "padding: 2px 0 2px 5px;"+
+    " }"+
 
     "#alertBox p {"+
-      "font-family: verdana,arial;"+
-      "padding: 10px;"+
-      "margin: 10px;"+
-      "height: auto;"+
-   " }"+
+    "font-family: verdana,arial;"+
+    "padding: 10px;"+
+    "margin: 10px;"+
+    "height: auto;"+
+    " }"+
 
     "#alertBox textarea {"+
-      "font-family: monospace,courier new,verdana,arial;"+
-      "font-size: x-small;"+
-      "margin: 15px;"+
-      "margin-top: 0px;"+
-      "height: auto;"+
-      "width: 85%;"+
-   " }"+
+    "font-family: monospace,courier new,verdana,arial;"+
+    "font-size: x-small;"+
+    "margin: 15px;"+
+    "margin-top: 0px;"+
+    "height: auto;"+
+    "width: 85%;"+
+    " }"+
 
     "#alertBox #closeBtn {"+
-      "display: block;"+
-      "position: relative;"+
-      "margin: 15px auto;"+
-      "padding: 3px;"+
-      "border: 2px solid #000;"+
-      "width: 70px;"+
-      "font: 0.7em verdana,arial;"+
-      "text-transform: uppercase;"+
-      "text-align: center;"+
-      "color: #FFF;"+
-      "background-color: #78919B;"+
-      "text-decoration: none;"+
+    "display: block;"+
+    "position: relative;"+
+    "margin: 15px auto;"+
+    "padding: 3px;"+
+    "border: 2px solid #000;"+
+    "width: 70px;"+
+    "font: 0.7em verdana,arial;"+
+    "text-transform: uppercase;"+
+    "text-align: center;"+
+    "color: #FFF;"+
+    "background-color: #78919B;"+
+    "text-decoration: none;"+
     "}";
 
 
@@ -2503,106 +2458,119 @@ function insertChartDataBars()
 // over-ride the alert method only if this a newer browser.
 // Older browser will see standard alerts
 // if(document.getElementById) {
-    // window.alert = function (txt) {
-      // createExportDialog(txt);
-    // }
+// window.alert = function (txt) {
+// createExportDialog(txt);
+// }
 // }
 
-  function createExportDialog(txt,exportText,ALERT_TITLE,ALERT_BUTTON_TEXT,exportText_reversed,event) {
-    var textareaContents = exportText;
-    if(event.ctrlKey && exportText_reversed) { var textareaContents = exportText_reversed; }
+function createExportDialog(_txt, _exportText, _alertTitle, _alertButtonText, _exportText_reversed, _event)
+{
+  var textareaContents = _exportText;
+  if (_event.ctrlKey && _exportText_reversed)
+  {
+    textareaContents = _exportText_reversed;
+  }
+  createCustomAlert(_txt, textareaContents, _alertTitle, _alertButtonText);
+}
 
-    createCustomAlert(txt,textareaContents,ALERT_TITLE,ALERT_BUTTON_TEXT);
+function createCustomAlert(_txt, _textareaContents, _alertTitle, _alertButtonText)
+{
+  // constants to define the title of the alert and button text.
+  _txt = _txt || '';
+  _textareaContents = _textareaContents || '';
+  _alertTitle = _alertTitle || 'Oops!';
+  _alertButtonText = _alertButtonText || 'Ok';
+
+
+  // shortcut reference to the document object
+  var d = document;
+
+  // if the modalContainer object already exists in the DOM, bail out.
+  if (d.getElementById("modalContainer"))
+  {
+    return;
   }
 
-  function createCustomAlert(txt,textareaContents,ALERT_TITLE,ALERT_BUTTON_TEXT) {
-// constants to define the title of the alert and button text.
-    if(!txt) { var txt = ''; }
-    if(!textareaContents) { var textareaContents = ''; }
-    if(!ALERT_TITLE) { var ALERT_TITLE = "Oops!"; }
-    if(!ALERT_BUTTON_TEXT) { var ALERT_BUTTON_TEXT = "Ok"; }
+  // create the modalContainer div as a child of the BODY element
+  // make sure its as tall as it needs to be to overlay all the content on the page
+  var mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
+  mObj.id = "modalContainer";
+  mObj.style.height = document.documentElement.scrollHeight + "px";
 
-    // shortcut reference to the document object
-    var d = document;
-
-    // if the modalContainer object already exists in the DOM, bail out.
-    if(d.getElementById("modalContainer")) return;
-
-    // create the modalContainer div as a child of the BODY element
-     // make sure its as tall as it needs to be to overlay all the content on the page
-    var mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
-      mObj.id = "modalContainer";
-      mObj.style.height = document.documentElement.scrollHeight + "px";
-
-    // create the DIV that will be the alert
-    var alertObj = mObj.appendChild(d.createElement("div"));
-      alertObj.id = "alertBox";
+  // create the DIV that will be the alert
+  var alertObj = mObj.appendChild(d.createElement("div"));
+  alertObj.id = "alertBox";
 
 
-    var newDialogStyle = alertObj.appendChild(d.createElement('style'));
-      newDialogStyle.setAttribute('type','text/css');
-      newDialogStyle.innerHTML = newDialog_Style;
+  var newDialogStyle = alertObj.appendChild(d.createElement('style'));
+  newDialogStyle.setAttribute('type', 'text/css');
+  newDialogStyle.innerHTML = newDialog_Style;
 
 
-    // MSIE doesnt treat position:fixed correctly, so this compensates for positioning the alert
-    if(d.all && !window.opera) alertObj.style.top = document.documentElement.scrollTop + "px";
+  // MSIE doesnt treat position:fixed correctly, so this compensates for positioning the alert
+  if (d.all && !window.opera)
+  {
+    alertObj.style.top = document.documentElement.scrollTop + "px";
+  }
 
-    // center the alert box
-    alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth)/2 + "px";
+  // center the alert box
+  alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth) / 2 + "px";
 
-    // create an H1 element as the title bar
-    var h1 = alertObj.appendChild(d.createElement("h1"));
-      h1.appendChild(d.createTextNode(ALERT_TITLE));
+  // create an H1 element as the title bar
+  var h1 = alertObj.appendChild(d.createElement("h1"));
+  h1.appendChild(d.createTextNode(_alertTitle));
 
-    if(txt != '')
+  if (_txt != '')
+  {
+    // create a paragraph element to contain the _txt argument
+    var msg = alertObj.appendChild(d.createElement("p"));
+    msg.innerHTML = _txt;
+  }
+
+  if (_textareaContents != '')
+  {
+    // create a textarea
+    var textarea = alertObj.appendChild(d.createElement("center")).appendChild(d.createElement("textarea"));
+    textarea.value = _textareaContents;
+
+    var maxHeight = 300;
+
+    var adjustedHeight = textarea.clientHeight;
+    if (!maxHeight || maxHeight > adjustedHeight)
     {
-      // create a paragraph element to contain the txt argument
-      var msg = alertObj.appendChild(d.createElement("p"));
-      msg.innerHTML = txt;
-    }
-
-    if(textareaContents != '')
-    {
-      // create a textarea
-      var textarea = alertObj.appendChild(d.createElement("center")).appendChild(d.createElement("textarea"));
-      textarea.value = textareaContents;
-
-      var maxHeight = 300;
-
-      var adjustedHeight = textarea.clientHeight;
-      if(!maxHeight || maxHeight > adjustedHeight )
+      adjustedHeight = Math.max(textarea.scrollHeight, adjustedHeight);
+      if (maxHeight)
       {
-        adjustedHeight = Math.max(textarea.scrollHeight, adjustedHeight);
-        if(maxHeight ) {
-          adjustedHeight = Math.min(maxHeight, adjustedHeight);
-        }
-        if(adjustedHeight > textarea.clientHeight ) {
-          textarea.style.height = adjustedHeight + "px";
-        }
+        adjustedHeight = Math.min(maxHeight, adjustedHeight);
       }
-
+      if (adjustedHeight > textarea.clientHeight)
+      {
+        textarea.style.height = adjustedHeight + "px";
+      }
     }
 
-    // create an anchor element to use as the confirmation button.
-    var btn = alertObj.appendChild(d.createElement("a"));
-      btn.id = "closeBtn";
-      btn.appendChild(d.createTextNode(ALERT_BUTTON_TEXT));
-
-    // set up the onclick event to remove the alert when the anchor is clicked
-    btn.addEventListener('click', function () { removeCustomAlert(); }, false);
-
   }
+
+  // create an anchor element to use as the confirmation button.
+  var btn = alertObj.appendChild(d.createElement("a"));
+  btn.id = "closeBtn";
+  btn.appendChild(d.createTextNode(_alertButtonText));
+
+  // set up the onclick event to remove the alert when the anchor is clicked
+  btn.addEventListener('click', function () {
+    removeCustomAlert();
+  }, false);
+
+}
 
 // removes the custom alert from the DOM
-  function removeCustomAlert() {
-    document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
-  }
+function removeCustomAlert()
+{
+  document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
+}
 
 function insertExportTabs()
 {
-
-
-
 
   function EXPORT_TAB(_exportType,_tabText)
   {
@@ -2619,11 +2587,11 @@ function insertExportTabs()
     var textareaContentsReverse = _currentGraph.export.reverse[_exportType];
     var messageHeader = 'Exporting the "'+_currentGraph.name+'" graph as '+_tabText+':';
 
-    exportTab.addEventListener('click', function (event)
+    exportTab.addEventListener('click', function exportTabs_onClick(event)
     {
       // (event.ctrlKey && event.altKey && event.shiftKey)
 
-        createExportDialog(messageHeader,textareaContents,'Exporting to '+_tabText+'..','Close',textareaContentsReverse,event);
+      createExportDialog(messageHeader,textareaContents,'Exporting to '+_tabText+'..','Close',textareaContentsReverse,event);
 
     }, false);
 
@@ -2632,14 +2600,14 @@ function insertExportTabs()
   }
 
 
-  for(_NameOfCurrentGraph in GRAPHS_onCurrentPage)
+  for(var _NameOfCurrentGraph in GRAPHS_onCurrentPage)
   {
 
     var _currentGraph = _graphs[_NameOfCurrentGraph];
     var graphReference = _currentGraph.containerID;
     var referenceNode = document.getElementById(graphReference);
 
-    console.info([_currentGraph,graphReference,referenceNode]);
+    logger([_currentGraph,graphReference,referenceNode]);
 
     // Add Export Links
 
@@ -2684,24 +2652,16 @@ function insertExportTabs()
   }
 }
 
-
 function insertSidebar()
 {
   // Function which inserts the 'Statistics Sidebar' to the side of the page
 
-
   // Location to insert the sidebar (right hand side)
+  var locationToInsertSidebar = docEvaluate("//td[@width='729']").snapshotItem(0).parentNode;
 
-  var locationToInsert = document.evaluate(
-    "//td[@width='729']",
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null).snapshotItem(0).parentNode;
-
-  console.info('sidebar');
-  // console.info('graphData');
-  // console.info(graphData);
+  logger('sidebar');
+  // logger('graphData');
+  // logger(graphData);
 
 
   // // NOW CREATE THE ACTUAL SIDEBAR ////
@@ -2711,13 +2671,13 @@ function insertSidebar()
 
 
   GM_addStyle("span.sidebarContent { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: x-small !important; }" +
-    "span.sidebarHeader { display:block; text-align:center; } " +
-    "div.sidebarDetails { font-size: 95%; margin-left: 5px; } " +
-    "h4 { color: #444; margin-top: 10px; margin-bottom:2px } " +
-    "h5 { margin-top: 7px; margin-bottom:2px } " +
-    "h6 { font-size: xx-small !important; margin-top: 2px; margin-bottom:2px } " +
-    ".bold { font-weight: bold; } " +
-    ".grey { color: #aaa; }");
+      "span.sidebarHeader { display:block; text-align:center; } " +
+      "div.sidebarDetails { font-size: 95%; margin-left: 5px; } " +
+      "h4 { color: #444; margin-top: 10px; margin-bottom:2px } " +
+      "h5 { margin-top: 7px; margin-bottom:2px } " +
+      "h6 { font-size: xx-small !important; margin-top: 2px; margin-bottom:2px } " +
+      ".bold { font-weight: bold; } " +
+      ".grey { color: #aaa; }");
 
 
   // // I DO NOT LIKE THIS BEING IN ONE *HUGE* STRING.. WANT TO SPLIT THIS UP
@@ -2735,7 +2695,7 @@ function insertSidebar()
     <h5 class='bold'><span class='grey'>[ Today ]</span> - Net : $" + sidebarDATA.today.netIncome + " / $" + (parseFloat(sidebarDATA.today.netIncome) + parseFloat(sidebarDATA.today.personalClicksIncome)).toFixed(3)+"</h5>\
     <hr width= '155px' height='1px' color='#cccccc'/>\
     \
-    <h6> - Income</h6>\
+    <h6> + Income</h6>\
     <div class='sidebarDetails'>\
     - personal : " + sidebarDATA.today.personalClicks + " / $" + (sidebarDATA.today.personalClicksIncome).toFixed(2) + "<br>\
     - rented : " + _graphs.rentedClicks.today + " / $" + (sidebarDATA.today.rentedIncome).toFixed(3) + "<br>\
@@ -2744,19 +2704,19 @@ function insertSidebar()
     - rented : " + ((myAccountDetails.numberOfRefs.Rented > 0) ? sidebarDATA.today.projectedRentedClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedRentedIncome).toFixed(3) : "N/A") + "<br>\
     - direct : " + ((myAccountDetails.numberOfRefs.Direct > 0) ? sidebarDATA.today.projectedDirectClicks.toFixed(1) + " / $" + (sidebarDATA.today.projectedDirectIncome).toFixed(3) : "N/A") + "<br>\
     </div>\
-    <h6> - expenses</h6>\
+    <h6> + Expenses</h6>\
     <div class='sidebarDetails'>\
     - recycle : $" + _graphs.recycleCost.today.toFixed(2) + "<br>\
     - autopay : $" + _graphs.autopayCost.today.toFixed(4) + "<br>\
     - renew : $" + _graphs.renewalCost.today.toFixed(2) + "<br>\
     </div>\
-    <h6> - stats</h6>\
+    <h6> + Stats</h6>\
     <div class='sidebarDetails'>\
     - rented avg : " + sidebarDATA.today.rentedAverage + "<br>\
     - direct avg : " + sidebarDATA.today.directAverage + "<br>\
     - raverage : " + sidebarDATA.today.totalRAverage + "<br>\
     </div>\
-    <h6> - totals</h6>\
+    <h6> + Totals</h6>\
     <div class='sidebarDetails'>\
     - income : $" + sidebarDATA.today.income.toFixed(3) + "<br>\
     - expenses : $" + (sidebarDATA.today.expenses).toFixed(3) + "<br>\
@@ -2767,25 +2727,25 @@ function insertSidebar()
     <h5 class='bold'><span class='grey'>[ Yesterday ]</span> - net : $" + sidebarDATA.yesterday.netIncome + " / $" + (parseFloat(sidebarDATA.yesterday.netIncome) + parseFloat(sidebarDATA.yesterday.personalClicksIncome)).toFixed(3)+"</h5>\
     <hr width= '155px' height='1px' color='#cccccc'/>\
     \
-    <h6> - income</h6>\
+    <h6> + Income</h6>\
     <div class='sidebarDetails'>\
     - personal : " + sidebarDATA.yesterday.personalClicks + " / $" + (sidebarDATA.yesterday.personalClicksIncome).toFixed(2) + "<br>\
     - rented : " + _graphs.rentedClicks.yesterday + " / $" + (sidebarDATA.yesterday.rentedIncome).toFixed(3) + "<br>\
     - direct : " + _graphs.directClicks.yesterday + " / $" + (sidebarDATA.yesterday.directIncome).toFixed(3) + "<br>\
     </div>\
-    <h6> - expenses</h6>\
+    <h6> + Expenses</h6>\
     <div class='sidebarDetails'>\
     - recycle : $" + _graphs.recycleCost.yesterday.toFixed(2) + "<br>\
     - autopay : $" + _graphs.autopayCost.yesterday.toFixed(4) + "<br>\
     - renew : $" + _graphs.renewalCost.yesterday.toFixed(2) + "<br>\
     </div>\
-    <h6> - stats</h6>\
+    <h6> + Stats</h6>\
     <div class='sidebarDetails'>\
     - rented avg : " + sidebarDATA.yesterday.rentedAverage + "<br>\
     - direct avg : " + sidebarDATA.yesterday.directAverage + "<br>\
     - raverage : " + sidebarDATA.yesterday.totalRAverage + "<br>\
     </div>\
-    <h6> - totals</h6>\
+    <h6> + Totals</h6>\
     <div class='sidebarDetails'>\
     - income : $" + sidebarDATA.yesterday.income.toFixed(3) + "<br>\
     - expenses : $" + (sidebarDATA.yesterday.expenses).toFixed(3) + "<br>\
@@ -2795,25 +2755,25 @@ function insertSidebar()
     <h5 class='bold'><span class='grey'>[Last " + 7 + " Days]</span> - net : $" + sidebarDATA.recent.netIncome + "</h5>\
     <hr width= '155px' height='1px' color='#cccccc'/>\
     \
-    <h6> - income</h6>\
+    <h6> + Income</h6>\
     <div class='sidebarDetails'>\
     - personal : " + sidebarDATA.recent.personalClicks + " / $" + (sidebarDATA.recent.personalClicksIncome).toFixed(2) + "<br>\
     - rented : " + _graphs.rentedClicks.recent + " / $" + (sidebarDATA.recent.rentedIncome).toFixed(3) + "<br>\
     - direct : " + _graphs.directClicks.recent + " / $" + (sidebarDATA.recent.directIncome).toFixed(3) + "<br>\
     </div>\
-    <h6> - expenses</h6>\
+    <h6> + Expenses</h6>\
     <div class='sidebarDetails'>\
     - recycle : $" + _graphs.recycleCost.recent.toFixed(2) + "<br>\
     - autopay : $" + _graphs.autopayCost.recent.toFixed(4) + "<br>\
     - renew : $" + _graphs.renewalCost.recent.toFixed(2) + "<br>\
     </div>\
-    <h6> - stats</h6>\
+    <h6> + Stats</h6>\
     <div class='sidebarDetails'>\
     - rented avg : " + sidebarDATA.recent.rentedAverage + "<br>\
     - direct avg : " + sidebarDATA.recent.directAverage + "<br>\
     - raverage : " + sidebarDATA.recent.totalRAverage + "<br>\
     </div>\
-    <h6> - totals</h6>\
+    <h6> + Totals</h6>\
     <div class='sidebarDetails'>\
     - income : $" + sidebarDATA.recent.income.toFixed(3) + "<br>\
     - expenses : $" + sidebarDATA.recent.expenses.toFixed(3) + "<br>\
@@ -2829,14 +2789,14 @@ function insertSidebar()
     //      <img alt='' border='0' src='https://www.paypal.com/en_GB/i/scr/pixel.gif' width='1' height='1'>\
     //    </form></center>\
 
-    "</span>";
+      "</span>";
 
 
   // // *** INSERT STATISTICS SUMMARY INTO PAGE *** ////
   var wrapperTD = document.createElement('td');
   wrapperTD.setAttribute('valign','top');
   wrapperTD.appendChild(infoLabel);
-  locationToInsert.appendChild(wrapperTD);
+  locationToInsertSidebar.appendChild(wrapperTD);
 
 
 }
@@ -2844,13 +2804,9 @@ function insertSidebar()
 
 
 /* NON PAGE-SPECIFIC FUNCTIONS */
-
-
-
-
 extractNumberOfRefs();
 
-if(currentPage.pageName() == 'refStats' || currentPage.pageName() == 'accSummary')
+if('refStats' == currentPage.pageName() || 'accSummary' == currentPage.pageName())
 {
   // _graphs == container for all the graph data
   var _graphs = {};
@@ -2860,14 +2816,16 @@ if(currentPage.pageName() == 'refStats' || currentPage.pageName() == 'accSummary
 
 
   // Show the sidebar if the current page is the ref stats page
-  if ('refStats' == currentPage.pageName()) {
+  if ('refStats' == currentPage.pageName())
+  {
     var sidebarDATA = {};
     generateSidebarData();
   }
 
   // Insert the profit graph if the current page is the ref stats page and the user isn't ultimate
   // (Ultimate members have their own profit graphs
-  if ('refStats' == currentPage.pageName() && !myAccountDetails.accountType.isUltimate) {
+  if ('refStats' == currentPage.pageName() && !myAccountDetails.accountType.isUltimate) 
+  {
     insertProfitGraph();
   }
 
@@ -2875,21 +2833,15 @@ if(currentPage.pageName() == 'refStats' || currentPage.pageName() == 'accSummary
 
   insertChartDataBars();
   insertExportTabs();
+  
   if ('refStats' == currentPage.pageName())
   {
     insertSidebar();
 
-    // // enlarge the width of the page to accomodate the extra column and add a
-    // little padding to make it look nicer ////
+    // enlarge the width of the page to accomodate the extra column
     document.body.children[1].style.width = '1050px';
-    // locationToInsert.parentNode.parentNode.style.width = '';
-    // locationToInsert.parentNode.parentNode.style.paddingLeft = '6%';
-    // locationToInsert.parentNode.parentNode.parentNode.style.width = '';
   }
-
 }
-
-
 
 
 /* REF LISTINGS PAGE FUNCTIONS */
@@ -2898,23 +2850,23 @@ if(currentPage.pageName() == 'refStats' || currentPage.pageName() == 'accSummary
  * Calculate the number of days since the date 'tmp'
  * Will work with the words 'today' & 'yesterday' too
  */
-function NumDaysSince(_inputDateTimeString, _levelOfDetail, fullerSinceTimer, _shortFormat, _column)
+function NumDaysSince(a_inputDateTimeString, a_levelOfDetail, a_fullerSinceTimer, a_shortFormat, a_column)
 {
 
   // Clean the input string and split it to [0] = date, [1] = time
-  _inputDateTimeString = _inputDateTimeString.replace(/Today/,Today.getFullYear()+'/'+(Today.getMonth()+1)+'/'+Today.getDate());
-  _inputDateTimeString = _inputDateTimeString.replace(/Yesterday/,Yesterday.getFullYear()+'/'+(Yesterday.getMonth()+1)+'/'+Yesterday.getDate());
+  a_inputDateTimeString = a_inputDateTimeString.replace(/Today/,Today.getFullYear()+'/'+(Today.getMonth()+1)+'/'+Today.getDate());
+  a_inputDateTimeString = a_inputDateTimeString.replace(/Yesterday/,Yesterday.getFullYear()+'/'+(Yesterday.getMonth()+1)+'/'+Yesterday.getDate());
 
-  _inputDateTimeString = _inputDateTimeString.replace('&nbsp;', '').split(' ');
+  a_inputDateTimeString = a_inputDateTimeString.replace('&nbsp;', '').split(' ');
 
 
   var timeArray = new Array(2);
-  timeArray[0] = (_inputDateTimeString[1]) ? (_inputDateTimeString[1].split(":")[0]) : "00";
-  timeArray[1] = (_inputDateTimeString[1]) ? (_inputDateTimeString[1].split(":")[1]) : "00";
+  timeArray[0] = (a_inputDateTimeString[1]) ? (a_inputDateTimeString[1].split(":")[0]) : "00";
+  timeArray[1] = (a_inputDateTimeString[1]) ? (a_inputDateTimeString[1].split(":")[1]) : "00";
 
 
   //var _Since = new Date(year, month, day, hours, minutes);
-  var _Since = new Date(_inputDateTimeString[0] + ' ' + timeArray[0] + ':' + timeArray[1]);
+  var _Since = new Date(a_inputDateTimeString[0] + ' ' + timeArray[0] + ':' + timeArray[1]);
 
 
   var timeElapsed = '';
@@ -2923,39 +2875,36 @@ function NumDaysSince(_inputDateTimeString, _levelOfDetail, fullerSinceTimer, _s
   var wholeHoursOwned = Math.floor((dateDiff - wholeDaysOwned) * 24);
   var wholeMinsOwned = Math.floor((((dateDiff - wholeDaysOwned) * 24) - wholeHoursOwned) * 60);
 
-
-
-  var day_text = (_shortFormat) ? ' day' : 'd';
-  var days_text = (_shortFormat) ? ' days' : 'd';
-  var hr_text = (_shortFormat) ? ' hr' : 'h';
-  var hrs_text = (_shortFormat) ? ' hrs' : 'h';
-  var min_text = (_shortFormat) ? ' min' : 'm';
-  var mins_text = (_shortFormat) ? ' mins' : 'm';
+  var day_text = (a_shortFormat) ? ' day' : 'd';
+  var days_text = (a_shortFormat) ? ' days' : 'd';
+  var hr_text = (a_shortFormat) ? ' hr' : 'h';
+  var hrs_text = (a_shortFormat) ? ' hrs' : 'h';
+  var min_text = (a_shortFormat) ? ' min' : 'm';
+  var mins_text = (a_shortFormat) ? ' mins' : 'm';
 
   var spacer = ', ';
 
 
-
-  if (fullerSinceTimer || 'decimal' == _levelOfDetail)
+  if (a_fullerSinceTimer || 'decimal' == a_levelOfDetail)
   {
-    if ('decimal' == _levelOfDetail)
+    if ('decimal' == a_levelOfDetail)
     {
       timeElapsed = dateDiff;
     }
     else
     {
-      if ('days' == _levelOfDetail || 'hrs' == _levelOfDetail || 'mins' == _levelOfDetail)
+      if ('days' == a_levelOfDetail || 'hrs' == a_levelOfDetail || 'mins' == a_levelOfDetail)
       {
         timeElapsed += wholeDaysOwned;
         timeElapsed += (1 == wholeDaysOwned) ? day_text : days_text;
       }
-      if ('hrs' == _levelOfDetail || 'mins' == _levelOfDetail)
+      if ('hrs' == a_levelOfDetail || 'mins' == a_levelOfDetail)
       {
         timeElapsed += spacer;
         timeElapsed += wholeHoursOwned;
         timeElapsed += (1 == wholeHoursOwned) ? hr_text : hrs_text;
       }
-      if ('mins' == _levelOfDetail)
+      if ('mins' == a_levelOfDetail)
       {
         timeElapsed += spacer;
         timeElapsed += wholeMinsOwned;
@@ -2964,7 +2913,7 @@ function NumDaysSince(_inputDateTimeString, _levelOfDetail, fullerSinceTimer, _s
     }
   }
 
-  if ((!fullerSinceTimer || _levelOfDetail == 'wholeDays') && _levelOfDetail != 'decimal')
+  if ((!a_fullerSinceTimer || a_levelOfDetail == 'wholeDays') && a_levelOfDetail != 'decimal')
   {
     timeElapsed = Math.floor(dateDiff);
   }
@@ -2972,18 +2921,13 @@ function NumDaysSince(_inputDateTimeString, _levelOfDetail, fullerSinceTimer, _s
   return timeElapsed;
 }
 
-function extractRefData()
+function extractRefData(a_column)
 {
-  // Extract out the referral data for use later when iterating through the
-  // delayed referrals
-  // Grab info from inside the <script> tag
-  var xpathMtx = "//script[contains(.,'var mtx=')]";
-  var xpathResults_mtx = document.evaluate(xpathMtx,
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null).snapshotItem(0);
+  var mtx = new Array();
 
+  // Extract out the referral data for use later when iterating through the delayed referrals
+  // Grab info from inside the <script> tag
+  var xpathResults_mtx = docEvaluate("//script[contains(.,'var mtx=')]").snapshotItem(0);
 
   // Fetch the useful part of the script and replace the ';' that got removed by
   // split()
@@ -2993,7 +2937,7 @@ function extractRefData()
   // Run the code in mtxCode (mtx=[...];)
   eval(mtxCode);
 
-  //  console.info(mtx);
+  //  logger(mtx);
 
 
   /**
@@ -3043,7 +2987,7 @@ function extractRefData()
     // when referral is younger than 24hours old and has not yet clicked,
     // average is dispayed as '-.---'
 
-    if (currentPage.pageName() == 'rentedRefListing')
+    if ('rentedRefListing' == currentPage.pageName())
     {
       referrals[z] = {
         ID: (currentReferral[1] == 0) ? 'R' + currentReferral[19] : currentReferral[1],
@@ -3055,10 +2999,10 @@ function extractRefData()
         overallAverage: (currentReferral[6] == '-.---' || currentReferral[6] == 999) ? '-.---' : currentReferral[6]
       };
     }
-    else if (currentPage.pageName() == 'directRefListing')
+    else if ('directRefListing' == currentPage.pageName())
     {
       referrals[z] = {
-        ID: (currentReferral[1] == 0) ? 'D' + currentReferral[19] : currentReferral[1],
+        ID: (currentReferral[1] === 0) ? 'D' + currentReferral[19] : currentReferral[1],
         cameFrom: currentReferral[2],
         referralSince: (currentReferral[3] == '9') ? referrals[z - 1].referralSince : currentReferral[3],
         lastClick: (currentReferral[4] == '9') ? referrals[z - 1].lastClick : (currentReferral[4] == 'N') ? 'No clicks yet' : (currentReferral[4] == 'O') ? 'Yesterday' : (currentReferral[4] == 'H') ? 'Today' : currentReferral[4],
@@ -3070,22 +3014,22 @@ function extractRefData()
     /*If the referral has not clicked yet, the referral has been inactive for as long as it has been owned
      Else the referral has been inactive since the date of its last click*/
 
-    if (referrals[z].lastClick.match('No clicks yet'))
+    if (referrals[z].lastClick.match(/No clicks yet/))
     {
-      referrals[z].inactiveDays = NumDaysSince(referrals[z].referralSince, 'days', script.preferences.lastClick_fullerTimers, script.preferences.lastClick_shortFormatTimer, 'lastClick');
-      referrals[z].accurateLastClick = NumDaysSince(referrals[z].referralSince, 'decimal', script.preferences.lastClick_fullerTimers, script.preferences.lastClick_fullerTimers, false, 'lastClick');
+      referrals[z].inactiveDays = NumDaysSince(referrals[z].referralSince, 'days', script.preferences.lastClick_fullerTimers, script.preferences.shortFormatTimer.lastClick, 'lastClick');
+      referrals[z].accurateLastClick = NumDaysSince(referrals[z].referralSince, 'decimal', script.preferences.lastClick_fullerTimers, false, 'lastClick');
     }
     else
     {
-      referrals[z].inactiveDays = NumDaysSince(referrals[z].lastClick, 'days', script.preferences.lastClick_fullerTimers, script.preferences.lastClick_shortFormatTimer, 'lastClick');
-      referrals[z].accurateLastClick = NumDaysSince(referrals[z].lastClick, 'decimal', script.preferences.lastClick_fullerTimers, script.preferences.lastClick_fullerTimers, false, 'lastClick');
+      referrals[z].inactiveDays = NumDaysSince(referrals[z].lastClick, 'days', script.preferences.lastClick_fullerTimers, script.preferences.shortFormatTimer.lastClick, 'lastClick');
+      referrals[z].accurateLastClick = NumDaysSince(referrals[z].lastClick, 'decimal', script.preferences.lastClick_fullerTimers, false, 'lastClick');
     }
 
-    referrals[z].ownedSince_summarised = NumDaysSince(referrals[z].referralSince, 'mins', script.preferences.referralSince_fullerTimers, script.preferences.referralSince_shortFormatTimer, 'daysOwned');
+    referrals[z].ownedSince_summarised = NumDaysSince(referrals[z].referralSince, 'mins', script.preferences.referralSince_fullerTimers, script.preferences.shortFormatTimer.referralSince, 'daysOwned');
 
 
     /* Ultimate only stuff, based on the ultimate minigraphs */
-        GM_log('refsPerPage = ' + refsPerPage);
+    GM_log('refsPerPage = ' + refsPerPage);
     GM_log('(refsPerPage <= 100) = ' + (refsPerPage <= 100));
 
     GM_log('testing = ' + testing);
@@ -3120,7 +3064,7 @@ function extractRefData()
        */
 
       //    console.group();
-      //    console.info('x, referrals[z].minigraph.mean[i-1],delta,sweep');
+      //    logger('x, referrals[z].minigraph.mean[i-1],delta,sweep');
 
       var sqsum = 0;
       referrals[z].minigraph.mean = new Array();
@@ -3153,7 +3097,7 @@ function extractRefData()
   }
 }
 
-function addSortingArrows()
+function addSortingArrows(a_column)
 {
   /**
    * Adds sort ascending and descending arrows to all columns
@@ -3164,7 +3108,7 @@ function addSortingArrows()
 
   /**
    * Name           &ss1=2 &ss2= (1Asc/2Desc)??
-   * Ref Since      &ss1=1 &ss2= (1Asc/2Desc)
+   * Ref Since      ch_ext_schedule&ss1=1 &ss2= (1Asc/2Desc)
    * Next Payment   &ss1=5 &ss2= (2Asc/1Desc)
    * Last Click     &ss1=4 &ss2= (2Asc/1Desc)
    * Clicks         &ss1=3 &ss2= (2Asc/1Desc)
@@ -3201,11 +3145,11 @@ function addSortingArrows()
   }
 
   //  Removes existing arrows
-  headerRow.innerHTML = headerRow.innerHTML.replace('<img src=\"/forum/images/up_gold.gif\" height=\"6\" width=\"10\">', '')
+  headerRow.innerHTML = headerRow.innerHTML.replace('<img src=\"/forum/images/up_gold.gif\" height=\"6\" width=\"10\">', '');
   headerRow.innerHTML = headerRow.innerHTML.replace('<img src=\"/forum/images/down_gold.gif\" height=\"6\" width=\"10\">', '');
 
   //  Loop through column headers and add custom arrows & links
-  for (x in blah)
+  for (var x in blah)
   {
     var currentColumn = headerRow.childNodes[x];
     var href = 'http://www.neobux.com/?u=c&s=r&sp=1';
@@ -3229,8 +3173,9 @@ function addSortingArrows()
 
     currentColumn.innerHTML += " <a href='" + href + "'><img width='10' height='6' style='border:none; margin-left:2px;' title=\""+blah[x].upTitle+"\" src='" + imgSrc + "'></a>";
 
-    var href = 'http://www.neobux.com/?u=c&s=r&sp=1';
-    var imgSrc = '/forum/images/';
+    /*Reset variables for down arrow*/
+    href = 'http://www.neobux.com/?u=c&s=r&sp=1';
+    imgSrc = '/forum/images/';
 
     if (document.location.href.match('&ss1=' + blah[x].colUrlIndex) && document.location.href.match('&ss2=' + blah[x].down))
     {
@@ -3247,15 +3192,15 @@ function addSortingArrows()
   }
 }
 
-function addColumnHeader(_currentHeaderRow, _newHeaderText)
+function addColumnHeader(a_currentHeaderRow, a_newHeaderText)
 {
   var newHeaderColumn = document.createElement('td');
   newHeaderColumn.setAttribute('class', 'bgt');
   newHeaderColumn.setAttribute('nowrap', '');
   newHeaderColumn.setAttribute('align', 'center');
-  newHeaderColumn.innerHTML = '<font class="branco">' + _newHeaderText + '</font>';
+  newHeaderColumn.innerHTML = '<font class="branco">' + a_newHeaderText + '</font>';
 
-  _currentHeaderRow.appendChild(newHeaderColumn);
+  a_currentHeaderRow.appendChild(newHeaderColumn);
 }
 
 
@@ -3276,27 +3221,27 @@ function addNewColumn(_currentRow, _newColumnText, _shrinkContents)
   _currentRow.appendChild(newColumn);
 }
 
-function shrinkContents(_column)
+function shrinkContents(a_column)
 {
-  _column.style.letterSpacing = '-0.05em';
-  _column.style.wordSpacing = '-0.1em';
+  a_column.style.letterSpacing = '-0.05em';
+  a_column.style.wordSpacing = '-0.1em';
 }
 
 
-function shrinkColumns(_currentReferral)
+function shrinkColumns(a_currentReferral)
 {
   if (currentPage.pageName() == 'rentedRefListing') {
     if (script.preferences.shrinkContents['flag']) {
       shrinkContents(columns.flag);
     }
   }
-  if (script.preferences.shrinkContents['refName']) {
+  if (script.preferences.shrinkContents['referralName']) {
     shrinkContents(columns.name);
   }
-  if (script.preferences.shrinkContents['refSince']) {
+  if (script.preferences.shrinkContents['referralSince']) {
     shrinkContents(columns.ownedSince);
   }
-  if (currentPage.pageName() == 'rentedRefListing') {
+  if ('rentedRefListing' == currentPage.pageName()) {
     if (script.preferences.shrinkContents['nextPayment']) {
       shrinkContents(columns.nextPayment);
     }
@@ -3315,9 +3260,11 @@ function shrinkColumns(_currentReferral)
 
 
 
-if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'directRefListing')
+if (!('rentedRefListing' == currentPage.pageName() || 'directRefListing' == currentPage.pageName()))
 {
-    /*
+} else
+{
+  /*
    Check how many referrals are being shown per page
    If the user is ultimate and has more than 100 referrals showing, minigraphs
    will not be displayed
@@ -3325,28 +3272,29 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
    referrals is not present, thus refsPerPage must be set manually
    */
   var refsPerPageSelector = document.getElementById('rlpp');
-  var refsPerPage = (refsPerPageSelector != null) ? parseInt(refsPerPageSelector.options[refsPerPageSelector.selectedIndex].value) : 10;
+  var refsPerPage = (null !== refsPerPageSelector) ? parseInt(refsPerPageSelector.options[refsPerPageSelector.selectedIndex].value) : 10;
 
-  console.info(refsPerPage);
-
+  logger(refsPerPage);
 
 
   var referrals = {};
   extractRefData();
 
-  console.info('referrals');
-  console.info(referrals);
-
+  logger('referrals');
+  logger(referrals);
 
 
   function editHeaderRow()
   {
     // Exact Average column
-    if (script.preferences.exactAverage_show) {
-      if (!script.preferences.exactAverage_replace) {
-        headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>'+script.preferences.exactAverage_seperator+'Exact Avg.</small>';
-      } else {
+    if (script.preferences.exactaverageshow)
+    {
+      if (script.preferences.exactaveragereplace)
+      {
         headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>(Exact)</small>';
+      } else
+      {
+        headerRow.childNodes[columns.headerIndexes.AVG].innerHTML += '<small><br>' + script.preferences.exactaverageseperator + 'Exact Avg.</small>';
       }
     }
 
@@ -3364,42 +3312,47 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
     if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
-      console.info('script.preferences.showColumn');
-      console.info(script.preferences.showColumn);
+      logger('script.preferences.showColumn');
+      logger(script.preferences.showColumn);
 
       // clickText column == A textual representation of the data in the mini click graphs
-      console.info(script.preferences.showColumn['clickText']);
-      if (script.preferences.showColumn['clickText'] == true) {
+      logger(script.preferences.showColumn['clickText']);
+      if (script.preferences.showColumn['clickText'])
+      {
         addColumnHeader(headerRow, 'Clicks<small>/day</small>');
       }
 
       // 'average1' column == Average for the last 10 days
-      console.info(script.preferences.showColumn['average_1']);
-      if (script.preferences.showColumn['average_1'] == true) {
+      logger(script.preferences.showColumn['average1']);
+      if (script.preferences.showColumn['average1'])
+      {
         addColumnHeader(headerRow, 'A' + script.preferences.timePeriods.averageCols[0]);
       }
 
       // 'average2' column == Average for the last 7 days
-      console.info(script.preferences.showColumn['average_2']);
-      if (script.preferences.showColumn['average_2'] == true) {
+      logger(script.preferences.showColumn['average2']);
+      if (script.preferences.showColumn['average2'])
+      {
         addColumnHeader(headerRow, 'A' + script.preferences.timePeriods.averageCols[1]);
       }
 
       // 'SDEV' column == Average for the last 7 days
-      console.info(script.preferences.showColumn['SD']);
-      if (script.preferences.showColumn['SD'] == true) {
+      logger(script.preferences.showColumn['SD']);
+      if (script.preferences.showColumn['SD'])
+      {
         addColumnHeader(headerRow, 'SD');
       }
 
       // 'RSA' column == Ratio of standard deviation / average (mean)
-      console.info(script.preferences.showColumn['RSA']);
-      if (script.preferences.showColumn['RSA'] == true) {
+      logger(script.preferences.showColumn['RSA']);
+      if (script.preferences.showColumn['RSA'])
+      {
         addColumnHeader(headerRow, 'RSA');
       }
     }
 
     // 'Profit' column can be viewed by all members
-    if (script.preferences.showColumn['profit'] === true)
+    if (script.preferences.showColumn['profit'])
     {
       addColumnHeader(headerRow, 'Profit');
     }
@@ -3408,14 +3361,11 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
   } // editHeaderRow()
 
 
-
-
-
-  function flag_textify(currentReferral)
+  function flag_textify(_currentReferral)
   {
 
     // The flag column
-    if (script.preferences.flag_textify && currentPage.pageName() == 'rentedRefListing')
+    if ('rentedRefListing' == currentPage.pageName() && script.preferences.flag_textify)
     {
       // Get the flag colour of the referral
       // Expecting only 0-5 for the 6 colorus / 'types' of flag
@@ -3465,8 +3415,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
   }
 
 
-
-  function addNumerisedTimers(currentReferral)
+  function addNumerisedTimers(_currentReferral)
   {
     /**
      * Calculate the number of days referral has been owned and convert this
@@ -3484,18 +3433,18 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     /*
      'Owned Since' column
      */
-    if (script.preferences.referralSince_numerise)
+    if (script.preferences.numeriseDates.referralSince)
     {
-      columns.ownedSince.innerHTML = (script.preferences.referralSince_replace === true) ?  '' : columns.ownedSince.innerHTML;
+      columns.ownedSince.innerHTML = (script.preferences.referralSince_replace) ? '' : columns.ownedSince.innerHTML;
       columns.ownedSince.innerHTML += "<font style='font-size:9px; color:#777'> (" + referrals[refIndex].ownedSince_summarised + ")</font>";
     }
 
     /*
      'Last Click' column
      */
-    if (script.preferences.lastClick_numerise)
+    if (script.preferences.numeriseDates.lastClick)
     {
-      if (script.preferences.lastClick_replace || (script.preferences.lastClick_replaceNilClicks && parseInt(columns.totalClicks.textContent, 10) == 0))
+      if (script.preferences.lastClick_replace || (script.preferences.lastClick_replaceNilClicks && parseInt(referrals[refIndex].totalClicks, 10) == 0))
       {
         columns.lastClick.innerHTML = "<font style='font-size: 9px; color:#777'>" + referrals[refIndex].inactiveDays + "</font>";
       }
@@ -3507,25 +3456,25 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
   }
 
 
-  function insertExactAverage(currentReferral)
+  function insertExactAverage(_currentReferral)
   {
     var accurateOwnedSince = NumDaysSince(referrals[refIndex].referralSince, 'decimal', script.preferences.referralSince_fullerTimers, false, 'ownedSince');
     var accurateAverage = parseInt(referrals[refIndex].totalClicks) / accurateOwnedSince;
 
 
-    if (script.preferences.exactAverage_show)
+    if (script.preferences.exactaverageshow)
     {
       // Replace the displayed average (accurate to a 24hour period) with one
       // that that is more accurate
       // (takes hours and minutes into account)
 
-      if (script.preferences.exactAverage_replace)
+      if (script.preferences.exactaveragereplace)
       {
         columns.overallAvg.innerHTML = (accurateAverage).toFixed(3);
       }
       else
       {
-        columns.overallAvg.innerHTML = columns.overallAvg.innerHTML + '<small>' + script.preferences.exactAverage_seperator + (accurateAverage).toFixed(3) + '</small>';
+        columns.overallAvg.innerHTML = columns.overallAvg.innerHTML + '<small>' + script.preferences.exactaverageseperator + (accurateAverage).toFixed(3) + '</small>';
       }
     }
 
@@ -3535,12 +3484,10 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
   }
 
 
-
-
   var columns = {};
 
   /* Define the column indexes */
-  if (currentPage.pageName() == 'rentedRefListing')
+  if ('rentedRefListing' == currentPage.pageName())
   {
     columns.indexes = {
       FLAG: 1,
@@ -3560,7 +3507,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       CLICKS: 5,
       AVG: 6
     };
-  } else if (currentPage.pageName() == 'directRefListing')
+  } else if ('directRefListing' == currentPage.pageName())
   {
     columns.indexes = {
       NAME: 1,
@@ -3584,36 +3531,21 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
   // mainTable = the table within which the referrals are contained
   // Specifically the tbody element so that {tbody}.rows can be used
 
-  var mainTable = document.evaluate('//td[@class="bgt"]/ancestor::tbody[1]',
-    document,
-    null,
-    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-    null).snapshotItem(0);
+  var mainTable = docEvaluate('//td[@class="bgt"]/ancestor::tbody[1]').snapshotItem(0);
 
   var headerRow = mainTable.rows[0];
   var footerRow = mainTable.rows[mainTable.rows.length - 1];
 
-  var refRows = document.evaluate('//tr[@onmouseover]',
-    document,
-    null,
-    XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-    null);
+  var refRows = docEvaluate('//tr[@onmouseover]');
 
   var rows_referrals = new Array();
-  for(var i=0; i<refRows.snapshotLength; i++)
+  for (var i = 0; i < refRows.snapshotLength; i++)
   {
     rows_referrals[i] = refRows.snapshotItem(i);
   }
 
-
-
   addSortingArrows();
-
-
   editHeaderRow();
-
-
-
 
   function processReferralRows()
   {
@@ -3628,7 +3560,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     var otherClickers = 0;
 
 
-    for(refIndex in rows_referrals)
+    for (refIndex in rows_referrals)
     {
       var currentReferral = rows_referrals[refIndex];
 
@@ -3636,7 +3568,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       columns.flag = currentReferral.childNodes[columns.indexes.FLAG];
       columns.name = currentReferral.childNodes[columns.indexes.NAME];
       columns.ownedSince = currentReferral.childNodes[columns.indexes.SINCE];
-      if (currentPage.pageName() == 'rentedRefListing')
+      if ('rentedRefListing' == currentPage.pageName())
       {
         columns.nextPayment = currentReferral.childNodes[columns.indexes.NEXT_PAYMENT];
       }
@@ -3645,14 +3577,13 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       columns.overallAvg = currentReferral.childNodes[columns.indexes.AVG];
 
       // Columns specific to the direct referrals page
-      if (currentPage.pageName() == 'directRefListing')
+      if ('directRefListing' == currentPage.pageName())
       {
         columns.cameFrom = currentReferral.childNodes[columns.indexes.CAME_FROM];
         columns.nextPayment = currentReferral.childNodes[columns.indexes.NEXT_PAYMENT];
       }
 
-      //    console.info(currentReferral);
-
+      //    logger(currentReferral);
 
 
       /**
@@ -3660,7 +3591,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
        used for bar at bottom of the referral listing page)
        */
       // TODO:: Find out why referrals[refIndex].overallAverage is set to 999 for new refs <24hours old here but not earlier in the script
-      //      console.info(referrals[refIndex].overallAverage);
+      //      logger(referrals[refIndex].overallAverage);
 
       if (100 > parseFloat(referrals[refIndex].overallAverage) > 0)
       {
@@ -3668,20 +3599,23 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
         clickSum += parseInt(referrals[refIndex].totalClicks);
         activeRefCount++;
 
-        //        console.info([parseFloat(referrals[refIndex].overallAverage),sumOfAverages,,parseInt(referrals[refIndex].totalClicks),clickSum,activeRefCount]);
+        //        logger([parseFloat(referrals[refIndex].overallAverage),sumOfAverages,,parseInt(referrals[refIndex].totalClicks),clickSum,activeRefCount]);
       }
 
       /* Keep a tally of how many referrals clicked today / yesterday / never / other */
-      if (parseInt(referrals[refIndex].totalClicks) == 0) {
+      if (parseInt(referrals[refIndex].totalClicks) === 0)
+      {
         zeroClickers++;
-      } else if (Math.floor(referrals[refIndex].accurateLastClick) == 0) {
+      } else if (Math.floor(referrals[refIndex].accurateLastClick) === 0)
+      {
         todayClickers++;
-      } else if (Math.floor(referrals[refIndex].accurateLastClick) == 1) {
+      } else if (Math.floor(referrals[refIndex].accurateLastClick) === 1)
+      {
         ydayClickers++;
-      } else {
+      } else
+      {
         otherClickers++;
       }
-
 
 
       // insertColumnPrefixes(currentReferral);
@@ -3717,14 +3651,16 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
         function insertClicksDayColumn(currentReferral)
         {
-          if(script.preferences.showColumn['clickText'] === true)
+          if (script.preferences.showColumn['clickText'] === true)
           {
             // clickText column == A textual representation of the data in the mini
-            if (script.preferences.showColumn['clickText'] === true) {
+            if (script.preferences.showColumn['clickText'] === true)
+            {
               var columnText_clickText = '';
               columnText_clickText += referrals[refIndex].minigraph.clicks[referrals[refIndex].minigraph.clicks.length - 1].toFixed(0);
 
-              for (var x = referrals[refIndex].minigraph.clicks.length - 2; x >= 0; x--) {
+              for (var x = referrals[refIndex].minigraph.clicks.length - 2; x >= 0; x--)
+              {
                 columnText_clickText += '|' + referrals[refIndex].minigraph.clicks[x].toFixed(0);
               }
 
@@ -3736,17 +3672,17 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
         function insertMinigraphAveragesColumns(currentReferral)
         {
           // 'average1' column == Average for the last timePeriod_average1 days
-          if (script.preferences.showColumn['average_1'] === true)
+          if (script.preferences.showColumn['average1'] === true)
           {
-            var columnText_average1 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[0]-1].toFixed(2);
-            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" +  script.preferences.columnPrefix['average_1'] + columnText_average1 + "</font>", script.preferences.shrinkContents['average_1']);
+            var columnText_average1 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[0] - 1].toFixed(2);
+            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['average1'] + columnText_average1 + "</font>", script.preferences.shrinkContents['average1']);
           }
 
           // 'average2' column == Average for the last 7 days
-          if (script.preferences.showColumn['average_2'] === true)
+          if (script.preferences.showColumn['average2'] === true)
           {
-            var columnText_average2 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[1]-1].toFixed(2);
-            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" +  script.preferences.columnPrefix['average_2'] + columnText_average2 + "</font>", script.preferences.shrinkContents['average_2']);
+            var columnText_average2 = referrals[refIndex].minigraph.mean[script.preferences.timePeriods.averageCols[1] - 1].toFixed(2);
+            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['average2'] + columnText_average2 + "</font>", script.preferences.shrinkContents['average2']);
           }
         }
 
@@ -3756,7 +3692,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
           if (script.preferences.showColumn['SD'] === true)
           {
             var columnText_SD = referrals[refIndex].minigraph.sdev[9].toFixed(2);
-            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" +  script.preferences.columnPrefix['SD'] + columnText_SD + "</font>", script.preferences.shrinkContents['SD']);
+            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['SD'] + columnText_SD + "</font>", script.preferences.shrinkContents['SD']);
           }
         }
 
@@ -3767,7 +3703,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
           if (script.preferences.showColumn['RSA'] === true)
           {
             var columnText_RSA = (referrals[refIndex].minigraph.sdev[9] / referrals[refIndex].minigraph.mean[9]).toFixed(2);
-            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" +  script.preferences.columnPrefix['RSA'] + columnText_RSA + "</font>", script.preferences.shrinkContents['SD']);
+            addNewColumn(currentReferral, "<font style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['RSA'] + columnText_RSA + "</font>", script.preferences.shrinkContents['SD']);
           }
         }
 
@@ -3778,7 +3714,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
           if (script.preferences.showColumn['profit'])
           {
             //            console.group();
-            //            console.info('Adding Profit column.');
+            //            logger('Adding Profit column.');
 
 
             // CALCULATE REFERRAL EXPENSES PER DAY AND MIN BREAK EVEN AVERAGE
@@ -3789,14 +3725,14 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             // Cost of renewing, per ref per day::
             var renewalCostPerRefPerDay = renewalCost / renewalPeriod;
 
-            //            console.info('myAccountDetails.renewalFees');
-            //            console.info(myAccountDetails.renewalFees);
-            //            console.info('renewalPeriod,renewalCost,renewalCostPerRefPerDay');
-            //            console.info(renewalPeriod,renewalCost,renewalCostPerRefPerDay);
+            //            logger('myAccountDetails.renewalFees');
+            //            logger(myAccountDetails.renewalFees);
+            //            logger('renewalPeriod,renewalCost,renewalCostPerRefPerDay');
+            //            logger(renewalPeriod,renewalCost,renewalCostPerRefPerDay);
 
 
             // Cost of golden & golden packs per ref, per day
-            if (myAccountDetails.accountType.numerical  > 0)
+            if (myAccountDetails.accountType.numerical > 0)
             {
               var goldenFeePerRefPerDay = ((90 / 365) / myAccountDetails.numberOfRefs.Rented);
               var goldenPackFeePerRefPerDay = ((myAccountDetails.goldenPackCost / 365) / myAccountDetails.numberOfRefs.Rented);
@@ -3812,9 +3748,6 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             // Calculate the minimum average needed to pay for the expenses of each ref
             // each day
             minBreakEvenAvgExcludingRecycles = expensesPerRefPerDay / myAccountDetails.referralClickValue;
-
-
-
 
 
             // Retrieve numerical version of numDaysOwned and other details about
@@ -3853,11 +3786,14 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             // the minute)
             var grossIn = (refClicks * myAccountDetails.referralClickValue);
 
-            if (currentPage.pageName() == 'rentedRefListing') {
+            if (currentPage.pageName() == 'rentedRefListing')
+            {
               var grossOut = numDaysOwned_decimal * expensesPerRefPerDay;
-            } else if (currentPage.pageName() == 'directRefListing') {
+            } else if (currentPage.pageName() == 'directRefListing')
+            {
               grossOut = 0;
-            } else {
+            } else
+            {
               grossOut = 1000;
             }
 
@@ -3867,7 +3803,7 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             var profitPerDay = (indivAvg * myAccountDetails.referralClickValue) - expensesPerRefPerDay;
 
             /*
-             console.info('currentPage.pageName() = ' + currentPage.pageName() + '\n' +
+             logger('currentPage.pageName() = ' + currentPage.pageName() + '\n' +
              'numDaysOwned_decimal = ' + numDaysOwned_decimal + '\n' +
              'expensesPerRefPerDay = ' + expensesPerRefPerDay + '\n' +
              'grossOut = ' + grossOut + '\n' +
@@ -3922,13 +3858,17 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
                 // the amount of profit needed to pay for its own recycle
                 var numberOfDays = 1;
                 while (indivProfit[numberOfDays] < profitNeeded)
-                { numberOfDays++; }
+                {
+                  numberOfDays++;
+                }
 
                 // Check whether the numberOfDays is unreasonably large
                 // If it is unreasonably large (default max: 30 days), then return a
                 // message saying this
                 if (numberOfDays > dayLimit)
-                { numberOfDays = 'More than ' + dayLimit + ' days'; }
+                {
+                  numberOfDays = 'More than ' + dayLimit + ' days';
+                }
 
                 return numberOfDays;
               }
@@ -3937,9 +3877,6 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
                 return 'N/A';
               }
             }
-
-
-
 
 
             // Calculate how many days it will take for the referral to pay for its
@@ -3981,10 +3918,10 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             // If the net profit is negative, format it differently
             if (PROFIT > 0)
             {
-              addNewColumn(currentReferral, "<span id='PROFIT_"+refID+"' style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
+              addNewColumn(currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#000;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
             } else
             {
-              addNewColumn(currentReferral, "<span id='PROFIT_"+refID+"' style='font-size:9px; color:#800; font-style:italic;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
+              addNewColumn(currentReferral, "<span id='PROFIT_" + refID + "' style='font-size:9px; color:#800; font-style:italic;'>" + script.preferences.columnPrefix['profit'] + PROFIT.toFixed(3) + "</span>", script.preferences.shrinkContents['profit']);
             }
 
 
@@ -3993,37 +3930,41 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
             if (currentPage.pageName() == 'rentedRefListing')
             {
               var tipContent = '<p>Referral: <b>' + refID + '</b></p>' +
-                '<hr>' +
-                '<i><small>Expenses</small></i><br>' +
-                'Renewals <i><small>(' + renewalPeriod + ' day renewal)</small></i> = <b>$' + renewalCostPerRefPerDay.toFixed(5) + '</b><br>';
+                  '<hr>' +
+                  '<i><small>Expenses</small></i><br>' +
+                  'Renewals <i><small>(' + renewalPeriod + ' day renewal)</small></i> = <b>$' + renewalCostPerRefPerDay.toFixed(5) + '</b><br>';
 
               // Add Golden / Golden Pack-specific lines to the tooltip
               if (myAccountDetails.accountType.numerical == 1)
-              { tipContent = tipContent + 'Golden fee <i><small>(per ref per day)</small></i> = <b>$' + goldenFeePerRefPerDay.toFixed(5) + '</b><br>'; }
+              {
+                tipContent = tipContent + 'Golden fee <i><small>(per ref per day)</small></i> = <b>$' + goldenFeePerRefPerDay.toFixed(5) + '</b><br>';
+              }
               if (myAccountDetails.accountType.numerical > 1)
-              { tipContent = tipContent + 'Golden-Pack fee <i><small>(per ref per day)</small></i> = <b>$' + goldenPackFeePerRefPerDay.toFixed(5) + '</b><br>';}
+              {
+                tipContent = tipContent + 'Golden-Pack fee <i><small>(per ref per day)</small></i> = <b>$' + goldenPackFeePerRefPerDay.toFixed(5) + '</b><br>';
+              }
 
               tipContent = tipContent +
-                'Total Expenses <i><small>(per ref per day)</small></i> = <b>$' + expensesPerRefPerDay.toFixed(5) + '</b><br>' +
-                '<br>' +
+                  'Total Expenses <i><small>(per ref per day)</small></i> = <b>$' + expensesPerRefPerDay.toFixed(5) + '</b><br>' +
+                  '<br>' +
 
-                'Minimum average <i><small>(to break even)</small></i> = <b>' + minBreakEvenAvgExcludingRecycles.toFixed(3) + '</b><br>' +
-                'Gross In = <b>$' + grossIn.toFixed(5) + '</b><br>' +
-                'Gross Out = <b>$' + grossOut.toFixed(5) + '</b><br>' +
-                'Current profit = <b>$' + netProfit_exclRecycles.toFixed(5) + '</b><br>' +
-                'Current profit <i><small>(incl ' + myAccountDetails.recycleCost + ' recycle)</small></i> = <b>$' + netProfit_inclRecycles.toFixed(5) + '</b><br>' +
-                '<br>' +
+                  'Minimum average <i><small>(to break even)</small></i> = <b>' + minBreakEvenAvgExcludingRecycles.toFixed(3) + '</b><br>' +
+                  'Gross In = <b>$' + grossIn.toFixed(5) + '</b><br>' +
+                  'Gross Out = <b>$' + grossOut.toFixed(5) + '</b><br>' +
+                  'Current profit = <b>$' + netProfit_exclRecycles.toFixed(5) + '</b><br>' +
+                  'Current profit <i><small>(incl ' + myAccountDetails.recycleCost + ' recycle)</small></i> = <b>$' + netProfit_inclRecycles.toFixed(5) + '</b><br>' +
+                  '<br>' +
 
-                '<i><small>@ Average = <b>' + indivAvg.toFixed(3) + '</b></small></i>:<br>' +
-                'Net Profit <i><small>(per day)</small></i> = <b>$' + profitPerDay.toFixed(5) + '</b><br>' +
-                'Days to pay for own recycle = <b>' + daysTilPaidOwnRecycle + '</b>';
+                  '<i><small>@ Average = <b>' + indivAvg.toFixed(3) + '</b></small></i>:<br>' +
+                  'Net Profit <i><small>(per day)</small></i> = <b>$' + profitPerDay.toFixed(5) + '</b><br>' +
+                  'Days to pay for own recycle = <b>' + daysTilPaidOwnRecycle + '</b>';
 
               if (!isNaN(daysTilPaidOwnRecycle))
               {
-                tipContent = tipContent + ' <small>(<i>day # <b>' + (daysTilPaidOwnRecycle + numDaysOwned_decimal) + '</b></i>)</small><br>';
+                tipContent += ' <small>(<i>day # <b>' + (daysTilPaidOwnRecycle + numDaysOwned_decimal) + '</b></i>)</small><br>';
               }
 
-              tipContent = tipContent + '<br>';
+              tipContent += '<br>';
 
               /*
 
@@ -4077,10 +4018,9 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
                   },
                   tip: p2
                 }
-              }
+              };
 
-              location.href = "javascript:void(jQuery('#PROFIT_"+refID+"').qtip("+JSON.stringify(tooltipConfig)+"))";
-
+              location.href = "javascript:void(jQuery('#PROFIT_" + refID + "').qtip(" + JSON.stringify(tooltipConfig) + "))";
 
 
             }
@@ -4088,37 +4028,47 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
         }
 
 
-        if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+        if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
         {
-          try {
+          try
+          {
             insertClicksDayColumn(currentReferral);
-          } catch(e) {
+          } catch(e)
+          {
             GM_log('Error displaying Clicks/day column\n\n' + e);
           }
 
-          try {
+          try
+          {
             insertMinigraphAveragesColumns(currentReferral);
-          } catch(e) {
+          } catch(e)
+          {
             GM_log('Error displaying Minigraph Averages columns (A10/A7)\n\n' + e);
           }
 
-          try {
+          try
+          {
             insertSDColumn(currentReferral);
-          } catch(e) {
+          } catch(e)
+          {
             GM_log('Error displaying SD column\n\n' + e);
           }
 
-          try {
+          try
+          {
             insertRSAColumn(currentReferral);
           }
-          catch(e) {
+          catch(e)
+          {
             GM_log('Error displaying RSA column\n\n' + e);
           }
         }
 
-        try {
+        try
+        {
           insertProfitColumn(currentReferral);
-        } catch(e) {
+        } catch(e)
+        {
           GM_log('Error displaying profit column\n\n' + e);
         }
 
@@ -4131,36 +4081,37 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
     }
 
 
-      // Widen remaining rows
-      function widenRemainingRows()
+    // Widen remaining rows
+    function widenRemainingRows()
+    {
+      var requiredColspan = rows_referrals[0].children.length;
+      for (var i = 0; i < mainTable.rows.length; i++)
       {
-        var requiredColspan = rows_referrals[0].children.length;
-        for(var i=0; i < mainTable.rows.length; i++)
+        if (10 == mainTable.rows[i].children[0].getAttribute('colspan'))
         {
-          if(10 == mainTable.rows[i].children[0].getAttribute('colspan'))
-          {
-            mainTable.rows[i].children[0].setAttribute('colspan',requiredColspan);
-          }
+          mainTable.rows[i].children[0].setAttribute('colspan', requiredColspan);
         }
       }
-      widenRemainingRows();
+    }
 
-    function insertFooterData(footerRow)
+    widenRemainingRows();
+
+    function insertFooterData(_footerRow)
     {
       // SUMMARY ROW @ bottom of the referral listing table //
       // Set the size of the bottom row to match the size of the **first referral
       // row** to accomodate for extra columns that have been added
-      footerRow.childNodes[0].colSpan = rows_referrals[0].childNodes.length;
+      _footerRow.childNodes[0].colSpan = rows_referrals[0].childNodes.length;
 
 
       var totalClickAvg = sumOfAverages / activeRefCount;
-      console.info('totalClickAvg\n'+totalClickAvg+'\n'+sumOfAverages+'\n'+activeRefCount);
+      logger('totalClickAvg\n' + totalClickAvg + '\n' + sumOfAverages + '\n' + activeRefCount);
 
       totalClickAvg = (isNaN(totalClickAvg)) ? 0 : totalClickAvg;
 
       var footerRow_text = "<font style='font-size:9px;color:#FFFFFF;font-weight:bold;'>" +
-        " | " + ('Total Clicks') + " : " + clickSum +
-        " | " + ('Total Click Avg') + " : " + (totalClickAvg).toFixed(3);
+          " | " + ('Total Clicks') + " : " + clickSum +
+          " | " + ('Total Click Avg') + " : " + (totalClickAvg).toFixed(3);
 
       //      if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
       // {
@@ -4170,24 +4121,23 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
       // }
 
       footerRow_text = footerRow_text +
-        " | " + ('Clicked Today') + " : " + todayClickers +
-        " | " + ('Clicked Yesterday') + ": " + ydayClickers +
-        " | " + ('Zero-Clickers') + " : " + zeroClickers +
-        " | " + ('Others') + " : " + otherClickers +
-        "</font>";
+          " | " + ('Clicked Today') + " : " + todayClickers +
+          " | " + ('Clicked Yesterday') + ": " + ydayClickers +
+          " | " + ('Zero-Clickers') + " : " + zeroClickers +
+          " | " + ('Others') + " : " + otherClickers +
+          "</font>";
 
 
       var img_grayBackground = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAdCAYAAABrAQZpAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kFDxQUDrtfiZ8AAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAUElEQVQI10WMIQ6AQBADJ/0yFslfCY5wAsS2i7mAqZmZsqxba9wPAubEQeWgqkJxI8eoKig2cjLBn+3HgfqT20HdQS6jTmZGg5Ka8n8wrpMX+VxBlx4CdKwAAAAASUVORK5CYII=';
 
 
-      footerRow.childNodes[0].style.backgroundImage = "url('" + img_grayBackground + "')";
-      footerRow.childNodes[0].style.height = "25px";
+      _footerRow.childNodes[0].style.backgroundImage = "url('" + img_grayBackground + "')";
+      _footerRow.childNodes[0].style.height = "25px";
 
-      footerRow.childNodes[0].innerHTML = footerRow_text;
+      _footerRow.childNodes[0].innerHTML = footerRow_text;
     }
 
     insertFooterData(footerRow);
-
 
 
   }
@@ -4203,35 +4153,36 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
    */
   function widenPage()
   {
-    var current_width =  parseInt(document.body.children[1].style.width);
+    var current_width = parseInt(document.body.children[1].style.width);
 
-    current_width += (script.preferences.showColumn['flag'] === false) ? -20 : 0;
-    current_width += (script.preferences.showColumn['refName'] === false) ? -100 : 0;
-    current_width += (script.preferences.showColumn['refSince'] === false) ? -110 : 0;
-    current_width += (script.preferences.showColumn['nextPayment'] === false) ? -120 : 0;
-    current_width += (script.preferences.showColumn['lastClick'] === false) ? -80 : 0;
-    current_width += (script.preferences.showColumn['totalClicks'] === false) ? -60 : 0;
-    current_width += (script.preferences.showColumn['average'] === false) ? -60 : 0;
+    current_width += (false === script.preferences.showColumn['flag']) ? -20 : 0;
+    current_width += (false === script.preferences.showColumn['referralName']) ? -100 : 0;
+    current_width += (false === script.preferences.showColumn['referralSince']) ? -110 : 0;
+    current_width += (false === script.preferences.showColumn['nextPayment']) ? -120 : 0;
+    current_width += (false === script.preferences.showColumn['lastClick']) ? -80 : 0;
+    current_width += (false === script.preferences.showColumn['totalClicks']) ? -60 : 0;
+    current_width += (false === script.preferences.showColumn['average']) ? -60 : 0;
 
-    current_width += (script.preferences.referralSince_numerise && !script.preferences.referralSince_replace) ? 80 : 0;
-    current_width += (script.preferences.lastClick_numerise && !script.preferences.lastClick_replace) ? 5 : 0;
+    current_width += (script.preferences.numeriseDates.referralSince && !script.preferences.referralSince_replace) ? 80 : 0;
+    current_width += (script.preferences.numeriseDates.lastClick && !script.preferences.lastClick_replace) ? 5 : 0;
     current_width += (script.preferences.flag_textify) ? 15 : 0;
-    current_width += (script.preferences.exactAverage_show && !script.preferences.exactAverage_replace) ? 20 : 0;
+    current_width += (script.preferences.exactaverageshow && !script.preferences.exactaveragereplace) ? 20 : 0;
 
-    if(refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
+    if (refsPerPage <= 100 && myAccountDetails.accountType.showUltimateFeatures)
     {
-      current_width += (script.preferences.showColumn['clickText'] === true) ? 88 : 0;
-      current_width += (script.preferences.showColumn['average_1'] === true) ? 23 : 0;
-      current_width += (script.preferences.showColumn['average_2'] === true) ? 23 : 0;
-      current_width += (script.preferences.showColumn['SD'] === true) ? 30 : 0;
-      current_width += (script.preferences.showColumn['RSA'] === true) ? 30 : 0;
+      current_width += (true === script.preferences.showColumn['clickText']) ? 88 : 0;
+      current_width += (true === script.preferences.showColumn['average1']) ? 23 : 0;
+      current_width += (true === script.preferences.showColumn['average2']) ? 23 : 0;
+      current_width += (true === script.preferences.showColumn['SD']) ? 30 : 0;
+      current_width += (true === script.preferences.showColumn['RSA']) ? 30 : 0;
     }
 
-    current_width += (script.preferences.showColumn['profit'] === true) ? 30 : 0;
+    current_width += (true === script.preferences.showColumn['profit']) ? 30 : 0;
     current_width = (current_width < 902) ? 902 : current_width;
 
     document.body.children[1].style.width = current_width + 'px';
   }
+
   widenPage();
 
 }
@@ -4249,57 +4200,46 @@ if(currentPage.pageName() == 'rentedRefListing' || currentPage.pageName() == 'di
 
 function insertAccountBalanceTransferHandlers()
 {
-
-  var xpath_AccBalance = '//span[@id="t_saldo"]';
-
-  var accountBalanceNode = document.evaluate(xpath_AccBalance,
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null)
+  var accountBalanceNode = docEvaluate('//span[@id="t_saldo"]');
 
   if(accountBalanceNode.snapshotLength > 0)
   {
     accountBalanceNode = accountBalanceNode.snapshotItem(1);
 
-    accountBalance = parseFloat(accountBalanceNode.textContent.replace('$',''));
-    accountBalanceRounded = Math.floor(accountBalance*10)/10;
+    var accountBalance = parseFloat(accountBalanceNode.textContent.replace('$',''));
+    var accountBalanceRounded = Math.floor(accountBalance*10)/10;
 
     //    GM_log('accountBalanceRounded = '+accountBalanceRounded);
 
-    accountBalanceNode.addEventListener("click", function(){ transfer(); }, false);
+    accountBalanceNode.addEventListener("click", function accountBalanceNode_onClick(){ transfer(); }, false);
     accountBalanceNode.style.cursor = 'pointer';
 
 
-    function transfer() {
+    function transfer()
+    {
       var minTransfer = 0.10;
 
       var errorMessage = 'Error: Transfer Stopped!';
       var errorMessagePresent = false;
 
 
-      var transferAmount = prompt('How much would you like to transfer? \n[NOTE: Multiples of $'+minTransfer.toFixed(2)+' only]',accountBalanceRounded.toFixed(2));
-      if(transferAmount == null)
-      {
-        errorMessagePresent = true;
-        errorMessage += '\n * Transfer cancelled';
-      }
-      else
+      var transferAmount = prompt('How much would you like to transfer? \n[NOTE: Multiples of $' + minTransfer.toFixed(2) + ' only]', accountBalanceRounded.toFixed(2));
+      if (parseFloat(transferAmount) == transferAmount)
       {
         transferAmount = Math.floor(transferAmount * 10) / 10;
         // transferAmount = 0.1;
 
-        if(!isNaN(transferAmount))
+        if (!isNaN(transferAmount))
         {
           GM_log('(transferAmount != null) && !isNaN(transferAmount)');
 
-          if(transferAmount >= minTransfer)
+          if (transferAmount >= minTransfer)
           {
             GM_xmlhttpRequest({
               method: 'GET',
-              url: 'https://www.neobux.com/?u=c&s=rba&s1=1&s2='+transferAmount,
-              onload: function(responseDetails) { transferCallback(responseDetails,transferAmount,false); },
-              onerror: function(responseDetails) { transferCallback(responseDetails,transferAmount,true); }
+              url: 'https://www.neobux.com/?u=c&s=rba&s1=1&s2=' + transferAmount,
+              onload: function(responseDetails) { transferCallback(responseDetails, transferAmount, false); },
+              onerror: function(responseDetails) { transferCallback(responseDetails, transferAmount, true); }
             });
             GM_log('Transfer in progress, Please wait..');
             alert('Transfer in progress, Please wait..');
@@ -4307,41 +4247,48 @@ function insertAccountBalanceTransferHandlers()
           else
           {
             errorMessagePresent = true;
-            errorMessage += '\n * Minimum Transfer: $'+minTransfer.toFixed(2);
+            errorMessage += '\n * Minimum Transfer: $' + minTransfer.toFixed(2);
           }
-        }
-        else if(isNaN(transferAmount))
-        {
-          errorMessagePresent = true;
-          errorMessage += '\n * You must enter only a number';
         }
         else
         {
-          errorMessagePresent = true;
-          errorMessage += '\n * Unknown Error';
+          if (isNaN(transferAmount))
+          {
+            errorMessagePresent = true;
+            errorMessage += '\n * You must enter only a number';
+          }
+          else
+          {
+            errorMessagePresent = true;
+            errorMessage += '\n * Unknown Error';
+          }
         }
+      } else
+      {
+        errorMessagePresent = true;
+        errorMessage += '\n * Transfer cancelled';
       }
 
-      if(errorMessagePresent)
+      if (errorMessagePresent)
       {
         GM_log(errorMessage);
         alert(errorMessage);
       }
     }
 
-    function transferCallback(responseDetails,transferAmount,internalError)
+    function transferCallback(_responseDetails,_transferAmount,_internalError)
     {
-      if(internalError)
+      if(_internalError)
       {
         GM_log('transferCallback: Error during transfer - Transfer Stopped');
         alert('transferCallback: Error during transfer - Transfer Stopped');
       }
       else
       {
-        GM_log('responseDetails.status = ' + responseDetails.status + '\n' +
-          'responseDetails.statusText = ' + responseDetails.statusText + '\n' +
-          'responseDetails.responseHeaders = ' + responseDetails.responseHeaders + '\n' +
-          'responseDetails.responseText = ' + responseDetails.responseText);
+        GM_log('_responseDetails.status = ' + _responseDetails.status + '\n' +
+            '_responseDetails.statusText = ' + _responseDetails.statusText + '\n' +
+            '_responseDetails.responseHeaders = ' + _responseDetails.responseHeaders + '\n' +
+            '_responseDetails.responseText = ' + _responseDetails.responseText);
 
         var successfulTransferText = "The transfer has been successfully completed.";
         var successfulTransferText_PT = "A transferência foi feita com sucesso.";
@@ -4351,24 +4298,24 @@ function insertAccountBalanceTransferHandlers()
         var transferError = 'Neobux: The transfer was rejected by Neobux!';
         var transferRejected = false;
 
-        if(responseDetails.responseText.indexOf(successfulTransferText) > 0)
+        if(_responseDetails.responseText.indexOf(successfulTransferText) > 0)
         {
           GM_log('Transfer completed successfully');
           alert('Transfer completed successfully');
-          //updateBalances(transferAmount);
+          //updateBalances(_transferAmount);
         }
-        else if(responseDetails.responseText.indexOf(successfulTransferText_PT) > 0)
+        else if(_responseDetails.responseText.indexOf(successfulTransferText_PT) > 0)
         {
           GM_log('Transfer completed successfully');
           alert('Transfer completed successfully');
-          //updateBalances(transferAmount);
+          //updateBalances(_transferAmount);
         }
-        else if(responseDetails.responseText.indexOf(unsuccessfulTransferText) > 0)
+        else if(_responseDetails.responseText.indexOf(unsuccessfulTransferText) > 0)
         {
           transferRejected = true;
           transferError += "\n * You don't have sufficient funds to complete the transfer or an error occurred.";
         }
-        else if(responseDetails.responseText.indexOf(unsuccessfulTransferText_PT) > 0)
+        else if(_responseDetails.responseText.indexOf(unsuccessfulTransferText_PT) > 0)
         {
           transferRejected = true;
           transferError += "\n * Não tem fundos suficientes para completar a transacção ou ocorreu um erro.";
@@ -4395,8 +4342,386 @@ function insertAccountBalanceTransferHandlers()
 
 }
 
-insertAccountBalanceTransferHandlers();
+function insertLogoActions()
+{
+  var blah = document.createElement('div');
+  blah.id = "scriptPreferences";
+  blah.setAttribute('class',"overlay");
 
+
+  var scriptPrefs_innerHTML = '';
+
+  scriptPrefs_innerHTML += '<!-- tabs -->' +
+      '<ul class="css-tabs">' +
+      '<li><a class="current" href="#myAccount">My Account</a></li>' +
+      '<li><a href="#refListings">Referral Listings</a></li>' +
+      '<li><a href="#refStats">Referral Statistics</a></li>' +
+      '<li><a href="#about">About</a></li>' +
+      '</ul>';
+
+  scriptPrefs_innerHTML += ''+
+      '<!-- panes -->' +
+      '<div class="css-panes">';
+
+
+  /* My Account */
+  scriptPrefs_innerHTML += ''+
+      '<div style="display: block;" class="tabPane">' +
+      '<p>These settings are related to how you choose to manage your account and what the script has stored regarding your account.</p>' +
+      '</div>';
+
+  /* Referral Statistics */
+  scriptPrefs_innerHTML += '' +
+      '<div style="display: none;" class="tabPane">' +
+      '<div id="refListingAccordion" class="accordion">' +
+
+
+      '<h2 class="current">Column Settings</h2>' +
+      '<div class="accordionPane">' +
+
+
+      '<span class="refListingsSettingsGrid">' +
+
+      '<table>' +
+      '<thead>' +
+      '<tr>' +
+      '<td class="leftmost" style="!important; width:100px;">Column</td>' +
+      '<td>Prefix</td>' +
+      '<td>Shrink</td>' +
+      '<td>Show</td>' +
+      '<td>Numerise</td>' +
+      '<td>Fuller<br>Timers</td>' +
+      '</tr>' +
+      '</thead>' +
+      '<tbody>';
+
+  for(var _columnPrefixes in defaultSettings.columnPrefixes)
+  {
+    scriptPrefs_innerHTML += ''+
+        '<tr>' +
+        '<td class="leftmost">'+_columnPrefixes+'</td>' +
+        '<td><input type="text"     id="'+_columnPrefixes+'_columnPrefix"    name="'+_columnPrefixes+'_columnPrefix" value="'+script.preferences.columnPrefix[_columnPrefixes]                +'" title="Prefix for the referral name column" size="2" /></td>' +
+        '<td><input type="checkbox" id="'+_columnPrefixes+'_shrinkContents"  name="'+_columnPrefixes+'_shrinkContents" '+(script.preferences.shrinkContents[_columnPrefixes] ? "checked" : "")+' title="Shrink the contents of the referral\'s name column?" /></td>' +
+        '<td><input type="checkbox" id="'+_columnPrefixes+'_showColumn"      name="'+_columnPrefixes+'_showColumn" '  +(script.preferences.showColumn[_columnPrefixes] ? "checked" : "")      +' title="Show the contents of the referral\'s name column?" /></td>' +
+        '';
+
+    var idName = '';
+    var title = '';
+    switch(_columnPrefixes)
+    {
+      case 'referralSince':
+        idName = 'referralSince';
+        title = 'Numerise the dates in the owned since column?';
+        break;
+      case 'lastClick':
+        idName = 'lastClick';
+        title = 'Numerise the dates in the last click column?';
+        break;
+      default:
+        idName = null;
+        title = null;
+        break;
+    }
+
+
+    function addCheckbox(_inputType, _preferralName, _prefVar, _defaultValue, _inputTitle)
+    {
+      var tmp = _preferralName + '_' + _prefVar;
+      var inputIsChecked = (true === _defaultValue ? "checked" : "");
+      var inputIsDisabled = (null === _defaultValue ? "disabled" : "");
+
+      scriptPrefs_innerHTML += '<td>';
+      scriptPrefs_innerHTML += '<input type="' + _inputType + '" id="' + tmp + '"  name="' + tmp + '" ' +
+          inputIsChecked + ' ' + inputIsDisabled +
+          ' title="' + _inputTitle + '" />';
+      scriptPrefs_innerHTML += '</td>';
+    }
+
+    addCheckbox('checkbox',
+        _columnPrefixes,
+        'numeriseDates',
+        script.preferences['numeriseDates'][_columnPrefixes],
+        title);
+
+    addCheckbox('checkbox',
+        _columnPrefixes,
+        'shortFormatTimer',
+        script.preferences['shortFormatTimer'][_columnPrefixes],
+        title);
+
+    scriptPrefs_innerHTML += ''+
+        '</tr>';
+  }
+
+
+
+  scriptPrefs_innerHTML += ''+
+      '<tbody>' +
+      '</table>'+
+
+      '</span>' +
+      '</div>' +
+
+
+
+
+      '<h2>Second pane</h2>' +
+      '<div class="accordionPane">' +
+      'Foobar' +
+
+      '</div>' +
+
+      '</div>' +
+      '</div>';
+
+  /* placer */
+  scriptPrefs_innerHTML += ''+
+      '<div style="display: none;" class="tabPane">' +
+      '<p>' +
+      ' ' +
+      '</p>' +
+      '</div>';
+
+  /* placer */
+  scriptPrefs_innerHTML += ''+
+      '<div style="display: none;" class="tabPane">' +
+      '<p><strong>About the script:</strong></p>' +
+      '<p>This script is designed to put lots of information available at your fingertips to help make managing your account at Neobux a much simpler task =].<br>' +
+      '<br>' +
+      'The script is currently going through a refactor / rewrite so not all of the features have been re-implemented fully yet. Keep checking back though - changes are happening pretty regularly and the updater script doesn\'t always catch them. <br>' +
+      '<br>' +
+      '</p>' +
+
+      '<p><strong>Want to say thanks?</strong></p>' +
+      '<p>Its always nice to hear from people who like the work I do - just head over to <a href="http://www.neobux.com/forum/?frmid=7&amp;tpcid=78359">the Neobux forums</a> and a simple "i want to have your babies!" or "you are my superstar!" should suffice, but a generous post simply saying "thanks" will always be welcome too =]<br>' +
+      '<br>' +
+      'Incidentally, if you are sure that something isn\'t quite right and you have already checked that it isn\'t the flying spaghetti monster playing tricks on you, <a href="http://www.neobux.com/forum/?frmid=7&amp;tpcid=78359">the Neobux forums</a> should be your first port of call for feature requests and complaints. </p>' +
+      '<br>' +
+
+      '<p><strong>Other Scripts by Kwah</strong></p>' +
+      '<p>If you like this script, take a look at my other scripts at <a href="http://userscripts.org/users/92001/scripts">userscripts.org</a><br>' +
+      'Not all of them are as useful as this script and usually the description is good enough to figure out what it does, but any questions can be sent to the same place as above.' +
+      '</p>' +
+      '</div>';
+
+  /* END div.css-panes */
+  scriptPrefs_innerHTML += ''+
+      '</div>';
+
+
+  blah.innerHTML = scriptPrefs_innerHTML;
+
+  // perform JavaScript after the document is scriptable.
+  $(function () {
+    // setup ul.tabs to work as tabs for each div directly under div.tabPane's
+    $("ul.css-tabs").tabs("div.css-panes > div.tabPane");
+
+    $("div.accordion").tabs("div.accordionPane", {tabs: 'h2', effect: 'slide'});
+  });
+
+
+
+
+
+  var cssStyle = ''+
+      '#scriptPreferences {' +
+      '  background-image:url("http://static.flowplayer.org/tools/img/overlay/white.png");' +
+      '  display:none;' +
+      '  font-size:11px;' +
+      '  margin:0 auto;' +
+      '  padding:35px;' +
+      '  width:640px;' +
+      '}' +
+
+      '#scriptPreferences .close {' +
+      '  background-image:url("http://static.flowplayer.org/tools/img/overlay/close.png");' +
+      '  cursor:pointer;' +
+      '  height:35px;' +
+      '  position:absolute;' +
+      '  right:5px;' +
+      '  top:5px;' +
+      '  width:35px;' +
+      '}'+
+
+      '  /* root element for tabs  */' +
+      '  ul.css-tabs {' +
+      '    margin:0 !important;' +
+      '    padding:0;' +
+      '    height:30px;' +
+      '    border-bottom:1px solid #666;' +
+      '  }' +
+
+      '  /* single tab */' +
+      '  ul.css-tabs li {' +
+      '    float:left;' +
+      '    padding:0;' +
+      '    margin:0;' +
+      '    list-style-type:none;' +
+      '  }' +
+
+      '  /* link inside the tab. uses a background image */' +
+      '  ul.css-tabs a {' +
+      '    float:left;' +
+      '    font-size:13px;' +
+      '    display:block;' +
+      '    padding:5px 30px;' +
+      '    text-decoration:none;' +
+      '    border:1px solid #666;' +
+      '    border-bottom:0px;' +
+      '    height:18px;' +
+      '    background-color:#efefef;' +
+      '    color:#777;' +
+      '    margin-right:2px;' +
+      '    position:relative;' +
+      '    top:1px;' +
+      '    outline:0;' +
+      '    -moz-border-radius:4px 4px 0 0;' +
+      '  }' +
+
+      '  ul.css-tabs a:hover {' +
+      '    background-color:#F7F7F7;' +
+      '    color:#333;' +
+      '  }' +
+
+      '  /* selected tab */' +
+      '  ul.css-tabs a.current {' +
+      '    background-color:#ddd;' +
+      '    border-bottom:1px solid #ddd;' +
+      '    color:#000;' +
+      '    cursor:default;' +
+      '  }' +
+
+
+      '  /* tab pane */' +
+      '  .css-panes div.tabPane {' +
+      '    display:none;' +
+      '    border:1px solid #666;' +
+      '    border-width:0 1px 1px 1px;' +
+      '    min-height:150px;' +
+      '    padding:15px 20px;' +
+      '    background-color:#ddd;' +
+      '  }' +
+
+
+      '  /* root element for accordion. decorated with rounded borders and gradient background image */' +
+      '  .accordion {' +
+    //'    background:#333 url("http://flowplayer.org/img/global/gradient/h300.png") 0 0;' +
+      '    width: 100%;' +
+      '    border:1px solid #333;' +
+      '    background-color:#666;' +
+      '  }' +
+      '  ' +
+      '  /* accordion header */' +
+      '  .accordion h2 {' +
+      '    background:#ccc url("http://flowplayer.org/img/global/gradient/h30.png");' +
+      '    margin:0;' +
+      '    padding:5px 15px;' +
+      '    font-size:14px;' +
+      '    font-weight:normal;' +
+      '    border:1px solid #fff;' +
+      '    border-bottom:1px solid #ddd;' +
+      '    cursor:pointer;' +
+      '  }' +
+      '  ' +
+      '  /* currently active header */' +
+      '  .accordion h2.current {' +
+      '    cursor:default;' +
+      '    background-color:#fff;' +
+      '  }' +
+      '  ' +
+      '  /* accordion pane */' +
+      '  .accordion .accordionPane {' +
+      '    border:1px solid #fff;' +
+      '    border-width:0 2px;' +
+      '    display:none;' +
+      '    padding:15px;' +
+      '    color:#fff;' +
+      '    font-size:12px;' +
+      '    height:350px;' +
+      '    overflow:auto;' +
+      '  }' +
+      '  ' +
+      '  /* a title inside pane */' +
+      '  .accordion .accordionPane h3 {' +
+      '    font-weight:normal;' +
+      '    margin:0 0 -5px 0;' +
+      '    font-size:16px;' +
+      '    color:#999;' +
+      '  }' +
+
+
+      '  span.refListingsSettingsGrid table {' +
+      '    border: 1px solid black;' +
+      '    border-collapse:collapse;' +
+      '    white-space:nowrap;' +
+      '  }'+
+
+      '  span.refListingsSettingsGrid table thead {' +
+      '    font-variant: small-caps;' +
+      '    font-weight: bold;' +
+      '  }'+
+
+      '  span.refListingsSettingsGrid table, span.refListingsSettingsGrid td {' +
+      '    border: 1px solid black;' +
+      '    margin:2px;' +
+      '    padding:3px 7px;' +
+      '    text-align:center;' +
+      '  }'+
+
+      '  span.refListingsSettingsGrid td.leftmost {' +
+      '    text-align:left;' +
+      '  }' +
+
+
+      '';
+
+
+  GM_addStyle(cssStyle);
+  document.body.appendChild(blah);
+
+
+  $('#scriptPreferences input').change(function scriptPreferences_inputFields_onChange(event)
+  {
+    var _varName = event.target.id.split('_')[0];
+    var _preferralName = event.target.id.split('_')[1];
+
+    var value;
+
+    switch (event.target.type)
+    {
+      case 'checkbox':
+        value = event.target.checked;
+        break;
+
+      default:
+        value = event.target.value;
+        break;
+    }
+
+    function saveValue(_preferralName,_varName, _value)
+    {
+      console.group();
+      logger(arguments);
+      logger([_varName,_preferralName]);
+      logger(typeof _preferralName);
+      logger(GM_getValue(_preferralName));
+      logger(script.preferences[_preferralName][_varName]);
+
+      script.preferences[_preferralName][_varName] = _value;
+
+      manipulatePrefs.setPref(_preferralName,JSON.stringify(script.preferences[_preferralName]));
+
+      logger(script.preferences[_preferralName][_varName]);
+      logger(GM_getValue(_preferralName));
+
+      //      logger(GM_getValue([_varName,_preferralName].join('_')));
+      console.groupEnd();
+    }
+
+    saveValue(_preferralName,_varName, value);
+
+  });
+}
 
 function insertLogo()
 {
@@ -4404,13 +4729,7 @@ function insertLogo()
   // Clicking on logo will open the options to modify the script's options
 
   // the language icon in upper right of page
-  var xpath_FaqLogo = "//td[@id='bandidioma']";
-
-  var xpathResults_logoLocation = document.evaluate(xpath_FaqLogo,
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null);
+  var xpathResults_logoLocation = docEvaluate("//td[@id='bandidioma']");
 
   if (1 == xpathResults_logoLocation.snapshotLength)
   {
@@ -4428,17 +4747,14 @@ function insertLogo()
     // img.src = 'http://img262.imageshack.us/img262/4965/neobuxv3logolargered3.png';
 
 
-    $(function() {
+    $(function () {
       try {
         $("#neobux2Logo").overlay({mask: '#000', effect: 'apple', closeOnClick: false, fixed: false});
       } catch(e)
       {
-        console.info('Error:\n\n'+e);
+        logger('Error:\n\n'+e);
       }
     });
-
-
-    //    logoImage.addEventListener('click', function () { showSettingsEditor(); }, false);
 
     // Container for logo image to allow it to look correct in the page
     var td = document.createElement('td');
@@ -4447,519 +4763,84 @@ function insertLogo()
     td.innerHTML = ' &nbsp;|&nbsp; &nbsp;';
     td.appendChild(logoImage);
 
-
     xpathResults_logoLocation.snapshotItem(0).parentNode.appendChild(td);
 
   }
 }
-
-insertLogo();
-
-function insertLogoActions()
-{
-  var blah = document.createElement('div');
-  blah.id = "scriptPreferences";
-  blah.setAttribute('class',"overlay");
-
-
-  var scriptPrefs_innerHTML = '';
-
-  scriptPrefs_innerHTML += '<!-- tabs -->' +
-    '<ul class="css-tabs">' +
-    '<li><a class="current" href="#myAccount">My Account</a></li>' +
-    '<li><a href="#refListings">Referral Listings</a></li>' +
-    '<li><a href="#refStats">Referral Statistics</a></li>' +
-    '<li><a href="#about">About</a></li>' +
-    '</ul>';
-
-  scriptPrefs_innerHTML += ''+
-    '<!-- panes -->' +
-    '<div class="css-panes">';
-
-
-  /* My Account */
-  scriptPrefs_innerHTML += ''+
-    '<div style="display: block;" class="tabPane">' +
-    '<p>These settings are related to how you choose to manage your account and what the script has stored regarding your account.</p>' +
-    '</div>';
-
-  /* Referral Statistics */
-  scriptPrefs_innerHTML += ''+
-    '<div style="display: none;" class="tabPane">' +
-    '<div id="refListingAccordion" class="accordion">' +
-
-
-    '<h2 class="current">Column Settings</h2>' +
-    '<div class="accordionPane">' +
-
-
-    '<span class="refListingsSettingsGrid">' +
-
-    '<table>' +
-    '<thead>' +
-    '<tr>' +
-    '<td class="leftmost" style="!important; width:100px;">Column</td>' +
-    '<td>Prefix</td>' +
-    '<td>Shrink</td>' +
-    '<td>Show</td>' +
-    '<td>Numerise</td>' +
-    '<td>Fuller<br>Timers</td>' +
-    '</tr>' +
-    '</thead>' +
-    '<tbody>';
-
-  for(var _columnPrefixes in defaultSettings.columnPrefixes)
-  {
-    scriptPrefs_innerHTML += ''+
-      '<tr>' +
-      '<td class="leftmost">'+_columnPrefixes+'</td>' +
-      '<td><input type="text"     id="'+_columnPrefixes+'_columnPrefix"    name="'+_columnPrefixes+'_columnPrefix" value="'+script.preferences.columnPrefix[_columnPrefixes]                +'" title="Prefix for the referral name column" size="2" /></td>' +
-      '<td><input type="checkbox" id="'+_columnPrefixes+'_shrinkContents"  name="'+_columnPrefixes+'_shrinkContents" '+(script.preferences.shrinkContents[_columnPrefixes] ? "checked" : "")+' title="Shrink the contents of the referral\'s name column?" /></td>' +
-      '<td><input type="checkbox" id="'+_columnPrefixes+'_showColumn"      name="'+_columnPrefixes+'_showColumn" '  +(script.preferences.showColumn[_columnPrefixes] ? "checked" : "")      +' title="Show the contents of the referral\'s name column?" /></td>' +
-      '';
-
-    var idName = '';
-    var title = '';
-    switch(_columnPrefixes)
-    {
-      case 'refSince':
-        idName = 'referralSince';
-        title = 'Numerise the contents of the owned since column?';
-        break;
-      case 'lastClick':
-        idName = 'lastClick';
-        title = 'Numerise the contents of the last click column?';
-        break;
-    }
-
-    scriptPrefs_innerHTML += '<td><input type="checkbox" id="'+idName+'_numerise" name="'+idName+'_numerise" '+(script.preferences[idName+'_numerise'] ? "checked" : "")+' '+('undefined' == typeof script.preferences[idName+'_numerise'] ? "disabled" : "")+' title="'+title+'" /></td>';
-    scriptPrefs_innerHTML += '<td><input type="checkbox" id="'+idName+'_shortFormatTimer" name="'+idName+'_shortFormatTimer" '+(script.preferences[idName+'_shortFormatTimer'] ? "checked" : "")+' '+('undefined' == typeof script.preferences[idName+'_shortFormatTimer'] ? "disabled" : "")+' title="'+title+'" /></td>';
-
-    idName = '';
-    title = '';
-
-    scriptPrefs_innerHTML += ''+
-      '</tr>';
-  }
-
-
-
-  scriptPrefs_innerHTML += ''+
-    '<tbody>' +
-    '</table>'+
-
-    '</span>' +
-    '</div>' +
-
-
-
-
-    '<h2>Second pane</h2>' +
-    '<div class="accordionPane">' +
-    'Foobar' +
-
-    '</div>' +
-
-    '</div>' +
-    '</div>';
-
-  /* placer */
-  scriptPrefs_innerHTML += ''+
-    '<div style="display: none;" class="tabPane">' +
-    '<p>' +
-    ' ' +
-    '</p>' +
-    '</div>';
-
-  /* placer */
-  scriptPrefs_innerHTML += ''+
-    '<div style="display: none;" class="tabPane">' +
-    '<p><strong>About the script:</strong></p>' +
-    '<p>This script is designed to put lots of information available at your fingertips to help make managing your account at Neobux a much simpler task =].<br>' +
-    '<br>' +
-    'The script is currently going through a refactor / rewrite so not all of the features have been re-implemented fully yet. Keep checking back though - changes are happening pretty regularly and the updater script doesn\'t always catch them. <br>' +
-    '<br>' +
-    '</p>' +
-
-    '<p><strong>Want to say thanks?</strong></p>' +
-    '<p>Its always nice to hear from people who like the work I do - just head over to <a href="http://www.neobux.com/forum/?frmid=7&amp;tpcid=78359">the Neobux forums</a> and a simple "i want to have your babies!" or "you are my superstar!" should suffice, but a generous post simply saying "thanks" will always be welcome too =]<br>' +
-    '<br>' +
-    'Incidentally, if you are sure that something isn\'t quite right and you have already checked that it isn\'t the flying spaghetti monster playing tricks on you, <a href="http://www.neobux.com/forum/?frmid=7&amp;tpcid=78359">the Neobux forums</a> should be your first port of call for feature requests and complaints. </p>' +
-    '<br>' +
-
-    '<p><strong>Other Scripts by Kwah</strong></p>' +
-    '<p>If you like this script, take a look at my other scripts at <a href="http://userscripts.org/users/92001/scripts">userscripts.org</a><br>' +
-    'Not all of them are as useful as this script and usually the description is good enough to figure out what it does, but any questions can be sent to the same place as above.' +
-    '</p>' +
-    '</div>';
-
-  /* END div.css-panes */
-  scriptPrefs_innerHTML += ''+
-    '</div>';
-
-
-  blah.innerHTML = scriptPrefs_innerHTML;
-
-  // perform JavaScript after the document is scriptable.
-  $(function() {
-    // setup ul.tabs to work as tabs for each div directly under div.tabPane's
-    $("ul.css-tabs").tabs("div.css-panes > div.tabPane");
-
-    $("div.accordion").tabs("div.accordionPane", {tabs: 'h2', effect: 'slide'});
-  });
-
-
-
-
-
-  var cssStyle = ''+
-    '#scriptPreferences {' +
-    '  background-image:url("http://static.flowplayer.org/tools/img/overlay/white.png");' +
-    '  display:none;' +
-    '  font-size:11px;' +
-    '  margin:0 auto;' +
-    '  padding:35px;' +
-    '  width:640px;' +
-    '}' +
-
-    '#scriptPreferences .close {' +
-    '  background-image:url("http://static.flowplayer.org/tools/img/overlay/close.png");' +
-    '  cursor:pointer;' +
-    '  height:35px;' +
-    '  position:absolute;' +
-    '  right:5px;' +
-    '  top:5px;' +
-    '  width:35px;' +
-    '}'+
-
-    '  /* root element for tabs  */' +
-    '  ul.css-tabs {' +
-    '    margin:0 !important;' +
-    '    padding:0;' +
-    '    height:30px;' +
-    '    border-bottom:1px solid #666;' +
-    '  }' +
-
-    '  /* single tab */' +
-    '  ul.css-tabs li {' +
-    '    float:left;' +
-    '    padding:0;' +
-    '    margin:0;' +
-    '    list-style-type:none;' +
-    '  }' +
-
-    '  /* link inside the tab. uses a background image */' +
-    '  ul.css-tabs a {' +
-    '    float:left;' +
-    '    font-size:13px;' +
-    '    display:block;' +
-    '    padding:5px 30px;' +
-    '    text-decoration:none;' +
-    '    border:1px solid #666;' +
-    '    border-bottom:0px;' +
-    '    height:18px;' +
-    '    background-color:#efefef;' +
-    '    color:#777;' +
-    '    margin-right:2px;' +
-    '    position:relative;' +
-    '    top:1px;' +
-    '    outline:0;' +
-    '    -moz-border-radius:4px 4px 0 0;' +
-    '  }' +
-
-    '  ul.css-tabs a:hover {' +
-    '    background-color:#F7F7F7;' +
-    '    color:#333;' +
-    '  }' +
-
-    '  /* selected tab */' +
-    '  ul.css-tabs a.current {' +
-    '    background-color:#ddd;' +
-    '    border-bottom:1px solid #ddd;' +
-    '    color:#000;' +
-    '    cursor:default;' +
-    '  }' +
-
-
-    '  /* tab pane */' +
-    '  .css-panes div.tabPane {' +
-    '    display:none;' +
-    '    border:1px solid #666;' +
-    '    border-width:0 1px 1px 1px;' +
-    '    min-height:150px;' +
-    '    padding:15px 20px;' +
-    '    background-color:#ddd;' +
-    '  }' +
-
-
-    '  /* root element for accordion. decorated with rounded borders and gradient background image */' +
-    '  .accordion {' +
-    //'    background:#333 url("http://flowplayer.org/img/global/gradient/h300.png") 0 0;' +
-    '    width: 100%;' +
-    '    border:1px solid #333;' +
-    '    background-color:#666;' +
-    '  }' +
-    '  ' +
-    '  /* accordion header */' +
-    '  .accordion h2 {' +
-    '    background:#ccc url("http://flowplayer.org/img/global/gradient/h30.png");' +
-    '    margin:0;' +
-    '    padding:5px 15px;' +
-    '    font-size:14px;' +
-    '    font-weight:normal;' +
-    '    border:1px solid #fff;' +
-    '    border-bottom:1px solid #ddd;' +
-    '    cursor:pointer;' +
-    '  }' +
-    '  ' +
-    '  /* currently active header */' +
-    '  .accordion h2.current {' +
-    '    cursor:default;' +
-    '    background-color:#fff;' +
-    '  }' +
-    '  ' +
-    '  /* accordion pane */' +
-    '  .accordion .accordionPane {' +
-    '    border:1px solid #fff;' +
-    '    border-width:0 2px;' +
-    '    display:none;' +
-    '    padding:15px;' +
-    '    color:#fff;' +
-    '    font-size:12px;' +
-    '    height:350px;' +
-    '    overflow:auto;' +
-    '  }' +
-    '  ' +
-    '  /* a title inside pane */' +
-    '  .accordion .accordionPane h3 {' +
-    '    font-weight:normal;' +
-    '    margin:0 0 -5px 0;' +
-    '    font-size:16px;' +
-    '    color:#999;' +
-    '  }' +
-
-
-    '  span.refListingsSettingsGrid table {' +
-    '    border: 1px solid black;' +
-    '    border-collapse:collapse;' +
-    '    white-space:nowrap;' +
-    '  }'+
-
-    '  span.refListingsSettingsGrid table thead {' +
-    '    font-variant: small-caps;' +
-    '    font-weight: bold;' +
-    '  }'+
-
-    '  span.refListingsSettingsGrid table, span.refListingsSettingsGrid td {' +
-    '    border: 1px solid black;' +
-    '    margin:2px;' +
-    '    padding:3px 7px;' +
-    '    text-align:center;' +
-    '  }'+
-
-    '  span.refListingsSettingsGrid td.leftmost {' +
-    '    text-align:left;' +
-    '  }' +
-
-
-    '';
-
-
-
-
-
-
-
-  GM_addStyle(cssStyle);
-
-
-  document.body.appendChild(blah);
-
-
-  $('#scriptPreferences input').change(function(event) {
-    var _varName = event.target.id.split('_')[0];
-    var _prefName = event.target.id.split('_')[1];
-
-    var value;
-
-    switch(event.target.type)
-    {
-      case 'checkbox':
-        value = event.target.checked;
-        break;
-
-      default:
-        value = event.target.value;
-        break;
-    }
-
-    function saveValue(_prefName,_varName, value)
-    {
-      console.group();
-      console.info(arguments);
-      console.info([_varName,_prefName]);
-      console.info(typeof _prefName);
-      console.info(GM_getValue(_prefName));
-      console.info(script.preferences[_prefName][_varName]);
-
-      script.preferences[_prefName][_varName] = value;
-
-      manipulatePrefs.setPref('scriptPrefs',JSON.stringify(script.preferences));
-
-      /*
-       var setValue_InStoredObject = function setValue_InStoredObject(_prefName, _varName, _newValue)
-       {
-       var tmp_original = JSON.parse(manipulatePrefs.getPref(_prefName, JSON.stringify(defaultSettings.columnPrefixes)));
-       tmp_original[_varName] = _newValue;
-
-       manipulatePrefs.setPref(_prefName,JSON.stringify(tmp_original));
-       };
-       */
-
-
-      /*
-       if('object' == typeof GM_getValue(_prefName)) {
-       setValue_InStoredObject(_prefName,_varName, value);
-       } else {
-       manipulatePrefs.setPref(_prefName, value);
-       }
-       */
-
-      console.info(script.preferences[_prefName][_varName]);
-
-      //      console.info(GM_getValue([_varName,_prefName].join('_')));
-      console.groupEnd();
-    }
-
-    saveValue(_prefName,_varName, value);
-
-  });
-}
-
-insertLogoActions();
-
-
-
 
 function insertLocalServerTime()
 {
 
   function formatTime(_time)
   {
-    var _Hours = _time.getHours()
+    console.info(_time);
+    var _Hours = _time.getHours();
     var _Minutes = _time.getMinutes();
     var _Seconds = _time.getSeconds();
 
     return padZeros(_Hours,2) + ':' + padZeros(_Minutes,2); //+ ":" + padZeros(_Seconds,2);
   }
 
+  var localMidnight;
+  var currentLocalTime;
+  var currentServerTime;
+  var neoMidnight;
+  var adResetTime;
+  var adResetTime;
 
   // Calculate and return the server time formatted correctly
   function GetServerTime(_serverTimeOffset)
   {
+    var offsetMS = _serverTimeOffset * 1000 * 60 * 60;
 
-    var TimeOffset_Hours;
-    var TimeOffset_Minutes;
-    var TimeOffset_Seconds;
-
-    // If the offset is negative, must round 'up'
-    if (_serverTimeOffset < 0) {
-      TimeOffset_Hours =   Math.ceil(_serverTimeOffset);
-      TimeOffset_Minutes = Math.ceil((_serverTimeOffset - TimeOffset_Hours) * 60);
-      TimeOffset_Seconds = Math.ceil(((_serverTimeOffset - TimeOffset_Hours) * 60 - TimeOffset_Minutes) * 60);
-    }
-    else if (_serverTimeOffset >= 0)
-    {
-      TimeOffset_Hours =   Math.floor(_serverTimeOffset);
-      TimeOffset_Minutes = Math.floor((_serverTimeOffset - TimeOffset_Hours) * 60);
-      TimeOffset_Seconds = Math.floor(((_serverTimeOffset - TimeOffset_Hours) * 60 - TimeOffset_Minutes) * 60);
-    }
-
-    var TimeOffset = {
-      decimal: _serverTimeOffset,
-      hours: TimeOffset_Hours,
-      minutes: TimeOffset_Minutes,
-      seconds: TimeOffset_Seconds
-    };
+    currentLocalTime = new Date(Today);
+    currentServerTime = new Date(new Date(Today).getTime() + offsetMS);
 
 
-    var currentLocalTime = new Date();
-    var currentServerTime = currentLocalTime;
-
-    var localHours = currentServerTime.getHours();
-    var localMinutes = currentServerTime.getMinutes();
-    var localSeconds = currentServerTime.getSeconds();
-
-
-    var serverHours = currentServerTime.getHours() + TimeOffset_Hours;
-    var serverMinutes = currentServerTime.getMinutes() + TimeOffset_Minutes;
-    var serverSeconds = currentServerTime.getSeconds() + TimeOffset_Seconds;
-
-
-
-    var localMidnight = new Date(Today);
+    localMidnight = new Date(Today);
     localMidnight.setHours(0);
     localMidnight.setMinutes(0);
     localMidnight.setSeconds(0);
 
     manipulatePrefs.setPref('localMidnight', localMidnight);
-//    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
+    //    logger('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
 
-    var neoMidnight = new Date(localMidnight);
-    neoMidnight.setHours(neoMidnight.getHours() - TimeOffset_Hours);
-    neoMidnight.setMinutes(neoMidnight.getMinutes() - TimeOffset_Minutes);
-
-    neoMidnight = new Date(neoMidnight);
-
+    neoMidnight = new Date(new Date(localMidnight).getTime() - offsetMS);
+    neoMidnight = new Date(neoMidnight.setDate(localMidnight.getDate()));
+    
     manipulatePrefs.setPref('neoMidnight', neoMidnight);
-//    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
+    //    logger('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
 
-    var adResetTime = new Date(Today);
-    adResetTime.setHours(20);
-    adResetTime.setMinutes(29);
+    var AdResetTime_hours = manipulatePrefs.getPref('AdResetTime_hours',0) * 1000 * 60 * 60;
+    adResetTime = new Date(new Date(localMidnight).getTime() + AdResetTime_hours);
 
-    adResetTime = new Date(adResetTime);
+    adResetTime = new Date(adResetTime.setDate(localMidnight.getDate()));
 
     manipulatePrefs.setPref('adResetTime', adResetTime);
-//    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+    //    logger('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+
+    logger(localMidnight);
+    logger(neoMidnight);
+    logger(adResetTime);
 
 
-//    console.info(localMidnight);
-//    console.info(neoMidnight);
-//    console.info(adResetTime);
-
-
-
-
-    /* an attempt at some mathematical trickery to avoid outputting a negative hour (.setHours doesn't seem to handle negative serverHours correctly) */
-    /* The folowing appears to work perfectly w/ timeset < 0 and timeset >= 24 */
-    serverHours = (serverHours < 0) ? serverHours + (Math.floor(serverHours/24) * -24): serverHours;
-    serverMinutes = (serverMinutes < 0) ? serverMinutes + (Math.floor(serverMinutes/60) * -60): serverMinutes;
-    serverSeconds = (serverSeconds < 0) ? serverSeconds + (Math.floor(serverSeconds/60) * -60): serverSeconds;
-
-    if(serverSeconds > 60) { serverSeconds = serverSeconds % 60; serverMinutes++; }
-    if(serverMinutes > 60) { serverMinutes = serverMinutes % 60; serverHours++; }
-    serverHours = serverHours % 24;
-
-    currentServerTime.setHours(serverHours, serverMinutes, serverSeconds);
-
-    if (_serverTimeOffset > 0)
+    var timeDiff_text = '';
+    if (0 < _serverTimeOffset)
     {
-      var timeDiff_text = '+' + parseFloat(_serverTimeOffset.toFixed(2));
+      timeDiff_text = '+' + parseFloat(_serverTimeOffset.toFixed(2));
     }
-    else if (_serverTimeOffset < 0)
+    else if (0 > _serverTimeOffset)
     {
-      var timeDiff_text = parseFloat(_serverTimeOffset.toFixed(2));
+      timeDiff_text = parseFloat(_serverTimeOffset.toFixed(2));
     }
-    else if (_serverTimeOffset == 0)
+    else
     {
-      var timeDiff_text = '+-' + _serverTimeOffset;
+      timeDiff_text = '+-' + _serverTimeOffset;
     }
 
     // Return the time in the format HH:MM(:SS optional)
 
-    var currentServerTime_display = padZeros(serverHours,2) + ':' + padZeros(serverMinutes,2) + ' (' + timeDiff_text + 'hrs)';
-    return currentServerTime_display;
+    return formatTime(currentServerTime) + ' (' + timeDiff_text + 'hrs)';
 
   }
 
@@ -4968,18 +4849,14 @@ function insertLocalServerTime()
   function FetchAndSetTimeOffset()
   {
     // Hunt for the current server time string
-    var locationOfTimeString = document.evaluate('//td[@class="f_r"]/span',
-      document,
-      null,
-      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-      null);
+    var locationOfTimeString = docEvaluate('//td[@class="f_r"]/span');
 
-    if(locationOfTimeString.snapshotLength == 2)
+    if(2 == locationOfTimeString.snapshotLength)
     {
       // var dateTimeString = '2009/06/07 20:46';
       var dateTimeString = locationOfTimeString.snapshotItem(1).textContent;
 
-      // Grab only the neccessary info (assuming format yyyy/mm/dd hh:dd )
+      // Grab only the necessary info (assuming format yyyy/mm/dd hh:dd )
       dateTimeString = dateTimeString.match(/([\d]{4})\/([\d]{2})\/([\d]{2})\ ([\d]{2})\:([\d]{2})/);
 
 
@@ -4992,9 +4869,9 @@ function insertLocalServerTime()
 
         hour: parseInt(dateTimeString[4] * 1),
         minute: parseInt(dateTimeString[5] * 1)
-      }
+      };
 
-//      console.info(ST);
+      //      logger(ST);
 
       var ServerDateTime = new Date(Today);
       ServerDateTime.setFullYear(ST.year, (ST.month - 1), ST.day);
@@ -5018,12 +4895,12 @@ function insertLocalServerTime()
       var ART = {
         hour: parseInt(adResetTimeString[1] * 1),
         minute: parseInt(adResetTimeString[2] * 1)
-      }
+      };
 
-//      console.info(ART);
+      //      logger(ART);
 
-      var AdResetTimeDifference = (ART.hour + (ART.minute / 60)) * -1;
-      manipulatePrefs.setPref('AdResetTimeOffset', AdResetTimeDifference);
+      var AdResetTimeDifference = (ART.hour + (ART.minute / 60));
+      manipulatePrefs.setPref('AdResetTime_hours', AdResetTimeDifference);
 
 
 
@@ -5047,7 +4924,7 @@ function insertLocalServerTime()
 
     var serverTimeOffset = parseFloat(manipulatePrefs.getPref('serverTimeOffset',0));
 
-//    GM_log('serverTimeOffset = ' + serverTimeOffset);
+    //    GM_log('serverTimeOffset = ' + serverTimeOffset);
     manipulatePrefs.setPref('serverTimeOffset', String(serverTimeOffset));
 
 
@@ -5063,22 +4940,8 @@ function insertLocalServerTime()
   // Cannot search for td@align=left because returns multiple results
   // NOTE:: Avoiding any search term / method that returns multiple results or that depends on a value that is likely to change
 
-  /*
-   Looks for a 902px width div (central columns)
-   Then seeks a descendant node which contains a $ symbol (expected to be the acc balance)
-   Then seeks the ancestor tr element (expected to be the parent of the td that is needed)
-   Then select the left-aligned child td (expected to be the empty
-   */
-
   var xpath = "//div[@style='width: 902px; margin: 0pt auto;']/descendant::td[contains(.,'$')]/ancestor::tr/child::td[@align='left']";
-  //  var xpath = "//div[@style='width: 902px; margin: 0pt auto;']/descendant::table[@width='100%']/descendant::td[@align='right' and contains(.,'$')]/ancestor::tr/child::td[@align='left']";
-
-
-  var xpathResults_timeLocation = document.evaluate(xpath,
-    document,
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null);
+  var xpathResults_timeLocation = docEvaluate(xpath);
 
   var localTime = formatTime(Today);
   var serverTime = (!!GetServerTimeOffset()) ? GetServerTime(GetServerTimeOffset()) : 'You must "View Advertisements" for this to show correctly.';
@@ -5086,7 +4949,7 @@ function insertLocalServerTime()
   GM_log('Local: ' + localTime + ' Server: ' + serverTime);
 
 
-  xpathResults_timeLocation.snapshotItem(0).innerHTML +='<span style="font-family: mono; font-size:x-small;">&nbsp; Local time: ' + localTime + '  --  Server time: ' + serverTime + '</span>';
+  xpathResults_timeLocation.snapshotItem(0).innerHTML +='<span style="font-family: mono,monospace; font-size:x-small;">&nbsp; Local time: ' + localTime + '  --  Server time: ' + serverTime + '</span>';
   xpathResults_timeLocation.snapshotItem(0).setAttribute('valign', '');
 
 
@@ -5103,82 +4966,31 @@ function insertLocalServerTime()
       document.body.appendChild(containerDiv_timer);
     }
 
-    function padZeros(_input,_desiredStringLength)
-    {
-      var currentLength = _input.toString().length;
-      var output = _input;
-      for(var i=0; i < (_desiredStringLength - currentLength); i++) {
-        output = '0' + output;
-      }
-      return output;
-    }
-
-    if(_TimeOffset<0){
-      var TimeOffset_Hours = Math.ceil(_TimeOffset);
-      var TimeOffset_Minutes = ((_TimeOffset - TimeOffset_Hours) * 60).toFixed(0);
-    }else{
-      var TimeOffset_Hours = Math.floor(_TimeOffset);
-      var TimeOffset_Minutes = ((_TimeOffset - TimeOffset_Hours) * 60).toFixed(0);
-    }
-
-
-    if(_AdResetOffset<0){
-      var AdResetOffset_Hours = Math.ceil(_AdResetOffset);
-      var AdResetOffset_Minutes = ((_AdResetOffset - AdResetOffset_Hours) * 60).toFixed(0);
-    }else{
-      var AdResetOffset_Hours = Math.floor(_AdResetOffset);
-      var AdResetOffset_Minutes = ((_AdResetOffset - AdResetOffset_Hours) * 60).toFixed(0);
-    }
 
 
 
-    var Today = new Date();
-
-    var localMidnight = new Date(Today);
-    localMidnight.setHours(0);
-    localMidnight.setMinutes(0);
-    localMidnight.setSeconds(0);
-
-    localMidnight = new Date(localMidnight);
-
-    var neoMidnight = new Date(localMidnight);
-    neoMidnight.setHours(neoMidnight.getHours() - TimeOffset_Hours);
-    neoMidnight.setMinutes(neoMidnight.getMinutes() - TimeOffset_Minutes);
-    neoMidnight.setDate(localMidnight.getDate());
-
-    neoMidnight = new Date(neoMidnight);
-
-
-    var adResetTime = new Date(localMidnight);
-    adResetTime.setHours(adResetTime.getHours() - AdResetOffset_Hours);
-    adResetTime.setMinutes(adResetTime.getMinutes() - AdResetOffset_Minutes);
-    adResetTime.setSeconds(0);
-    adResetTime.setDate(localMidnight.getDate());
-    adResetTime = new Date(adResetTime);
-
-
-//    console.info('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
-//    console.info('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
-//    console.info('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
-//
-//    console.info((localMidnight));
-//    console.info((neoMidnight));
-//    console.info((adResetTime));
+    //    logger('Local Midnight = '+padZeros(localMidnight.getHours(),2)+':'+padZeros(localMidnight.getMinutes(),2));
+    //    logger('Server Midnight = '+padZeros(neoMidnight.getHours(),2)+':'+padZeros(neoMidnight.getMinutes(),2));
+    //    logger('Ad Reset Time = '+padZeros(adResetTime.getHours(),2)+':'+padZeros(adResetTime.getMinutes(),2));
+    //
+    //    logger((localMidnight));
+    //    logger((neoMidnight));
+    //    logger((adResetTime));
 
 
     var localMidnightToAdResetTime = (adResetTime - localMidnight) / (1000 * 60 * 60);
     var localMidnightToNeobuxMidnight = (neoMidnight - localMidnight) / (1000 * 60 * 60);
 
 
-//    console.info(localMidnightToAdResetTime);
-//    console.info(localMidnightToNeobuxMidnight);
+    //    logger(localMidnightToAdResetTime);
+    //    logger(localMidnightToNeobuxMidnight);
 
 
     var _timePeriods = [];
 
     if(localMidnightToAdResetTime < localMidnightToNeobuxMidnight)
     {
-//      console.info('localMidnightToAdResetTime < localMidnightToNeobuxMidnight');
+      //      logger('localMidnightToAdResetTime < localMidnightToNeobuxMidnight');
       var localMidnightToFirst = localMidnightToAdResetTime;
       var FirstToSecond = localMidnightToNeobuxMidnight - localMidnightToAdResetTime;
       var SecondToLocalMidnight = 24 - (localMidnightToFirst + FirstToSecond);
@@ -5205,7 +5017,7 @@ function insertLocalServerTime()
     }
     else if(localMidnightToAdResetTime > localMidnightToNeobuxMidnight)
     {
-      console.info('localMidnightToAdResetTime > localMidnightToNeobuxMidnight')
+      logger('localMidnightToAdResetTime > localMidnightToNeobuxMidnight')
       var localMidnightToFirst = localMidnightToNeobuxMidnight;
       var FirstToSecond = localMidnightToAdResetTime - localMidnightToNeobuxMidnight;
       var SecondToLocalMidnight = 24 - (localMidnightToFirst + FirstToSecond);
@@ -5232,7 +5044,7 @@ function insertLocalServerTime()
     }
     else if(localMidnightToAdResetTime == localMidnightToNeobuxMidnight)
     {
-      console.info('localMidnightToAdResetTime == localMidnightToNeobuxMidnight');
+      logger('localMidnightToAdResetTime == localMidnightToNeobuxMidnight');
       var localMidnightToFirst = localMidnightToAdResetTime;
       var FirstToSecond = 24 - (localMidnightToFirst);
 
@@ -5260,9 +5072,9 @@ function insertLocalServerTime()
     location.href = "javascript:void(window.neoMidnight = new Date('"+neoMidnight.toString()+"'))";
     location.href = "javascript:void(window.localMidnight = new Date('"+localMidnight.toString()+"'))";
 
-//    console.info(_timePeriods);
+    //    logger(_timePeriods);
 
-    location.href = "javascript:(" + function() {
+    location.href = "javascript:(" + function () {
 
       if('undefined' !== typeof Highcharts){
         var chart = new Highcharts.Chart({
@@ -5280,7 +5092,7 @@ function insertLocalServerTime()
             backgroundColor: null
           },
           tooltip: {
-            formatter: function() {
+            formatter: function () {
               function padZeros(_input,_desiredStringLength)
               {
                 var currentLength = _input.toString().length;
@@ -5303,7 +5115,7 @@ function insertLocalServerTime()
               cursor: 'pointer',
               dataLabels: {
                 enabled: true,
-                formatter: function() {
+                formatter: function () {
                   function padZeros(_input,_desiredStringLength)
                   {
                     var currentLength = _input.toString().length;
@@ -5336,7 +5148,7 @@ function insertLocalServerTime()
       }
       else
       {
-        console.info("Cannot show the clicking guide graph because graphs are unavailable on this page. Try the account summary page or referral statistics page.");
+        logger("Cannot show the clicking guide graph because graphs are unavailable on this page. Try the account summary page or referral statistics page.");
       }
 
 
@@ -5345,25 +5157,28 @@ function insertLocalServerTime()
 
   }
 
-  addClock(GetServerTimeOffset(),manipulatePrefs.getPref('AdResetTimeOffset', 0));
+  addClock(GetServerTimeOffset(),manipulatePrefs.getPref('AdResetTime_hours',0));
 
 
-  xpathResults_timeLocation.snapshotItem(0).lastChild.addEventListener('click',function(){
+  xpathResults_timeLocation.snapshotItem(0).lastChild.addEventListener('click',function localServerTime_onClick(){
     document.getElementById('containerDiv_timer').style.display = (document.getElementById('containerDiv_timer').style.display == 'none') ? '' : 'none' ;
   },false)
 }
 
+insertAccountBalanceTransferHandlers();
+insertLogo();
+insertLogoActions();
 if(script.preferences.localServerTimeClock_show) {
   insertLocalServerTime();
 }
 
 
 
-var UPDATER = {};
 
 var currentTimeMs = new Date().getTime().toString();
 var timeSinceLastCheck = currentTimeMs - GM_getValue('lastUpdateCheck',0);
 
+var UPDATER = {};
 
 UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 {
@@ -5372,15 +5187,15 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
   if(manipulatePrefs.getPref('updateAvailable',false) || true)
   {
     var updateMsg ='New version available for your '+_newHeaders.name+'!\n' +
-      '\n'+
-      'Script name: '+_newHeaders.name+'\n'+
-      'Version available: '+_newHeaders.version+'\n'+
-      '\n'+
-      'Update Note:\n'+
-      _newHeaders.updateNote+'\n'+
-      _newHeaders.updateNoteMin+'\n'+
-      '\n'+
-      'Do you want to install this update?';
+        '\n'+
+        'Script name: '+_newHeaders.name+'\n'+
+        'Version available: '+_newHeaders.version+'\n'+
+        '\n'+
+        'Update Note:\n'+
+        _newHeaders.updateNote+'\n'+
+        _newHeaders.updateNoteMin+'\n'+
+        '\n'+
+        'Do you want to install this update?';
 
     var msToWait = UPDATER.updateFrequency;
     msToWait = (msToWait < 0) ? 0 : msToWait;
@@ -5390,9 +5205,9 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 
 
     var denyUpdateMessage = 'Script not updated. \nYou will be reminded again in' +
-      hoursToWait + 'hours, ' +
-      minsToWait + 'mins, ' +
-      secsToWait + 'seconds';
+        hoursToWait + 'hours, ' +
+        minsToWait + 'mins, ' +
+        secsToWait + 'seconds';
 
 
 
@@ -5406,31 +5221,31 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
     stickyFooter.setAttribute('style','background-color:#FFDD00; border-top:1px solid #AA0000; bottom:0; margin:0 auto; min-height:30px; width:650px;');
 
     stickyFooter.innerHTML = "<table width='100%'><tr>" +
-      "<td>"+
-      "<p style='margin: 2px 10px;'>" +
-      "New version available for <strong>"+_newHeaders.name+"</strong>! " +
-      "</p><p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>" +
-      "Installed Version: "+fileMETA.version+"</i>" +
-      " | New Version: <i>"+_newHeaders.version+"</i>"+
-      "</p> " +
-      "</td>" +
-      "<td align='right'>" +
-      "<table width='100%'><tr>" +
-      "<td align='center'>"+
-      "<p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>What would you like to do?</p>"+
-      "</td>" +
-      "</tr><tr>" +
-      "<td align='center'>" +
+        "<td>"+
+        "<p style='margin: 2px 10px;'>" +
+        "New version available for <strong>"+_newHeaders.name+"</strong>! " +
+        "</p><p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>" +
+        "Installed Version: "+fileMETA.version+"</i>" +
+        " | New Version: <i>"+_newHeaders.version+"</i>"+
+        "</p> " +
+        "</td>" +
+        "<td align='right'>" +
+        "<table width='100%'><tr>" +
+        "<td align='center'>"+
+        "<p style='margin: 2px 10px; font-size:x-small; font-style:italic;'>What would you like to do?</p>"+
+        "</td>" +
+        "</tr><tr>" +
+        "<td align='center'>" +
       //          "<input id='UpdateMessage_Upgrade' type='button' value=''/>" +
-      "<select id='UpdateMessage_Options'>" +
-      "<option id=''>------ Options ------</option>" +
-      "<option id='UpdateMessage_Upgrade'>Upgrade</option>" +
-      "<option id='UpdateMessage_showUpdateNotes'>Show Update Notes</option>" +
-      "<option id='UpdateMessage_Postpone'>Remind Me Later</option>" +
-      "<option id='UpdateMessage_Hide24Hours'>Hide for 24hours</option>" +
-      "</select>" +
-      "</td>" +
-      "</tr></table>";
+        "<select id='UpdateMessage_Options'>" +
+        "<option id=''>------ Options ------</option>" +
+        "<option id='UpdateMessage_Upgrade'>Upgrade</option>" +
+        "<option id='UpdateMessage_showUpdateNotes'>Show Update Notes</option>" +
+        "<option id='UpdateMessage_Postpone'>Remind Me Later</option>" +
+        "<option id='UpdateMessage_Hide24Hours'>Hide for 24hours</option>" +
+        "</select>" +
+        "</td>" +
+        "</tr></table>";
     "</td>" +
     "</tr></table>";
 
@@ -5468,7 +5283,7 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
           document.getElementById('updateMessage_container').style.display = 'none';
 
 
-          console.info(denyUpdateMessage);
+          logger(denyUpdateMessage);
           alert(denyUpdateMessage);
           break;
       }
@@ -5477,9 +5292,9 @@ UPDATER.newVersionActions = function UPDATER_newVersionActions(_newHeaders)
 
 
     var foo = document.getElementById('UpdateMessage_Options');
-    console.info(foo);
+    logger(foo);
 
-    foo.addEventListener('change',function(event){ onChange_UpdateMessage_Options(event); },false);
+    foo.addEventListener('change',function UpdateMessage_Options_onChange(event){ onChange_UpdateMessage_Options(event); },false);
 
   }
 
@@ -5491,7 +5306,7 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
   var currentVer = currentVer_input.toString().split('.');
   var otherVer = otherVer_input.toString().split('.');
 
-  console.info(currentVer_input,  otherVer_input);
+  logger([currentVer_input,otherVer_input]);
 
   var numberOfPieces = (currentVer.length < otherVer.length) ? otherVer.length : currentVer.length;
   var otherVerIsNewer = false;
@@ -5503,14 +5318,14 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
     if(otherVer[i] > currentVer[i]) {
       // If we have already determined that the other version number is larger, we do not need to continue testing the remaining components
       otherVerIsNewer = true;
-      console.info("The version at userscripts.org has a newer version number than the currently install version.");
+      logger("The version at "+UPDATER.metaUrl+" has a newer version number than the currently install version.");
       manipulatePrefs.setPref('updateAvailable',true);
       break;
     }
     else if(otherVer[i] < currentVer[i]) {
       //Other version has a lower version number than the current version so the rest of the version string should be ignored
       otherVerIsNewer = false;
-      console.info("The version at userscripts.org has an older version number than the currently install version.");
+      logger("The version at "+UPDATER.metaUrl+"  has an older version number than the currently install version.");
       manipulatePrefs.setPref('updateAvailable',false);
       break;
     }
@@ -5523,7 +5338,7 @@ UPDATER.isOtherVersionNewer = function UPDATER_isOtherVersionNewer(currentVer_in
 UPDATER.updateCallback = function UPDATER_updateCallback(_responseText)
 {
   var _newHeaders = parseHeaders(_responseText);
-  console.info(_newHeaders);
+  logger(_newHeaders);
   var isNewVersionAvailable = UPDATER.isOtherVersionNewer(fileMETA.version,_newHeaders.version);
 
   if(isNewVersionAvailable) {
@@ -5543,7 +5358,7 @@ UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_useDummyResponseText)
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       onload: function(r) { UPDATER.updateCallback(r.responseText); },
-      onerror: function(e) { console.info(e); }
+      onerror: function(e) { logger(e); }
     });
   }
   else
@@ -5629,14 +5444,13 @@ UPDATER.getRemoteMeta = function UPDATER_getRemoteMeta(_useDummyResponseText)
 
 };
 
-
 UPDATER.check = function UPDATER_check(_forceUpdate)
 {
 
   if(timeSinceLastCheck > UPDATER.updateFrequency || _forceUpdate)
   {
-    console.info('Checking for updates..');
-    UPDATER.getRemoteMeta(_forceUpdate);
+    logger('Checking for updates..');
+    UPDATER.getRemoteMeta();
     GM_setValue('lastUpdateCheck',currentTimeMs);
 
   }
@@ -5650,26 +5464,34 @@ UPDATER.check = function UPDATER_check(_forceUpdate)
 
 
     var denyUpdateMessage = 'Not checking for updates - next check in ' +
-      hoursToWait + 'hours, ' +
-      minsToWait + 'mins, ' +
-      secsToWait + 'seconds';
+        hoursToWait + 'hours, ' +
+        minsToWait + 'mins, ' +
+        secsToWait + 'seconds';
 
-    console.info(denyUpdateMessage);
+    logger(denyUpdateMessage);
 
   }
 };
 
-var remoteMeta_USO = '';
-if(remoteMeta_USO = parseHeaders(GM_getResourceText('remoteMeta_USO')))
-{
-  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.user.js';
-  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/'+parseInt(remoteMeta_USO.uso.script)+'.meta.js';
-}else{
 
-  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/61349.user.js';
-  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/61349.meta.js';
-}
+var remoteMeta_USO = '';
+//if (remoteMeta_USO = parseHeaders(GM_getResourceText('remoteMeta_USO')))
+//{
+//  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/' + parseInt(remoteMeta_USO.uso.script) + '.user.js';
+//  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/' + parseInt(remoteMeta_USO.uso.script) + '.meta.js';
+//} else
+//{
+//  UPDATER.scriptUrl = 'http://userscripts.org/scripts/source/61349.user.js';
+//  UPDATER.metaUrl = 'http://userscripts.org/scripts/source/61349.meta.js';
+//}
+
+UPDATER.scriptUrl = 'http://kwah.byethost33.com/scripts/neobux_2_kwah_-_rewrite/neobux_2_kwah_-_rewrite.user.js';
+UPDATER.metaUrl = 'http://kwah.byethost33.com/scripts/neobux_2_kwah_-_rewrite/versionInfo.php';
+
 UPDATER.updateFrequency = 1000 * 60 * script.preferences.updateFrequency; // { updateFrequency } mins
+
 //UPDATER.updateFrequency = 0;
 
 UPDATER.check(false);
+
+
