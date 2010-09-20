@@ -2331,7 +2331,7 @@ function insertChartDataBars()
             personalClicks_Array.push(tmp);
           }
 
-          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', personalClicks_Array, ') $',null);
+          addDataBarUnderGraph('Avg. Income :', _currentGraph.containerID, ' (', personalClicks_Array, ') $',null);
 
           // Need to increase the height of the container to fix issue with the 'Congratulations: You've been active everyday.' message not wrapping correctly
           document.getElementById(_currentGraph.containerID).parentNode.style.height = "206px";
@@ -2350,25 +2350,25 @@ function insertChartDataBars()
             rentedClicks_Array.push(tmp);
           }
 
-          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', rentedClicks_Array, ') $',null);
+          addDataBarUnderGraph('Avg. Income :', _currentGraph.containerID, ' (', rentedClicks_Array, ') $',null);
 
           break;
 
         case 'ch_recycle':
-        // Recyling Expenses graph in 'Referral Statistics' page
+        // Recycling Expenses graph in 'Referral Statistics' page
         case 'ch_autopay':
         // Autopay Expenses graph in 'Referral Statistics' page
         case 'ch_extensions':
           // Extensions Expenses graph in 'Referral Statistics' page
 
-          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
+          addDataBarUnderGraph('Avg. Expenses :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
 
           break;
 
         case 'ch_trrb':
           // trrb = "Transfers to Rented Balance " / Transfers to Rental Balance graph in 'Referral Statistics' page
 
-          addDataBarUnderGraph('Avg. USD :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
+          addDataBarUnderGraph('Avg. Transfers :', _currentGraph.containerID, ' (', sum_Array, ') $',null);
 
           break;
 
